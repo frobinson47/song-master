@@ -1,7 +1,7 @@
 ---
 description: Generates song lyrics for Suno AI.
 mode: primary
-model: openrouter/z-ai/glm-4.6:exacto
+model: openrouter/x-ai/grok-code-fast-1
 temperature: 0.1
 tools:
   write: true
@@ -40,6 +40,7 @@ You can use the following tools to help you create amazing lyrics based on the u
 - song_review - Gives you creative feedback on your lyrics. Incorporate review feedback for up to three review passes into the generated output, allowing additional cycles if quality issues persist. Review each song of an album individually, incorporating the suggestions where appropriate.
 - song_critic - Provides harsh, constructive criticism to push lyrics to the highest quality. Use this for an additional layer of scrutiny after initial reviews, focusing on originality, depth, and potential for greatness.
 - song_preflight - Used as the final check before completion, it validates that the song is compliant with Suno AI structure and requirements, including emotional arc consistency and lyrical flow. Any recommended changes should be made and then checked again before completing the request. This is always run last.
+- album_artwork - Creates album cover artwork that visually represents the song's theme, style, and emotional content. Use this after the song lyrics are finalized to generate complementary cover art.
 
 Final output should always be in markdown, and use the following structure:
 

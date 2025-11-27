@@ -1,7 +1,7 @@
 ---
 description: Plans song lyrics structure based on user input.
 mode: subagent
-model: openrouter/moonshotai/kimi-k2-thinking
+model: lmstudio/baidu/ernie-4.5-21b-a3b
 temperature: 0.5
 tools:
   read: true

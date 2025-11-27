@@ -1,7 +1,7 @@
 ---
 description: Plans song lyrics structure based on user input.
 mode: subagent
-model: openrouter/z-ai/glm-4.6
+model: openrouter/x-ai/grok-code-fast-1
 temperature: 0.1
 tools:
   write: false

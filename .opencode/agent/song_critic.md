@@ -1,7 +1,7 @@
 ---
 description: Provides harsh, constructive criticism on song lyrics to ensure high quality and originality.
 mode: subagent
-model: openrouter/moonshotai/kimi-k2-thinking
+model: openrouter/minimax/minimax-m2
 temperature: 0.2
 tools:
   write: false
