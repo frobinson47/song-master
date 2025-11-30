@@ -365,13 +365,21 @@ Edit `styles/styles.json` to add custom style definitions:
 The agentic process implemented via LangGraph produces superior results through its structured, multi-stage approach to song creation. Unlike single-shot generation methods, this agentic workflow breaks down the complex task of songwriting into specialized subtasks, each handled by dedicated AI agents with specific expertise. The parallel review system ensures multiple perspectives are considered simultaneously, while the iterative refinement loop allows for continuous improvement based on quantitative scoring. This architecture mimics human collaborative songwriting processes, where different specialists contribute their strengths—drafting, critiquing, revising, and polishing—resulting in lyrics that are more coherent, stylistically consistent, and emotionally resonant. The state management provided by LangGraph ensures that context and quality metrics are preserved throughout the entire workflow, enabling the system to make intelligent decisions about when to continue refining versus when to finalize the output.
 
 - **Orchestration (`song_master.py`)**: A LangGraph `StateGraph` wires together the agentic steps and keeps shared state (lyrics, score, metadata, persona, resources, round counters). The CLI parses prompt/name/persona/local-mode flags and seeds the graph with defaults from `.env`.
+
 - **Resource loading (`helpers.load_resources`)**: Styles from `styles/styles.json`, tag snippets in `tags/*.txt`, persona-specific style tokens from `personas/*.md`, and baseline song params (genre/tempo/key/instruments/mood). Persona style tokens get re-used later to bias metadata and tags.
+
 - **Prompt assembly (`ai_functions.build_prompts`)**: The drafter/reviewer/critic/preflight/revision/scoring/metadata prompts are built once, with the styles/tags/persona tokens inlined so every call has the same grounding data.
+
 - **Drafting (`draft_node`)**: User input is optionally titled, then sent to the drafter LLM with styles, tags, persona styles, and defaults. The LLM backend is chosen at runtime (local LM Studio via OpenAI-compatible API, LiteLLM relay, OpenRouter, or OpenAI) based on env vars.
+
 - **Parallel review loop (`review_node`)**: Three reviewers run in parallel threads (`run_parallel_reviews`), feedback is merged, `revise_lyrics` applies the edits, and `score_lyrics` parses a JSON score. The graph loops review rounds until the score crosses `REVIEW_SCORE_THRESHOLD` or `REVIEW_MAX_ROUNDS`.
+
 - **Critic pass (`critic_node`)**: A single critic prompt adds a last improvement pass before safety/format checks.
+
 - **Preflight + targeted fixes (`preflight_node` → `targeted_revise_node`)**: Lyrics are validated against style/tag rules. `triage_preflight` distills LLM feedback into a boolean pass + issue list; any issues trigger a targeted revision loop (and another review cycle) until resolved or rounds are exhausted.
+
 - **Metadata + cover art (`metadata_node` → `album_art_node`)**: The metadata agent emits JSON (description, Suno styles/exclude, target audience, commercial potential) and injects persona style tokens to keep the song “on persona.” Album art is generated unless `--local` is set; regeneration can be run directly with `--regen-cover`.
+
 - **Persistence (`save_node`)**: The final song, metadata, and user prompt are saved to `songs/{YYYYMMDD}_{Title}.md`, with optional `{Title}_cover.jpg` beside it.
 
 
