@@ -96,7 +96,8 @@ Generate some lyrics for a song that's all about testing ideas. Make it in the s
 The local model generates a more narrative-focused song with detailed storytelling:
 
 **Audio Sample:**
-<iframe src="https://suno.com/embed/8499a320-90b9-45ac-8b42-9a33816943a7" width="760" height="240"><a href="https://suno.com/song/8499a320-90b9-45ac-8b42-9a33816943a7">Listen on Suno</a></iframe>
+
+[![Listen on Suno](https://img.shields.io/badge/Listen%20on-Suno-blue?logo=music)](https://suno.com/song/8499a320-90b9-45ac-8b42-9a33816943a7)
 
 ```markdown
 ## Testing Ideas
@@ -203,8 +204,9 @@ One word, and the silence breaks.
 
 The OpenRouter model generates a more energetic, performance-focused song with explicit style tags:
 
-**Audio Sample:**
-<iframe src="https://suno.com/embed/c1c907b3-c84a-439b-b68b-f8dc0336263d" width="760" height="240"><a href="https://suno.com/song/c1c907b3-c84a-439b-b68b-f8dc0336263d">Listen on Suno</a></iframe>
+**Audio Sample:** 
+
+[![Listen on Suno](https://img.shields.io/badge/Listen%20on-Suno-blue?logo=music)](https://suno.com/song/c1c907b3-c84a-439b-b68b-f8dc0336263d)
 
 ```markdown
 ## Testing Ideas
