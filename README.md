@@ -6,6 +6,33 @@ A powerful (yet easy to use) script for generating song lyrics using AI models, 
 
 Song Master is a Python script that leverages AI models (both local and OpenRouter) to generate complete song lyrics with proper formatting, style tags, and metadata for Suno AI. It includes pre-flight checks, song drafting, and review processes to ensure high-quality output.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [With Local Model](#with-local-model)
+  - [With Prompt File](#with-prompt-file)
+  - [With Custom Song Name](#with-custom-song-name)
+  - [With Persona](#with-persona)
+  - [Regenerate Cover Art](#regenerate-cover-art)
+  - [Command Line Options](#command-line-options)
+- [Examples](#examples)
+  - [Example Input](#example-input)
+  - [Local Model Output](#local-model-output)
+  - [OpenRouter Model Output](#openrouter-model-output)
+  - [Cover Art Output](#cover-art-output)
+  - [Key Differences Between Models](#key-differences-between-models)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Custom Styles](#custom-styles)
+- [Technical Deep Dive: Agentic Songwriting Flow](#technical-deep-dive-agentic-songwriting-flow)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
+
 ## Features
 
 - **Dual AI Support**: Works with both local AI models and OpenRouter API
@@ -374,19 +401,19 @@ flowchart TD
 ```
 song-master/
 ├── README.md                 # This file
-├── song_master.py           # Main script
-├── ai_functions.py          # AI interaction functions
-├── helpers.py               # Utility functions
-├── requirements.txt         # Python dependencies
-├── .env.example            # Environment variables template
-├── examples/               # Example outputs
-│   ├── local/             # Local model examples
-│   ├── openrouter/        # OpenRouter model examples
-│   └── testing-ideas.txt  # Example input
-├── prompts/               # AI prompts
-├── styles/               # Style definitions
-├── personas/             # AI personas
-└── tags/                 # Default tags
+├── song_master.py            # Main script
+├── ai_functions.py           # AI interaction functions
+├── helpers.py                # Utility functions
+├── requirements.txt          # Python dependencies
+├── .env.example              # Environment variables template
+├── examples/                 # Example outputs
+│   ├── local/                # Local model examples
+│   ├── openrouter/           # OpenRouter model examples
+│   └── testing-ideas.txt     # Example input
+├── prompts/                  # AI prompts
+├── styles/                   # Style definitions
+├── personas/                 # AI personas
+└── tags/                     # Default tags
 ```
 
 ## Contributing
