@@ -284,13 +284,13 @@ Breakin' the silence — keep shoutin' through the years!
 
 ### Cover Art Output
 
-The script also generates cover art for the songs. Here's an example of the cover art created for the "Testing Ideas" song:
+The script also generates cover art for the songs using Nano Banana on OpenRouter. Here's an example of the cover art created for the "Testing Ideas" song:
 
 ![Testing Ideas Cover Art](examples/openrouter/Testing_Ideas_cover.jpg)
 
 ## Key Differences Between Models
 
-| Aspect | Local Model | OpenRouter Model |
+| Aspect | Local Model (Qwen3 30B A3B 2507) | OpenRouter Model (GPT-5.1 CHAT) |
 |--------|-------------|------------------|
 | **Style** | More narrative and emotional | More energetic and performance-focused |
 | **Structure** | Traditional verse-chorus structure | Explicit style tags per section |
