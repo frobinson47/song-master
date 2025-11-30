@@ -97,9 +97,9 @@ The local model generates a more narrative-focused song with detailed storytelli
 
 **Audio Sample:**
 <audio controls>
-  <source src="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/Testing_Ideas_Local.mp3" type="audio/mpeg">
+  <source src="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/TestingIdeasLocal.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
-  <a href="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/Testing_Ideas_Local.mp3">Download the audio file</a>
+  <a href="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/TestingIdeasLocal.mp3">Download the audio file</a>
 </audio>
 
 ```markdown
