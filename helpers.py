@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, TypedDict
 
 
 def read_styles() -> Dict[str, str]:
+    """Load and process style configurations from JSON file."""
     consolidated_path = os.path.join("styles", "styles.json")
     if not os.path.exists(consolidated_path):
         raise FileNotFoundError(f"Missing consolidated styles file at {consolidated_path}")
@@ -99,6 +100,7 @@ def get_default_song_params() -> Dict[str, Optional[str]]:
 
 
 def parse_persona(user_input: str, cli_persona: Optional[str]) -> Optional[str]:
+    """Extract persona name from user input or CLI argument."""
     if cli_persona:
         return cli_persona
     lowered = user_input.lower()
@@ -126,6 +128,7 @@ def extract_title(lyrics: str, provided_title: Optional[str]) -> str:
 
 
 def generate_album_art(title: str, user_input: str) -> str:
+    """Generate album artwork using external script."""
     artwork_prompt = (
         f"Album cover for song '{title}' with theme {user_input}. "
         "Do not include any text, lettering, or typography on the image."
@@ -178,6 +181,7 @@ def parse_persona_styles_list(persona_styles: str):
 
 
 def save_song(title: str, user_input: str, lyrics: str, default_params: Dict[str, Optional[str]], metadata: Dict[str, object]) -> str:
+    """Save the generated song to a markdown file with metadata."""
     description = metadata.get("description", "Short description of the song's theme and style.")
     suno_styles = metadata.get("suno_styles", [default_params.get("genre", "rock")])
     suno_exclude_styles = metadata.get("suno_exclude_styles", [])
@@ -251,6 +255,7 @@ def load_resources(persona_name: Optional[str]) -> SongResources:
 
 
 def progress_steps(use_local: bool):
+    """Return progress steps for song generation based on mode."""
     if use_local:
         return [
             "Parsing user input and persona",

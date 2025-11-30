@@ -1,3 +1,10 @@
+"""
+Song Master Script
+
+This script generates songs using AI-powered agents in a structured workflow.
+It supports both local and remote LLM usage, with options for personas, album art generation, and more.
+"""
+
 import argparse
 import os
 import sys
@@ -73,6 +80,7 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
     }
 
     def draft_node(state: SongState):
+        """Generate initial song draft using AI."""
         enhanced_input = enhance_user_input(state["user_input"], state.get("song_name"))
         lyrics = draft_song(
             prompt_template=drafter_prompt,
@@ -94,6 +102,7 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
         return {"lyrics": revised_lyrics, "feedback": feedback, "score": score, "round": state["round"] + 1}
 
     def review_router(state: SongState):
+        """Decide whether to continue reviewing or proceed to critic based on score and rounds."""
         if state["score"] < state["score_threshold"] and state["round"] < state["max_rounds"]:
             return "keep_reviewing"
         return "go_critic"
@@ -120,6 +129,7 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
         return "ready_for_metadata"
 
     def targeted_revise_node(state: SongState):
+        """Revise lyrics specifically to address preflight issues."""
         issues = state.get("preflight_issues", [])
         feedback = "Fix these preflight issues:\n" + "\n".join(f"- {issue}" for issue in issues)
         revised = revise_lyrics(revision_prompt, state["lyrics"], feedback, state["use_local"])
@@ -139,6 +149,7 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
         return {"metadata": metadata}
 
     def album_art_node(state: SongState):
+        """Generate album artwork if not in local mode."""
         if state["use_local"]:
             tqdm.write("✓ Album artwork skipped (local mode).")
             return {"album_art": None}
@@ -173,6 +184,7 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
     graph.add_edge("album_art", "save")
     graph.add_edge("save", END)
 
+    # Compile and execute the graph
     app = graph.compile()
     with tqdm(total=None, desc="Creating your song (agentic)", unit="step") as _:
         app.invoke(initial_state)
@@ -214,6 +226,7 @@ if __name__ == "__main__":
         print(f"Album art regenerated: {artwork_path}")
         sys.exit(0)
 
+    # Load prompt from file or argument
     try:
         prompt_text = load_prompt_from_file(args.prompt_file) if args.prompt_file else args.prompt
     except FileNotFoundError as prompt_err:
@@ -224,4 +237,5 @@ if __name__ == "__main__":
         parser.error("You must provide a prompt as an argument or via --prompt-file")
         sys.exit(2)
 
+    # Generate the song
     generate_song(prompt_text, args.local, args.name, args.persona)

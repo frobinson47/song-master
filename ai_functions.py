@@ -15,6 +15,7 @@ llm = None
 
 
 class LiteLLMWrapper:
+    """Wrapper for LiteLLM API calls."""
     def __init__(self, model: str, temperature: float, max_tokens: int, api_key: Optional[str] = None, base_url: Optional[str] = None):
         self.model = model
         self.temperature = temperature
@@ -159,6 +160,7 @@ def get_llm(use_local: bool = False):
 
 
 def build_prompts():
+    """Build and return all prompt templates for song generation."""
     from helpers import read_prompt
 
     song_drafter_template = read_prompt("song_drafter")
@@ -319,6 +321,7 @@ def revise_lyrics(prompt_template: PromptTemplate, lyrics: str, feedback: str, u
 
 
 def run_parallel_reviews(prompt_template: PromptTemplate, lyrics: str, use_local: bool, reviewer_count: int = 3) -> str:
+    """Run multiple AI reviewers in parallel and merge their feedback."""
     def _call(_):
         formatted_prompt = prompt_template.format(lyrics=lyrics)
         return get_llm(use_local).invoke(formatted_prompt)
@@ -361,6 +364,7 @@ def preflight_song(prompt_template: PromptTemplate, lyrics: str, styles: Dict[st
 
 
 def triage_preflight(prompt_template: PromptTemplate, preflight_output: str, use_local: bool):
+    """Parse preflight feedback and determine if issues exist."""
     fallback = {"pass": False, "issues": ["Preflight feedback could not be parsed. Review manually."]}
     if not preflight_output:
         return fallback
