@@ -96,8 +96,11 @@ Generate some lyrics for a song that's all about testing ideas. Make it in the s
 The local model generates a more narrative-focused song with detailed storytelling:
 
 **Audio Sample:**
-🎵 [Listen to Local Model Output](examples/local/Testing%20Ideas%20(Local).mp3)
-*(Right-click and "Save link as..." to download)*
+<audio controls>
+  <source src="examples/local/Testing_Ideas_Local.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+  <a href="examples/local/Testing_Ideas_Local.mp3">Download the audio file</a>
+</audio>
 
 ```markdown
 ## Testing Ideas
@@ -205,8 +208,11 @@ One word, and the silence breaks.
 The OpenRouter model generates a more energetic, performance-focused song with explicit style tags:
 
 **Audio Sample:**
-🎵 [Listen to OpenRouter Model Output](examples/openrouter/Testing%20Ideas%20(Openrouter).mp3)
-*(Right-click and "Save link as..." to download)*
+<audio controls>
+  <source src="examples/openrouter/Testing_Ideas_Openrouter.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+  <a href="examples/openrouter/Testing_Ideas_Openrouter.mp3">Download the audio file</a>
+</audio>
 
 ```markdown
 ## Testing Ideas
