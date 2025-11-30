@@ -97,8 +97,10 @@ The local model generates a more narrative-focused song with detailed storytelli
 
 **Audio Sample:**
 <audio controls>
+  <source src="examples/local/Testing%20Ideas%20(Local).mp3" type="audio/mpeg">
   <source src="examples/local/Testing Ideas (Local).mp3" type="audio/mpeg">
   Your browser does not support the audio element.
+  <a href="examples/local/Testing%20Ideas%20(Local).mp3">Download the audio file</a>
 </audio>
 
 ```markdown
@@ -208,8 +210,10 @@ The OpenRouter model generates a more energetic, performance-focused song with e
 
 **Audio Sample:**
 <audio controls>
+  <source src="examples/openrouter/Testing%20Ideas%20(Openrouter).mp3" type="audio/mpeg">
   <source src="examples/openrouter/Testing Ideas (Openrouter).mp3" type="audio/mpeg">
   Your browser does not support the audio element.
+  <a href="examples/openrouter/Testing%20Ideas%20(Openrouter).mp3">Download the audio file</a>
 </audio>
 
 ```markdown
