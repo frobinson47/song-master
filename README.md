@@ -97,9 +97,9 @@ The local model generates a more narrative-focused song with detailed storytelli
 
 **Audio Sample:**
 <audio controls>
-  <source src="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/TestingIdeasLocal.mp3" type="audio/mpeg">
+  <source src="examples/local/TestingIdeasLocal.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
-  <a href="https://github.com/robertrittmuller/song-master/raw/refs/heads/main/examples/local/TestingIdeasLocal.mp3">Download the audio file</a>
+  <a href="examples/local/TestingIdeasLocal.mp3">Download the audio file</a>
 </audio>
 
 ```markdown
@@ -208,11 +208,7 @@ One word, and the silence breaks.
 The OpenRouter model generates a more energetic, performance-focused song with explicit style tags:
 
 **Audio Sample:**
-<audio controls>
-  <source src="examples/openrouter/Testing_Ideas_Openrouter.mp3" type="audio/mp3">
-  Your browser does not support the audio element.
-  <a href="examples/openrouter/Testing_Ideas_Openrouter.mp3">Download the audio file</a>
-</audio>
+<iframe src="https://suno.com/embed/8499a320-90b9-45ac-8b42-9a33816943a7" width="760" height="240"><a href="https://suno.com/song/8499a320-90b9-45ac-8b42-9a33816943a7">Listen on Suno</a></iframe>
 
 ```markdown
 ## Testing Ideas
