@@ -1,0 +1,319 @@
+# SUNO AI TAGS FOR SONG GENERATION
+# =================================
+# This file contains structured tags for AI song generation.
+# Use these tags to control musical elements, structure, and style.
+# Tags should be combined logically to create coherent musical sections.
+
+# USAGE GUIDELINES FOR AI:
+# 1. Combine structural tags with musical attributes for best results
+# 2. Use proper musical notation: Tempo: <number> BPM, Key: <key> <mode>
+# 3. Match mood, genre, and dynamics for consistency
+# 4. Vocal tags should complement the musical style
+# 5. Instrument tags should be specific and appropriate for the genre
+
+# =================================
+# SONG STRUCTURE TAGS
+# =================================
+# Use these to define song sections and flow
+
+[Intro]
+[Verse]
+[Pre-chorus]
+[Chorus]
+[Post-chorus]
+[Bridge]
+[Break]
+[Breakdown]
+[Interlude]
+[Solo]
+[Hook]
+[Refrain]
+[Outro]
+[End]
+[Fade Out]
+[Big Finish]
+[Finale]
+
+# Specific Intro variations
+[Intro Bass]
+[Intro Drums]
+[Intro Guitar]
+[Short Instrumental Intro]
+[Soft Intro]
+
+# Specific Outro variations
+[Powerful Outro]
+
+# =================================
+# MUSICAL DYNAMICS & ENERGY
+# =================================
+# Use to control the energy and intensity levels
+
+[Dynamic: Explosive energy]
+[Dynamic: Intimate, building]
+[Dynamic: Climactic]
+[Dynamic: Groovy, laid-back]
+[Dynamic: Dissipating]
+[Dynamic: Aggressive, pounding]
+[Dynamic: Sweeping, dramatic]
+[Dynamic: Bright, punchy]
+[Dynamic: Driving, confident]
+[Dynamic: Intimate, emotional]
+[Dynamic: Maximum impact]
+[Dynamic: Rising, suspenseful]
+[Dynamic: Delicate, intimate]
+[Dynamic: Powerful, soaring]
+
+# =================================
+# GENRE TAGS
+# =================================
+# Primary musical genres and subgenres
+
+[Genre: Progressive Trance / Heavy Metal Fusion]
+[Genre: Trance Metal]
+[Genre: Pop Rock / Electronic]
+[Genre: Ballad]
+[Genre: Progressive Rock]
+[Genre: Hip Hop / Alternative]
+[Genre: Dance Pop]
+[Genre: Ambient Electronic]
+[Genre: Industrial Metal]
+[Genre: Film Score]
+[Genre: Pop]
+[Genre: Hip Hop]
+[Genre: Singer-Songwriter]
+[Genre: Symphonic Rock]
+[Genre: Electronic]
+[Genre: Folk]
+[Genre: Arena Rock]
+[Genre: Funk]
+[Genre: Gospel]
+[Genre: Psychedelic Rock]
+
+# =================================
+# MUSICAL KEY & TEMPO
+# =================================
+# Format: [Key: <note> <mode>] and [Tempo: <number> BPM]
+
+# Major Keys
+[Key: C major]
+[Key: G major]
+[Key: D major]
+[Key: E major]
+[Key: F major]
+[Key: A major]
+[Key: Bb major]
+[Key: Ab major]
+
+# Minor Keys
+[Key: D minor]
+[Key: E minor]
+[Key: A minor]
+[Key: F# minor]
+[Key: C# minor]
+[Key: G minor]
+[Key: Drop C]
+
+# Tempo ranges (BPM)
+[Tempo: 70 BPM]    # Slow/Ballad
+[Tempo: 75 BPM]    # Slow
+[Tempo: 80 BPM]    # Slow/Medium
+[Tempo: 85 BPM]    # Medium Slow
+[Tempo: 90 BPM]    # Medium
+[Tempo: 95 BPM]    # Medium
+[Tempo: 100 BPM]   # Medium
+[Tempo: 110 BPM]   # Medium Fast
+[Tempo: 120 BPM]   # Fast
+[Tempo: 128 BPM]   # Fast
+[Tempo: 130 BPM]   # Fast
+[Tempo: 140 BPM]   # Fast
+[Tempo: 150 BPM]   # Very Fast
+[Tempo: 160 BPM]   # Very Fast
+[Tempo: 180 BPM]   # Extreme
+[Tempo: Varies]    # Variable tempo
+
+# =================================
+# MOOD & EMOTION TAGS
+# =================================
+# Emotional qualities and atmosphere
+
+[Mood: Anticipation, raw power]
+[Mood: Defiant, uplifting]
+[Mood: Uplifting, celebratory]
+[Mood: Reflective, heartfelt]
+[Mood: Virtuosic, intense]
+[Mood: Confident, street-smart]
+[Mood: Anticipatory, energetic]
+[Mood: Ethereal, peaceful]
+[Mood: Intense, mechanical]
+[Mood: Epic, emotional]
+[Mood: Infectious, fun]
+[Mood: Assertive, clever]
+[Mood: Heartbreaking, sincere]
+[Mood: Triumphant, epic]
+[Mood: Anticipatory, tense]
+[Mood: Calm, peaceful]
+[Mood: Explosive, cathartic]
+[Mood: Funky, impressive]
+[Mood: Spiritual, uplifting]
+[Mood: Dreamy, hypnotic]
+
+# Simple mood descriptors
+[Melancholy]
+[Whimsical]
+
+# =================================
+# INSTRUMENTATION TAGS
+# =================================
+# Specific instruments and arrangements
+
+[Instruments: Filtered synth pads, distorted guitars, crowd noise, FX risers]
+[Instruments: Metal guitars, driving bass, layered synth arps, kick pulse]
+[Instruments: Electric guitars, synth pads, driving drums, bass]
+[Instruments: Grand piano, strings, subtle percussion]
+[Instruments: Electric guitar, double bass drum, Hammond organ]
+[Instruments: Hip hop beat, vinyl crackle, bass line]
+[Instruments: Synth risers, filtered drums, pulsing bass]
+[Instruments: Pads, reverb tails, distant piano]
+[Instruments: Distorted bass, industrial percussion, samples]
+[Instruments: Full orchestra, choir, cinematic percussion]
+[Instruments: Synth lead, pop drums, bass guitar]
+[Instruments: 808 beat, samples, turntable scratches]
+[Instruments: Acoustic guitar, cello, minimal percussion]
+[Instruments: Full orchestra, rock band, choir]
+[Instruments: Arpeggiated synths, risers, percussion build]
+[Instruments: Acoustic guitar, gentle strings]
+[Instruments: Power chords, crashing cymbals, bass]
+[Instruments: Bass guitar, drums, organ]
+[Instruments: Organ, piano, drums]
+[Instruments: Delayed guitars, phaser effects, bass]
+
+# General instrument tags
+[Instrumental]
+[Instrumental Build]
+[Instrumental Interlude]
+[Melodic Instrumental]
+
+# Specific solos
+[Guitar Solo]
+[Fingerstyle Guitar Solo]
+[Violin Solo]
+[Melodic Bass Solo]
+[Melodic Flute Interlude]
+
+# Percussion elements
+[Percussion Break]
+[Percussion Breakdown]
+[Bass Drop]
+
+# =================================
+# VOCAL STYLE & QUALITY TAGS
+# =================================
+# Vocal characteristics and delivery styles
+
+[Vocal Style: Spoken baritone, commanding]
+[Vocal Style: Melodic with grit]
+[Vocal Style: Power vocals with backing harmonies]
+[Vocal Style: Soft, vulnerable]
+[Vocal Style: Instrumental]
+[Vocal Style: Rhythmic spoken word]
+[Vocal Style: Breathless, building]
+[Vocal Style: Whispered, fading]
+[Vocal Style: Harsh vocals]
+[Vocal Style: Choral]
+[Vocal Style: Pop vocals with earworm melody]
+[Vocal Style: Rapid-fire delivery]
+[Vocal Style: Raw, emotional]
+[Vocal Style: Operatic, powerful]
+[Vocal Style: Soft, gentle]
+[Vocal Style: Powerful screams]
+[Vocal Style: Gospel choir]
+
+[Vocal Quality: Rough, cinematic reverb]
+[Vocal Quality: Gritty, resonant]
+[Vocal Quality: Bright, polished]
+[Vocal Quality: Warm, breathy]
+[Vocal Quality: N/A]
+[Vocal Quality: Dry, close-mic'd]
+[Vocal Quality: Processed with delay]
+[Vocal Quality: Dreamy, heavily reverberated]
+[Vocal Quality: Gritty, compressed]
+[Vocal Quality: Lush, expansive]
+[Vocal Quality: Clean, auto-tuned]
+[Vocal Quality: Sharp, articulate]
+[Vocal Quality: Cracked, authentic]
+[Vocal Quality: Soaring, majestic]
+[Vocal Quality: Warm, natural]
+[Vocal Quality: Raw, powerful]
+[Vocal Quality: Rich, harmonious]
+[Vocal Quality: Processed, ethereal]
+
+# Vocal type tags
+[Female Vocal]
+[Male Vocal]
+[Female Narrator]
+[Male - deep baritone]
+[Duet]
+[Diva Solo]
+
+# Specific vocal sections
+[Catchy Hook]
+[Happy Chorus]
+[Sad Verse]
+[Rap Verse]
+[Primal Scream]
+[Shout]
+
+# Choir tags
+[Choir]
+[Gospel Choir]
+
+# =================================
+# EFFECTS & PRODUCTION TAGS
+# =================================
+# Sound effects and production elements
+
+[Crowd cheer FX, rising]
+[Reverb tail, lasers and risers]
+[Syncopated Bass]
+[Melodic Bass]
+
+# =================================
+# EXAMPLE COMBINATIONS FOR AI
+# =================================
+# These examples show how to combine tags effectively
+
+# Example 1: Heavy Metal Intro
+# [Intro] [Genre: Progressive Trance / Heavy Metal Fusion] [Tempo: 140 BPM] 
+# [Key: D minor] [Mood: Anticipation, raw power] 
+# [Instruments: Filtered synth pads, distorted guitars, crowd noise, FX risers]
+# [Vocal Style: Spoken baritone, commanding] [Vocal Quality: Rough, cinematic reverb]
+
+# Example 2: Pop Chorus
+# [Chorus] [Genre: Pop Rock / Electronic] [Dynamic: Explosive energy]
+# [Key: G major] [Tempo: 128 BPM] [Mood: Uplifting, celebratory]
+# [Instruments: Electric guitars, synth pads, driving drums, bass]
+# [Vocal Style: Power vocals with backing harmonies] [Vocal Quality: Bright, polished]
+
+# Example 3: Emotional Bridge
+# [Bridge] [Genre: Ballad] [Dynamic: Intimate, building]
+# [Key: C major] [Tempo: 75 BPM] [Mood: Reflective, heartfelt]
+# [Instruments: Grand piano, strings, subtle percussion]
+# [Vocal Style: Soft, vulnerable] [Vocal Quality: Warm, breathy]
+
+# Example 4: Hip Hop Verse
+# [Verse] [Genre: Hip Hop] [Dynamic: Driving, confident]
+# [Key: G minor] [Tempo: 140 BPM] [Mood: Assertive, clever]
+# [Instruments: 808 beat, samples, turntable scratches]
+# [Vocal Style: Rapid-fire delivery] [Vocal Quality: Sharp, articulate]
+
+# =================================
+# AI COMBINING RULES
+# =================================
+# 1. Always pair structural tags with genre and tempo
+# 2. Match mood to dynamic level (e.g., "Explosive energy" with "Uplifting, celebratory")
+# 3. Ensure vocal style matches genre (e.g., "Rapid-fire delivery" for Hip Hop)
+# 4. Keep instrument selections genre-appropriate
+# 5. Use vocal quality to enhance the emotional impact
+# 6. Consider key changes between sections for musical interest
+# 7. Tempo can vary between sections but should flow naturally

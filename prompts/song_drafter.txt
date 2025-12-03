@@ -5,6 +5,7 @@ Important rules:
 - Do not read, reference, or use any existing songs (.md files) in the /songs folder. Create entirely original content based only on the user input and available resources.
 - Never copy or quote from existing commercial songs or other sources. Ensure complete originality.
 - Ensure that any lyric styles or other metadata are correctly enclosed in [] and never leak as inline text. If style/genre/tag cues appear, place them inside brackets on the section header line only.
+- **CRITICAL: Keep total lyrics under 5000 characters including spaces and punctuation. This is a hard limit - do not exceed it.**
 
 Consider the following:
 
@@ -16,7 +17,7 @@ Consider the following:
 - Ensure that all song sections work together to create a clear theme or message. Use vivid imagery, storytelling, and emotional resonance.
 - Song speed / pacing is controlled via the beats per minute setting [Tempo: 70-140 BPM] or by using keywords [fast/slow]. Consider rhyme schemes, meter, and syllable count for singability.
 - Depending on where they are in the lyrics, words may need to be hyphenated in order to be sung correctly.
-- Reference the /styles and /tags folders for appropriate musical styles, genres, and section tags to enhance the draft. Explore less common combinations from the co_existing_styles_dict for unique results.
+- Reference the /styles and /tags folders for appropriate musical styles, genres, and section tags to enhance the draft. **Tags can be combined** - you may use multiple tags together to create rich, detailed sections (e.g., "[Verse] [Genre: Hip Hop] [Tempo: 95 BPM] [Mood: Confident]"). Explore less common combinations from the co_existing_styles_dict for unique results.
 - Focus on creating engaging, memorable lyrics that could stand out on the radio without being overly simplistic or cliché.
 - Prioritize internal rhymes, assonance, and alliteration to enhance lyrical flow and memorability.
 - Balance poetic depth with accessibility; avoid overly complex metaphors that might confuse listeners.
