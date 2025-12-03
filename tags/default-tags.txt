@@ -252,9 +252,31 @@
 [Female Vocal]
 [Male Vocal]
 [Female Narrator]
+[Male Narrator]
 [Male - deep baritone]
+[Male - tenor]
+[Male - bass]
+[Female - soprano]
+[Female - alto]
+[Female - mezzo-soprano]
 [Duet]
+[Male Duet]
+[Female Duet]
+[Male-Female Duet]
 [Diva Solo]
+[Male Solo]
+[Female Solo]
+[Lead Female Vocal]
+[Lead Male Vocal]
+[Backing Female Vocals]
+[Backing Male Vocals]
+[Mixed Backing Vocals]
+[Call and Response - Female to Male]
+[Call and Response - Male to Female]
+[Alternating Vocals]
+[Harmony - Female]
+[Harmony - Male]
+[Harmony - Mixed]
 
 # Specific vocal sections
 [Catchy Hook]
@@ -284,28 +306,43 @@
 # These examples show how to combine tags effectively
 
 # Example 1: Heavy Metal Intro
-# [Intro] [Genre: Progressive Trance / Heavy Metal Fusion] [Tempo: 140 BPM] 
-# [Key: D minor] [Mood: Anticipation, raw power] 
+# [Intro] [Genre: Progressive Trance / Heavy Metal Fusion] [Tempo: 140 BPM]
+# [Key: D minor] [Mood: Anticipation, raw power]
 # [Instruments: Filtered synth pads, distorted guitars, crowd noise, FX risers]
-# [Vocal Style: Spoken baritone, commanding] [Vocal Quality: Rough, cinematic reverb]
+# [Vocal Style: Spoken baritone, commanding] [Vocal Quality: Rough, cinematic reverb] [Male - deep baritone]
 
 # Example 2: Pop Chorus
 # [Chorus] [Genre: Pop Rock / Electronic] [Dynamic: Explosive energy]
 # [Key: G major] [Tempo: 128 BPM] [Mood: Uplifting, celebratory]
 # [Instruments: Electric guitars, synth pads, driving drums, bass]
-# [Vocal Style: Power vocals with backing harmonies] [Vocal Quality: Bright, polished]
+# [Vocal Style: Power vocals with backing harmonies] [Vocal Quality: Bright, polished] [Female Vocal] [Backing Male Vocals]
 
 # Example 3: Emotional Bridge
 # [Bridge] [Genre: Ballad] [Dynamic: Intimate, building]
 # [Key: C major] [Tempo: 75 BPM] [Mood: Reflective, heartfelt]
 # [Instruments: Grand piano, strings, subtle percussion]
-# [Vocal Style: Soft, vulnerable] [Vocal Quality: Warm, breathy]
+# [Vocal Style: Soft, vulnerable] [Vocal Quality: Warm, breathy] [Female - alto]
 
 # Example 4: Hip Hop Verse
 # [Verse] [Genre: Hip Hop] [Dynamic: Driving, confident]
 # [Key: G minor] [Tempo: 140 BPM] [Mood: Assertive, clever]
 # [Instruments: 808 beat, samples, turntable scratches]
-# [Vocal Style: Rapid-fire delivery] [Vocal Quality: Sharp, articulate]
+# [Vocal Style: Rapid-fire delivery] [Vocal Quality: Sharp, articulate] [Male Vocal]
+
+# Example 5: Duet Verse
+# [Verse 1] [Genre: Rock Ballad] [Tempo: 90 BPM] [Key: C minor] [Mood: Reflective, heartfelt]
+# [Instruments: Acoustic guitar, cello, piano, subtle strings]
+# [Vocal Style: Soft, vulnerable] [Vocal Quality: Warm, breathy] [Female Vocal]
+
+# Example 6: Duet Response
+# [Male Response] [Genre: Rock Ballad] [Tempo: 90 BPM] [Key: C minor] [Mood: Defiant, emotional]
+# [Instruments: Piano, cello, electric guitar swells]
+# [Vocal Style: Raw, emotional] [Vocal Quality: Gritty, resonant] [Male Vocal]
+
+# Example 7: Duet Chorus
+# [Chorus] [Genre: Rock Ballad] [Tempo: 110 BPM] [Key: C minor] [Mood: Climactic]
+# [Instruments: Full band, strings, driving drums, electric guitar, piano]
+# [Vocal Style: Power vocals with backing harmonies] [Vocal Quality: Lush, expansive] [Male-Female Duet]
 
 # =================================
 # AI COMBINING RULES
@@ -313,7 +350,10 @@
 # 1. Always pair structural tags with genre and tempo
 # 2. Match mood to dynamic level (e.g., "Explosive energy" with "Uplifting, celebratory")
 # 3. Ensure vocal style matches genre (e.g., "Rapid-fire delivery" for Hip Hop)
-# 4. Keep instrument selections genre-appropriate
-# 5. Use vocal quality to enhance the emotional impact
-# 6. Consider key changes between sections for musical interest
-# 7. Tempo can vary between sections but should flow naturally
+# 4. **CRITICAL: Always specify vocal gender for every sung section** using appropriate tags: [Female Vocal], [Male Vocal], [Duet], [Female Narrator], [Male - deep baritone], etc. Never leave vocal gender ambiguous unless the section is explicitly instrumental.
+# 5. For duets or songs with multiple vocalists, clearly tag which section belongs to which vocalist using tags like [Call and Response - Female to Male], [Alternating Vocals], or specific section headers like [Male Response]
+# 6. Keep instrument selections genre-appropriate
+# 7. Use vocal quality to enhance the emotional impact
+# 8. Consider key changes between sections for musical interest
+# 9. Tempo can vary between sections but should flow naturally
+# 10. Ensure vocal gender assignments are consistent with the song's narrative and emotional arc

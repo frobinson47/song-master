@@ -18,6 +18,7 @@ Consider the following:
 - Song speed / pacing is controlled via the beats per minute setting [Tempo: 70-140 BPM] or by using keywords [fast/slow]. Consider rhyme schemes, meter, and syllable count for singability.
 - Depending on where they are in the lyrics, words may need to be hyphenated in order to be sung correctly.
 - Reference the /styles and /tags folders for appropriate musical styles, genres, and section tags to enhance the draft. **Tags can be combined** - you may use multiple tags together to create rich, detailed sections (e.g., "[Verse] [Genre: Hip Hop] [Tempo: 95 BPM] [Mood: Confident]"). Explore less common combinations from the co_existing_styles_dict for unique results.
+- **CRITICAL: Always specify vocal gender for every sung section** using appropriate vocal tags: [Female Vocal], [Male Vocal], [Duet], [Female Narrator], [Male - deep baritone], etc. If the song involves multiple vocalists, clearly tag which section belongs to which vocalist. Never leave vocal gender ambiguous unless the section is explicitly instrumental.
 - Focus on creating engaging, memorable lyrics that could stand out on the radio without being overly simplistic or cliché.
 - Prioritize internal rhymes, assonance, and alliteration to enhance lyrical flow and memorability.
 - Balance poetic depth with accessibility; avoid overly complex metaphors that might confuse listeners.
