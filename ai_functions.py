@@ -50,6 +50,7 @@ def get_llm(use_local: bool = False):
     temperature = float(os.getenv("LLM_TEMPERATURE", "0.1"))
     max_tokens = int(os.getenv("LLM_MAX_TOKENS", "4096"))
 
+    # Local LM Studio mode
     if use_local:
         lmstudio_api_key = os.getenv("LMSTUDIO_API_KEY")
         lmstudio_base_url = os.getenv("LMSTUDIO_BASE_URL", "http://localhost:1234/v1")
@@ -100,6 +101,62 @@ def get_llm(use_local: bool = False):
         )
         return llm
 
+    # Get provider preference
+    provider = os.getenv("LLM_PROVIDER", "").lower()
+
+    # Provider-specific configurations
+    if provider == "anthropic":
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+
+        if not api_key:
+            raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
+
+        # Use LiteLLM for Anthropic
+        llm = LiteLLMWrapper(
+            model=f"anthropic/{model}" if not model.startswith("anthropic/") else model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            api_key=api_key,
+            base_url=None,
+        )
+        return llm
+
+    elif provider == "openai":
+        api_key = os.getenv("OPENAI_API_KEY")
+        model = os.getenv("OPENAI_MODEL", "gpt-4o")
+
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY not found in environment variables")
+
+        # Use LiteLLM for OpenAI
+        llm = LiteLLMWrapper(
+            model=f"openai/{model}" if not model.startswith("openai/") else model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            api_key=api_key,
+            base_url=None,
+        )
+        return llm
+
+    elif provider == "google" or provider == "gemini":
+        api_key = os.getenv("GOOGLE_API_KEY")
+        model = os.getenv("GOOGLE_MODEL", "gemini/gemini-2.0-flash-exp")
+
+        if not api_key:
+            raise ValueError("GOOGLE_API_KEY not found in environment variables")
+
+        # Use LiteLLM for Google/Gemini
+        llm = LiteLLMWrapper(
+            model=model if model.startswith("gemini/") else f"gemini/{model}",
+            temperature=temperature,
+            max_tokens=max_tokens,
+            api_key=api_key,
+            base_url=None,
+        )
+        return llm
+
+    # Legacy LiteLLM configuration (for backward compatibility)
     litellm_model = os.getenv("LITELLM_MODEL")
     litellm_api_key = os.getenv("LITELLM_API_KEY")
     litellm_base_url = os.getenv("LITELLM_API_BASE")
@@ -114,6 +171,7 @@ def get_llm(use_local: bool = False):
         )
         return llm
 
+    # Legacy OpenRouter configuration
     model = os.getenv("LLM_MODEL", "openai/gpt-3.5-turbo")
     openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
     openrouter_base_url = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
@@ -146,9 +204,13 @@ def get_llm(use_local: bool = False):
         )
         return llm
 
+    # Final fallback to OpenAI
     openai_api_key = os.getenv("OPENAI_API_KEY")
     if not openai_api_key:
-        raise ValueError("Neither OPENROUTER_API_KEY nor OPENAI_API_KEY found in environment variables")
+        raise ValueError(
+            "No LLM provider configured. Please set one of: "
+            "LLM_PROVIDER + provider API key, LITELLM_MODEL, OPENROUTER_API_KEY, or OPENAI_API_KEY"
+        )
 
     llm = OpenAI(
         temperature=temperature,

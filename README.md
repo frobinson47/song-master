@@ -4,7 +4,7 @@ A powerful (yet easy to use) script for generating song lyrics using AI models, 
 
 ## Overview
 
-Song Master is a Python script that leverages AI models (both local and OpenRouter) to generate complete song lyrics with proper formatting, style tags, and metadata for Suno AI. It includes pre-flight checks, song drafting, and review processes to ensure high-quality output.
+Song Master is a Python script that leverages AI models from multiple providers (Anthropic Claude, OpenAI GPT, Google Gemini, OpenRouter, or local models) to generate complete song lyrics with proper formatting, style tags, and metadata for Suno AI. It includes pre-flight checks, song drafting, and review processes to ensure high-quality output.
 
 ## Table of Contents
 
@@ -35,12 +35,14 @@ Song Master is a Python script that leverages AI models (both local and OpenRout
 
 ## Features
 
-- **Dual AI Support**: Works with both local AI models and OpenRouter API
+- **Multi-Provider AI Support**: Works with Anthropic (Claude), OpenAI (GPT), Google (Gemini), OpenRouter, and local AI models
+- **Flexible Configuration**: Easy provider switching via environment variables
 - **Structured Output**: Generates Suno AI-compatible format with styles, metadata, and lyrics
 - **Pre-flight Checks**: Validates prompts and suggests improvements before generation
 - **Custom Styles**: Supports custom style definitions and tagging
 - **Metadata Generation**: Automatically generates emotional arc, target audience, and commercial potential data
 - **Review Process**: Built-in song review and refinement capabilities
+- **Album Art Generation**: Supports DALL-E, Google Imagen, and OpenRouter for cover art
 
 ## Installation
 
@@ -60,6 +62,28 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your API keys and configuration
 ```
+
+4. Configure your preferred AI provider:
+
+**For Anthropic (Claude):**
+- Get your API key from [console.anthropic.com](https://console.anthropic.com/)
+- Set `LLM_PROVIDER=anthropic` and `ANTHROPIC_API_KEY` in `.env`
+
+**For OpenAI (GPT):**
+- Get your API key from [platform.openai.com](https://platform.openai.com/)
+- Set `LLM_PROVIDER=openai` and `OPENAI_API_KEY` in `.env`
+
+**For Google (Gemini):**
+- Get your API key from [aistudio.google.com](https://aistudio.google.com/)
+- Set `LLM_PROVIDER=google` and `GOOGLE_API_KEY` in `.env`
+
+**For OpenRouter:**
+- Get your API key from [openrouter.ai](https://openrouter.ai/)
+- Set `OPENROUTER_API_KEY` in `.env` (no LLM_PROVIDER needed)
+
+**For Local Models:**
+- Use LM Studio or similar
+- Run with `--local` flag
 
 ## Usage
 
@@ -333,18 +357,46 @@ The script also generates cover art for the songs using Nano Banana on OpenRoute
 Create a `.env` file with the following variables:
 
 ```env
-# OpenRouter API Key (optional, for OpenRouter provider)
-OPENROUTER_API_KEY=your_api_key_here
+# === LLM Provider Configuration ===
+# Choose your preferred provider: anthropic, openai, google, or leave blank for legacy config
+LLM_PROVIDER=anthropic
 
-# Local Model Configuration
-LOCAL_MODEL_PATH=path/to/your/model
-LOCAL_MODEL_HOST=localhost
-LOCAL_MODEL_PORT=8080
+# Anthropic (Claude)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+ANTHROPIC_MODEL=claude-3-5-sonnet-20241022
 
-# Output Configuration
-OUTPUT_DIR=./output
-EXAMPLES_DIR=./examples
+# OpenAI (GPT)
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o
+
+# Google (Gemini)
+GOOGLE_API_KEY=your_google_api_key_here
+GOOGLE_MODEL=gemini/gemini-2.0-flash-exp
+
+# OpenRouter (optional, for accessing multiple models)
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
+# === Image Generation ===
+IMAGE_PROVIDER=openai  # Options: openai, google, openrouter
+IMAGE_MODEL=dall-e-3
+
+# === Local LM Studio (for --local flag) ===
+LMSTUDIO_BASE_URL=http://localhost:1234/v1
+LMSTUDIO_LLM_MODEL=qwen/qwen3-30b-a3b-2507
+
+# === General Settings ===
+LLM_MAX_TOKENS=8192
+LLM_TEMPERATURE=0.1
+REVIEW_MAX_ROUNDS=3
+REVIEW_SCORE_THRESHOLD=8.0
 ```
+
+**Provider Options:**
+- **Anthropic**: Use Claude models (3.5 Sonnet, 3.5 Haiku, Opus, Sonnet 4.5)
+- **OpenAI**: Use GPT models (GPT-4o, GPT-4o-mini, o1, o3-mini)
+- **Google**: Use Gemini models (2.0 Flash, 1.5 Pro, 1.5 Flash)
+- **OpenRouter**: Access any model through OpenRouter
+- **Local**: Use LM Studio with local models
 
 ### Custom Styles
 
