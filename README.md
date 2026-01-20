@@ -1,16 +1,49 @@
 # Song Master
 
-A powerful (yet easy to use) script for generating song lyrics using AI models, specifically designed for creating Suno AI-compatible songs with custom styles, metadata, and structured formatting.
+A powerful (yet easy to use) tool for generating song lyrics using AI models, specifically designed for creating Suno AI-compatible songs with custom styles, metadata, and structured formatting.
+
+**NEW**: Now includes a modern web interface with real-time generation progress!
 
 ## Overview
 
-Song Master is a Python script that leverages AI models from multiple providers (Anthropic Claude, OpenAI GPT, Google Gemini, OpenRouter, or local models) to generate complete song lyrics with proper formatting, style tags, and metadata for Suno AI. It includes pre-flight checks, song drafting, and review processes to ensure high-quality output.
+Song Master leverages AI models from multiple providers (Anthropic Claude, OpenAI GPT, Google Gemini, OpenRouter, or local models) to generate complete song lyrics with proper formatting, style tags, and metadata for Suno AI. It includes pre-flight checks, song drafting, and review processes to ensure high-quality output.
+
+**Features:**
+- 🌐 **Web Interface**: Modern React SPA with real-time progress tracking
+- 🚀 **FastAPI Backend**: RESTful API with WebSocket support
+- 🎵 **Song Library**: Browse, search, and manage generated songs
+- ⚙️ **Provider Configuration**: Switch between AI providers without editing files
+- 📊 **Real-time Progress**: Watch your song being created step-by-step
+- 💻 **CLI Support**: Original command-line interface still available
+
+## Quick Start
+
+**For the web interface (recommended):**
+See [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
+
+**TL;DR:**
+```bash
+# Install dependencies
+pip install -r requirements.txt
+cd frontend && npm install && cd ..
+
+# Configure .env with your API key
+cp .env.example .env
+
+# Start backend and frontend
+uvicorn backend.main:app --reload &
+cd frontend && npm run dev
+```
+
+Then open http://localhost:5173 in your browser!
 
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
+- [Web Interface](#web-interface)
+- [Usage (CLI)](#usage)
   - [Basic Usage](#basic-usage)
   - [With Local Model](#with-local-model)
   - [With Prompt File](#with-prompt-file)
@@ -85,7 +118,38 @@ cp .env.example .env
 - Use LM Studio or similar
 - Run with `--local` flag
 
-## Usage
+## Web Interface
+
+### Starting the Web Interface
+
+1. **Start the backend:**
+   ```bash
+   uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+2. **Start the frontend** (in a separate terminal):
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+3. **Open your browser** to http://localhost:5173
+
+### Web Interface Features
+
+- **Home Page**: Generate new songs with a user-friendly form
+- **Live Progress**: Real-time WebSocket updates showing generation progress
+- **Library Page**: Browse all generated songs with search functionality
+- **Song Detail Page**: View full lyrics, metadata, and album art
+- **Settings Page**: Switch AI providers and models without editing config files
+
+### API Documentation
+
+Visit http://localhost:8000/docs for interactive API documentation.
+
+## Usage (CLI)
+
+The original command-line interface is still fully supported:
 
 ### Basic Usage
 
