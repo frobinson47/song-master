@@ -76,10 +76,10 @@ async def regenerate_art(song_id: str):
     # Prepare the album art prompt from song metadata
     album_art_prompt = f"{song.metadata.title} - {song.metadata.description}"
 
-    # Generate output filename
+    # Generate output filename (match the naming convention used in song generation)
     songs_dir = Path("songs")
     base_name = song_id.replace(".md", "")
-    art_filename = f"{base_name}_album_art.png"
+    art_filename = f"{base_name}_cover.jpg"
     art_filepath = songs_dir / art_filename
 
     try:
