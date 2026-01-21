@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSongById, deleteSong, regenerateArt, regenerateLyrics } from '../api/songs';
+import { getSongById, deleteSong, generateImagePrompt, regenerateLyrics } from '../api/songs';
 import { SongDetail } from '../types/song';
 import { Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown } from 'lucide-react';
 import { LyricsViewer } from '../components/LyricsViewer';
@@ -16,8 +16,10 @@ export const SongDetailPage: React.FC = () => {
   const [copiedStyles, setCopiedStyles] = useState(false);
   const [copiedExclude, setCopiedExclude] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState('');
-  const [regeneratingArt, setRegeneratingArt] = useState(false);
+  const [generatingPrompt, setGeneratingPrompt] = useState(false);
   const [regeneratingLyrics, setRegeneratingLyrics] = useState(false);
+  const [showPromptModal, setShowPromptModal] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState('');
 
   useEffect(() => {
     if (songId) {
@@ -55,21 +57,28 @@ export const SongDetailPage: React.FC = () => {
     }
   };
 
-  const handleRegenerateArt = async () => {
+  const handleGenerateImagePrompt = async () => {
     if (!songId) return;
 
-    setRegeneratingArt(true);
+    setGeneratingPrompt(true);
     try {
-      await regenerateArt(songId);
-      // Reload the song to show the new art
-      await loadSong();
-      setRegeneratingArt(false);
+      const response = await generateImagePrompt(songId);
+      setImagePrompt(response.copy_ready_prompt);
+      setShowPromptModal(true);
+
+      // Also copy to clipboard automatically
+      await navigator.clipboard.writeText(response.copy_ready_prompt);
     } catch (error: any) {
-      console.error('Failed to regenerate art:', error);
-      const errorMessage = error.response?.data?.detail || error.message || 'Failed to regenerate album art';
+      console.error('Failed to generate image prompt:', error);
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to generate image prompt';
       alert(errorMessage);
-      setRegeneratingArt(false);
+    } finally {
+      setGeneratingPrompt(false);
     }
+  };
+
+  const handleCopyPrompt = () => {
+    navigator.clipboard.writeText(imagePrompt);
   };
 
   const handleRegenerateLyrics = async () => {
@@ -157,12 +166,12 @@ export const SongDetailPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="tag status-completed px-3 py-1">COMPLETED</span>
               <button
-                onClick={handleRegenerateArt}
-                disabled={regeneratingArt}
+                onClick={handleGenerateImagePrompt}
+                disabled={generatingPrompt}
                 className="btn-secondary flex items-center space-x-2"
               >
-                <RefreshCw className={`w-4 h-4 ${regeneratingArt ? 'animate-spin' : ''}`} />
-                <span>{regeneratingArt ? 'Regenerating...' : 'Regenerate Art'}</span>
+                <Copy className={`w-4 h-4`} />
+                <span>{generatingPrompt ? 'Generating...' : 'Create Image Prompt'}</span>
               </button>
               <button
                 onClick={handleRegenerateLyrics}
@@ -359,6 +368,37 @@ export const SongDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Prompt Modal */}
+      {showPromptModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-900 rounded-lg max-w-2xl w-full p-6 border border-dark-700">
+            <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt</h2>
+            <p className="text-slate-400 text-sm mb-4">
+              Use this prompt with ChatGPT, Gemini, Sora, or any AI image generator to create your album artwork.
+              The prompt has been automatically copied to your clipboard!
+            </p>
+            <div className="bg-dark-800 rounded-lg p-4 mb-4 border border-dark-700 max-h-64 overflow-y-auto">
+              <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">{imagePrompt}</pre>
+            </div>
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={handleCopyPrompt}
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Copy Again</span>
+              </button>
+              <button
+                onClick={() => setShowPromptModal(false)}
+                className="btn-primary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

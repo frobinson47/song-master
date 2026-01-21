@@ -60,58 +60,39 @@ async def delete_song(song_id: str):
     return {"status": "deleted"}
 
 
-@router.post("/{song_id}/regenerate-art")
-async def regenerate_art(song_id: str):
+@router.post("/{song_id}/generate-image-prompt")
+async def generate_image_prompt(song_id: str):
     """
-    Regenerate album art for an existing song.
+    Generate an image prompt for creating album art manually with external AI services.
+    Returns a JSON blueprint that can be used with Sora/ChatGPT/Gemini/etc.
     """
     # Get the song to extract metadata
     song = await file_service.get_song_by_id(song_id)
     if not song:
         raise HTTPException(status_code=404, detail="Song not found")
 
-    # Import the album art generation function
-    from tools.create_album_art import generate_album_art_image
+    # Create a detailed image prompt blueprint in JSON format
+    image_blueprint = {
+        "task": "Generate album cover artwork",
+        "song_title": song.metadata.title,
+        "song_description": song.metadata.description,
+        "theme": song.metadata.user_prompt,
+        "styles": song.metadata.suno_styles,
+        "requirements": [
+            "Portrait aspect ratio (1024x1792 or similar)",
+            "High-fidelity, professional quality",
+            "Visually striking and unique",
+            "No text, lettering, or typography on the image",
+            "Album cover aesthetic"
+        ],
+        "suggested_prompt": f"Album cover artwork for the song '{song.metadata.title}'. Theme: {song.metadata.user_prompt}. Style: {', '.join(song.metadata.suno_styles[:5]) if song.metadata.suno_styles else 'modern'}. Create a visually striking portrait-oriented album cover with professional quality. Do not include any text, lettering, or typography on the image."
+    }
 
-    # Prepare the album art prompt from song metadata
-    # Use the full user prompt for better image quality (matches original generation)
-    album_art_prompt = (
-        f"Album cover for song '{song.metadata.title}' with theme {song.metadata.user_prompt}. "
-        "Do not include any text, lettering, or typography on the image."
-    )
-
-    # Generate output filename (match the naming convention used in song generation)
-    songs_dir = Path("songs")
-    base_name = song_id.replace(".md", "")
-    art_filename = f"{base_name}_cover.jpg"
-    art_filepath = songs_dir / art_filename
-
-    try:
-        # Run the generation in a thread pool to avoid blocking
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(
-            None,
-            generate_album_art_image,
-            album_art_prompt,
-            str(art_filepath)
-        )
-
-        # Update the song markdown file with new album art path
-        await file_service.update_album_art_path(song_id, f"/songs/{art_filename}")
-
-        return {"status": "success", "message": "Album art regenerated successfully", "art_url": f"/songs/{art_filename}"}
-
-    except Exception as e:
-        error_msg = str(e)
-        print(f"Error regenerating album art: {error_msg}")
-
-        # Check for common errors and provide helpful messages
-        if "401" in error_msg or "Incorrect API key" in error_msg:
-            raise HTTPException(status_code=400, detail="Invalid OpenAI API key. Please update your OPENAI_API_KEY in the .env file.")
-        elif "rate_limit" in error_msg.lower():
-            raise HTTPException(status_code=429, detail="OpenAI rate limit exceeded. Please try again in a moment.")
-        else:
-            raise HTTPException(status_code=500, detail=f"Failed to generate album art: {error_msg}")
+    return {
+        "status": "success",
+        "blueprint": image_blueprint,
+        "copy_ready_prompt": image_blueprint["suggested_prompt"]
+    }
 
 
 @router.post("/{song_id}/regenerate-lyrics", response_model=JobResponse)
