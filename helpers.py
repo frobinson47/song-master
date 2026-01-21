@@ -87,7 +87,7 @@ def read_prompt(prompt_name: str) -> str:
     for ext in [".txt", ".md"]:
         prompt_file = f"prompts/{prompt_name}{ext}"
         if os.path.exists(prompt_file):
-            with open(prompt_file, "r") as file:
+            with open(prompt_file, "r", encoding="utf-8") as file:
                 return file.read()
     return ""
 
@@ -99,7 +99,7 @@ def read_banned_language() -> List[str]:
         return []
 
     banned_terms = []
-    with open(banned_file, "r") as file:
+    with open(banned_file, "r", encoding="utf-8") as file:
         for line in file:
             line = line.strip()
             # Skip comments and empty lines
@@ -115,7 +115,7 @@ def read_excluded_styles() -> List[str]:
         return []
 
     excluded = []
-    with open(styles_file, "r") as file:
+    with open(styles_file, "r", encoding="utf-8") as file:
         for line in file:
             line = line.strip()
             # Skip comments and empty lines
@@ -253,7 +253,7 @@ def save_song(title: str, user_input: str, lyrics: str, default_params: Dict[str
     os.makedirs("songs", exist_ok=True)
     date = datetime.now().strftime("%Y%m%d")
     filename = f"songs/{date}_{title.replace(' ', '_')}.md"
-    with open(filename, "w") as file:
+    with open(filename, "w", encoding="utf-8") as file:
         file.write(final_md)
     return filename
 

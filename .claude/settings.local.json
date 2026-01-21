@@ -16,7 +16,8 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(unset:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(python song_master.py:*)"
     ]
   }
 }

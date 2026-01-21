@@ -767,10 +767,15 @@ def generate_hookhouse_metadata(
     try:
         raw = get_llm(use_local).invoke(formatted)
 
-        # Debug: Print raw response
-        print("[DEBUG] Raw LLM response for metadata:")
-        print(raw[:500] if len(raw) > 500 else raw)
-        print(f"[DEBUG] Total response length: {len(raw)} chars")
+        # Debug: Print raw response (safe for Unicode)
+        import sys
+        sys.stderr.write("[DEBUG] Raw LLM response for metadata:\n")
+        try:
+            sys.stderr.write((raw[:500] if len(raw) > 500 else raw) + "\n")
+        except UnicodeEncodeError:
+            sys.stderr.write(raw[:500].encode('utf-8', errors='replace').decode('utf-8') + "\n")
+        sys.stderr.write(f"[DEBUG] Total response length: {len(raw)} chars\n")
+        sys.stderr.flush()
 
         # Parse blocks from response
         blocks = {}
@@ -780,9 +785,9 @@ def generate_hookhouse_metadata(
             start = raw.find("### Block 2: Style") + len("### Block 2: Style")
             end = raw.find("### Block 3:", start) if "### Block 3:" in raw else len(raw)
             blocks["style_block"] = raw[start:end].strip()
-            print(f"[DEBUG] Found Block 2, length: {len(blocks['style_block'])}")
+            sys.stderr.write(f"[DEBUG] Found Block 2, length: {len(blocks['style_block'])}\n")
         else:
-            print("[DEBUG] Block 2 header not found in response!")
+            sys.stderr.write("[DEBUG] Block 2 header not found in response!\n")
 
         # Extract Block 3: Excluded Style
         if "### Block 3: Excluded Style" in raw:
@@ -790,9 +795,9 @@ def generate_hookhouse_metadata(
             end = raw.find("### Block 4:", start) if "### Block 4:" in raw else len(raw)
             excluded_str = raw[start:end].strip()
             blocks["excluded_styles"] = [s.strip() for s in excluded_str.split(",") if s.strip()]
-            print(f"[DEBUG] Found Block 3, {len(blocks['excluded_styles'])} excluded styles")
+            sys.stderr.write(f"[DEBUG] Found Block 3, {len(blocks['excluded_styles'])} excluded styles\n")
         else:
-            print("[DEBUG] Block 3 header not found in response!")
+            sys.stderr.write("[DEBUG] Block 3 header not found in response!\n")
 
         # Extract Block 4: Title / Artist
         if "### Block 4: Title / Artist" in raw:
@@ -810,9 +815,9 @@ def generate_hookhouse_metadata(
                     artist = line.replace("Artist:", "").strip()
 
             blocks["title_artist"] = {"title": title, "artist": artist}
-            print(f"[DEBUG] Found Block 4: {blocks['title_artist']}")
+            sys.stderr.write(f"[DEBUG] Found Block 4: {blocks['title_artist']}\n")
         else:
-            print("[DEBUG] Block 4 header not found in response!")
+            sys.stderr.write("[DEBUG] Block 4 header not found in response!\n")
 
         # Extract Block 5: Summary
         if "### Block 5: Summary" in raw:
@@ -821,13 +826,13 @@ def generate_hookhouse_metadata(
             if end == -1:
                 end = len(raw)
             blocks["summary"] = raw[start:end].strip()
-            print(f"[DEBUG] Found Block 5, length: {len(blocks['summary'])}")
+            sys.stderr.write(f"[DEBUG] Found Block 5, length: {len(blocks['summary'])}\n")
         else:
-            print("[DEBUG] Block 5 header not found in response!")
+            sys.stderr.write("[DEBUG] Block 5 header not found in response!\n")
 
         # If no blocks found, use fallback
         if not blocks:
-            print("[DEBUG] No blocks found, using fallback!")
+            sys.stderr.write("[DEBUG] No blocks found, using fallback!\n")
             return {
                 "style_block": f"{', '.join(blend)} at {bpm or 120} BPM",
                 "excluded_styles": [],
@@ -839,7 +844,7 @@ def generate_hookhouse_metadata(
 
     except Exception as e:
         # Fallback
-        print(f"[DEBUG] Exception in metadata generation: {e}")
+        sys.stderr.write(f"[DEBUG] Exception in metadata generation: {e}\n")
         return {
             "style_block": f"{', '.join(blend)} at {bpm or 120} BPM",
             "excluded_styles": [],
