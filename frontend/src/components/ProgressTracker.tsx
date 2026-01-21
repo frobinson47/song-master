@@ -63,8 +63,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     { name: '🎸 Funksmith Refinement', description: 'Adding physiological resonance & groove', icon: Zap },
     { name: '✅ Preflight Checks', description: 'Final validation before metadata', icon: CheckCircle2 },
     { name: '📋 HookHouse Metadata', description: 'Generating Blocks 2-5 (Style, Exclude, Title, Summary)', icon: Music },
-    { name: '🎨 Image Prompt', description: 'Creating album art concept (Block 6)', icon: Sparkles },
-    { name: '📱 Social Captions', description: 'Generating promotional captions', icon: Music },
+    { name: '🎨 Album Art', description: 'Generating cover artwork', icon: Sparkles },
     { name: '💾 Saving Song', description: 'Finalizing and saving', icon: CheckCircle2 },
   ];
 

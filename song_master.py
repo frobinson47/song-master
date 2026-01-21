@@ -518,8 +518,7 @@ def generate_song(
         graph.add_node("funksmith", funksmith_node)
         graph.add_node("preflight", preflight_node)
         graph.add_node("hookhouse_metadata", hookhouse_metadata_node)
-        graph.add_node("hookhouse_image", hookhouse_image_node)
-        graph.add_node("caption", caption_node)
+        graph.add_node("album_art", album_art_node)  # Add actual image generation
         graph.add_node("save", save_node)
 
         # Wire HookHouse workflow
@@ -534,9 +533,8 @@ def generate_song(
         graph.add_edge("hookhouse_revise", "hookhouse_review")
         graph.add_edge("funksmith", "preflight")
         graph.add_edge("preflight", "hookhouse_metadata")
-        graph.add_edge("hookhouse_metadata", "hookhouse_image")
-        graph.add_edge("hookhouse_image", "caption")
-        graph.add_edge("caption", "save")
+        graph.add_edge("hookhouse_metadata", "album_art")  # Generate actual image
+        graph.add_edge("album_art", "save")  # Skip JSON prompt and captions for now
         graph.add_edge("save", END)
     else:
         # Original Workflow
