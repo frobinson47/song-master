@@ -82,11 +82,46 @@ def load_prompt_from_file(prompt_path: str) -> str:
 
 
 def read_prompt(prompt_name: str) -> str:
-    prompt_file = f"prompts/{prompt_name}.txt"
-    if not os.path.exists(prompt_file):
-        return ""
-    with open(prompt_file, "r") as file:
-        return file.read()
+    """Read prompt from prompts/ directory. Supports .txt and .md files."""
+    # Try .txt first (legacy), then .md (HookHouse)
+    for ext in [".txt", ".md"]:
+        prompt_file = f"prompts/{prompt_name}{ext}"
+        if os.path.exists(prompt_file):
+            with open(prompt_file, "r") as file:
+                return file.read()
+    return ""
+
+
+def read_banned_language() -> List[str]:
+    """Read banned language list from resources/banned_language.txt"""
+    banned_file = "resources/banned_language.txt"
+    if not os.path.exists(banned_file):
+        return []
+
+    banned_terms = []
+    with open(banned_file, "r") as file:
+        for line in file:
+            line = line.strip()
+            # Skip comments and empty lines
+            if line and not line.startswith("#"):
+                banned_terms.append(line)
+    return banned_terms
+
+
+def read_excluded_styles() -> List[str]:
+    """Read excluded styles list from resources/excluded_styles.txt"""
+    styles_file = "resources/excluded_styles.txt"
+    if not os.path.exists(styles_file):
+        return []
+
+    excluded = []
+    with open(styles_file, "r") as file:
+        for line in file:
+            line = line.strip()
+            # Skip comments and empty lines
+            if line and not line.startswith("#"):
+                excluded.append(line)
+    return excluded
 
 
 def get_default_song_params() -> Dict[str, Optional[str]]:
@@ -232,6 +267,7 @@ class SongResources:
 
 
 class SongState(TypedDict, total=False):
+    # Original fields
     user_input: str
     song_name: Optional[str]
     persona: Optional[str]
@@ -249,6 +285,30 @@ class SongState(TypedDict, total=False):
     metadata: Dict[str, Any]
     filename: Optional[str]
     album_art: Optional[str]
+
+    # HookHouse-specific fields
+    blend: Optional[List[str]]  # 2-3 musical styles (e.g., ["Southern Rock", "Gospel"])
+    mood_style: Optional[str]  # "dark" or "clean"
+    explicitness: Optional[str]  # "explicit" or "mature"
+    pov: Optional[str]  # "first-person", "third-person", etc.
+    setting: Optional[str]  # Time period, location, context
+    themes_include: Optional[List[str]]  # Themes to include
+    themes_avoid: Optional[List[str]]  # Themes to avoid
+    bpm: Optional[int]  # Beats per minute
+    time_signature: Optional[str]  # e.g., "4/4", "3/4"
+    key: Optional[str]  # Musical key (e.g., "C", "Am")
+    groove_texture: Optional[str]  # Groove feel description
+    choir_call_response: Optional[bool]  # Include choir/call-response
+    narrative: Optional[Dict[str, Any]]  # Narrative scaffold (concepts + best bet)
+    section_map: Optional[List[str]]  # Song structure (Intro, Verse, Chorus, etc.)
+    groove_map: Optional[Dict[str, str]]  # Section-by-section groove/texture
+    review_issues: Optional[Dict[str, Any]]  # HookHouse review output
+    style_block: Optional[str]  # Block 2: Style (production blueprint)
+    excluded_styles: Optional[List[str]]  # Block 3: Excluded styles
+    title_artist: Optional[Dict[str, str]]  # Block 4: Title and invented artist name
+    summary: Optional[str]  # Block 5: Emotional/physiological arc summary
+    image_prompt_json: Optional[Dict[str, Any]]  # Block 6: Image prompt JSON
+    captions: Optional[List[str]]  # Social media caption options
 
 
 def load_resources(persona_name: Optional[str]) -> SongResources:

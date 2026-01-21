@@ -1,0 +1,300 @@
+# HookHouse Excluded Styles List (for Suno)
+# Comprehensive list of musical styles that can be excluded from generation
+# Organized by category for easy selection based on desired blend
+# Reference: Nix's work on Suno style exclusions
+
+# ELECTRONIC / EDM
+synthpop
+EDM
+techno
+trance
+dubstep
+drum and bass
+house music
+deep house
+progressive house
+electro house
+future bass
+trap (electronic)
+hardstyle
+gabber
+breakbeat
+jungle
+UK garage
+2-step
+footwork
+vaporwave
+synthwave
+retrowave
+chiptune
+bitpop
+electroclash
+
+# POP / MAINSTREAM
+bubblegum pop
+teen pop
+K-pop
+J-pop
+C-pop
+europop
+eurobeat
+italo disco
+disco polo
+schlager
+dancehall pop
+tropical house
+reggaeton
+moombahton
+
+# HIP-HOP / RAP (when excluding)
+trap (hip-hop)
+mumble rap
+drill
+boom bap
+cloud rap
+emo rap
+SoundCloud rap
+crunk
+snap music
+hyphy
+Miami bass
+
+# METAL / HEAVY (when excluding)
+death metal
+black metal
+doom metal
+sludge metal
+grindcore
+mathcore
+deathcore
+metalcore
+screamo
+post-hardcore
+nu metal
+djent
+brutal death metal
+technical death metal
+melodic death metal
+symphonic metal
+power metal
+viking metal
+folk metal
+
+# INDIE / ALTERNATIVE (when excluding)
+shoegaze
+dream pop
+noise pop
+lo-fi
+bedroom pop
+chillwave
+witch house
+hypnagogic pop
+slowcore
+sadcore
+emo
+midwest emo
+
+# EXPERIMENTAL / AVANT-GARDE
+noise
+harsh noise
+noise rock
+no wave
+musique concrète
+drone
+dark ambient
+dungeon synth
+lowercase
+glitch
+IDM
+breakcore
+speedcore
+power electronics
+industrial noise
+
+# CLASSICAL / ORCHESTRAL (when excluding)
+baroque
+romantic era
+impressionist
+minimalism (classical)
+contemporary classical
+avant-garde classical
+12-tone
+serialism
+opera
+lieder
+art song
+chamber music
+
+# WORLD MUSIC (when excluding specific regions)
+bollywood
+bhangra
+qawwali
+gamelan
+gagaku
+enka
+fado
+flamenco
+tango
+samba
+bossa nova
+mariachi
+conjunto
+norteño
+cumbia
+salsa
+merengue
+bachata
+zouk
+soukous
+afrobeat
+highlife
+juju
+mbalax
+kwaito
+
+# JAZZ (when excluding)
+bebop
+cool jazz
+hard bop
+free jazz
+modal jazz
+fusion
+smooth jazz
+acid jazz
+nu jazz
+jazz funk
+swing
+big band
+ragtime
+dixieland
+
+# ELECTRONIC DANCE SUB-GENRES
+big room
+Melbourne bounce
+hardstyle
+rawstyle
+psytrance
+full-on
+progressive trance
+uplifting trance
+vocal trance
+hard trance
+tech house
+minimal techno
+ambient techno
+dub techno
+gqom
+amapiano
+
+# COMEDY / NOVELTY
+comedy music
+parody music
+novelty song
+children's music
+nursery rhyme
+
+# RELIGIOUS (when secular desired)
+Gregorian chant
+sacred music
+hymn (when not wanted)
+mass
+requiem
+cantata
+oratorio
+
+# LOUNGE / EASY LISTENING (when excluding)
+muzak
+elevator music
+easy listening
+exotica
+space age pop
+lounge music
+
+# LATIN (when excluding)
+banda
+duranguense
+tejano
+Tex-Mex
+nortec
+tribal guarachero
+
+# CARIBBEAN (when excluding)
+calypso
+soca
+mento
+ska
+rocksteady
+dancehall
+
+# ELECTRONIC AMBIENT (when excluding)
+dark ambient
+space ambient
+isolationist
+lowercase ambient
+
+# FOLK VARIATIONS (when excluding specific types)
+neofolk
+dark folk
+pagan folk
+viking folk
+medieval folk
+Celtic folk
+Nordic folk
+Balkan folk
+klezmer
+
+# PUNK SUB-GENRES (when excluding)
+crust punk
+d-beat
+powerviolence
+grindcore
+anarcho-punk
+street punk
+Oi!
+ska punk
+pop punk
+skate punk
+melodic hardcore
+
+# INTERNET / MEME GENRES
+nightcore
+phonk
+seapunk
+vektroid
+mallsoft
+simpsonwave
+
+# REGIONAL POP (when excluding)
+schlager
+chanson
+enka
+kayōkyoku
+
+# FUNK VARIATIONS (when excluding specific types)
+P-funk
+G-funk
+electro-funk
+boogie
+Miami bass
+
+# SOUNDTRACK / SCORE (when excluding)
+film score
+video game music
+anime music
+musical theater
+
+# CHRISTIAN CONTEMPORARY (when secular desired)
+CCM
+Christian rock
+Christian metal
+praise and worship
+contemporary worship
+
+# END OF EXCLUSION LIST
+
+# USAGE NOTES:
+# - Select 5-12 styles that are OPPOSITE or INCOMPATIBLE with desired blend
+# - If blend is Southern Rock + Gospel, exclude: synthpop, EDM, K-pop, death metal, dubstep, etc.
+# - If blend is Funk + Groove, exclude: black metal, shoegaze, ambient drone, harsh noise, etc.
+# - Mix electronic, pop, metal, and experimental categories for broad exclusion
+# - Avoid excluding styles that might have useful elements (e.g., if doing Gospel, don't exclude "hymn")

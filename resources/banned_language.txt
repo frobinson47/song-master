@@ -1,0 +1,171 @@
+# HookHouse Banned Language List
+# These are AI-poetic clichés and overused terms that should NEVER appear in lyrics
+# Each line is a banned word or phrase
+
+# AI-Poetic Terms (Clichés)
+shimmering
+glistening
+luminous
+radiant
+echoes
+whispers
+shadows dance
+tapestry
+symphony
+kaleidoscope
+journey (as metaphor for life)
+path (as metaphor for life)
+road (as metaphor for life - literal roads are OK)
+heart on my sleeve
+soul on fire
+broken pieces
+shattered dreams
+rise above
+stand tall
+never give up
+in the moment
+here and now
+
+# Overused Verbs
+soar
+transcend
+ascend
+dance (when not literal)
+paint (as in "paint a picture")
+weave (as metaphor)
+
+# Observational Show-offs
+crimson sunset
+golden hour
+velvet darkness
+midnight blue
+grey despair
+scarlet rage
+silver moonlight
+emerald fields
+sapphire skies
+
+# Color + Emotion Combinations (any combination)
+# Examples: grey despair, scarlet rage, golden joy, etc.
+# These should be avoided in review
+
+# Filler/Fluff
+so beautiful
+so true
+so real
+you know (unless character-appropriate)
+I mean (unless character-appropriate)
+like (unless character-appropriate)
+
+# Empty Intensifiers
+really (most contexts)
+truly (most contexts)
+honestly (most contexts)
+literally (most contexts)
+
+# Poetic Devices That Call Attention to Themselves
+as if
+like a (simile overuse)
+reminds me of
+takes me back to
+
+# Abstract Life Metaphors
+mountain to climb
+river of life
+ocean of tears
+fire in my soul
+light in the darkness
+darkness in my heart
+chains that bind
+wings to fly
+
+# Vague Emotional Descriptors
+feeling lost
+feeling found
+feeling whole
+feeling broken
+searching for myself
+finding my way
+losing my way
+
+# Literary Flourishes (Avoid)
+beneath the stars
+under the moon
+in the rain
+through the storm
+across the miles
+beyond the horizon
+before the dawn
+after the fall
+
+# Overused Nature Metaphors
+roots run deep
+wind whispers
+rain falls like tears
+sun breaks through
+clouds part
+storm passes
+seeds of hope
+flowers bloom
+
+# Religious Clichés (Use with Extreme Caution)
+# Gospel/faith songs need authentic language, not clichés
+heaven's gate
+angel's wings
+devil's grasp
+saved by grace (overused phrasing)
+washed in the blood (acceptable in traditional gospel only)
+walk with Jesus (overused, find fresh phrasing)
+
+# Working-Class Clichés to Avoid
+honest work
+hard day's work (find specific details instead)
+simple life
+humble beginnings
+salt of the earth
+
+# Romance Clichés
+fall in love
+head over heels
+love at first sight
+meant to be
+soulmate
+better half
+other half
+two hearts
+one love
+
+# Breakup Clichés
+torn apart
+ripped in two
+left me cold
+walked away
+turned your back
+broke my heart (unless subverted)
+said goodbye
+
+# Success/Motivation Clichés
+reach for the stars
+follow your dreams
+believe in yourself
+never look back
+keep moving forward
+one step at a time
+
+# Time Clichés
+time heals all wounds
+time flies
+time stands still
+moment in time
+sands of time
+
+# Memory Clichés
+down memory lane
+back in the day
+way back when
+once upon a time
+remember when
+
+# End of List
+# Note: This list should be used as a strict filter during review.
+# If a banned phrase appears in lyrics, flag it immediately and suggest concrete alternatives.
