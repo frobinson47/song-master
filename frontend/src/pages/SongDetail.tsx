@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSongById, deleteSong } from '../api/songs';
 import { SongDetail } from '../types/song';
-import { Trash2, Download, RefreshCw, Music, Copy, Check } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown } from 'lucide-react';
+import { LyricsViewer } from '../components/LyricsViewer';
 
 export const SongDetailPage: React.FC = () => {
   const { songId } = useParams<{ songId: string }>();
@@ -11,7 +11,9 @@ export const SongDetailPage: React.FC = () => {
   const [song, setSong] = useState<SongDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedStyles, setCopiedStyles] = useState(false);
+  const [copiedExclude, setCopiedExclude] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState('');
 
   useEffect(() => {
     if (songId) {
@@ -26,6 +28,7 @@ export const SongDetailPage: React.FC = () => {
     try {
       const data = await getSongById(songId);
       setSong(data);
+      setSelectedPersona(data.metadata.persona || '');
     } catch (error) {
       console.error('Failed to load song:', error);
     } finally {
@@ -51,9 +54,28 @@ export const SongDetailPage: React.FC = () => {
   const handleCopyStyles = () => {
     if (song?.metadata.suno_styles) {
       navigator.clipboard.writeText(song.metadata.suno_styles.join(', '));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedStyles(true);
+      setTimeout(() => setCopiedStyles(false), 2000);
     }
+  };
+
+  const handleCopyExclude = () => {
+    if (song?.metadata.exclude_styles) {
+      navigator.clipboard.writeText(song.metadata.exclude_styles.join(', '));
+      setCopiedExclude(true);
+      setTimeout(() => setCopiedExclude(false), 2000);
+    }
+  };
+
+  const handleDownloadMd = () => {
+    if (!song) return;
+    const blob = new Blob([song.raw_markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${song.metadata.title.replace(/[^a-z0-9]/gi, '_')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   if (loading) {
@@ -86,7 +108,7 @@ export const SongDetailPage: React.FC = () => {
         {/* Main content - lyrics */}
         <div className="flex-1 p-6 overflow-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-slate-500 text-sm">Song</p>
               <h1 className="text-2xl font-bold text-slate-50">{song.metadata.title}</h1>
@@ -113,30 +135,39 @@ export const SongDetailPage: React.FC = () => {
           </div>
 
           {/* Description */}
-          <p className="text-slate-400 mb-6">{song.metadata.description}</p>
+          <p className="text-slate-400 mb-4 text-sm">{song.metadata.description}</p>
+
+          {/* User Prompt */}
+          {song.metadata.user_prompt && (
+            <div className="mb-6 p-4 bg-dark-900 rounded-lg border border-dark-700/50">
+              <p className="text-xs text-slate-500 uppercase mb-1">USER PROMPT</p>
+              <p className="text-slate-300 text-sm">{song.metadata.user_prompt}</p>
+            </div>
+          )}
 
           {/* Song Lyrics Card */}
           <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-slate-50">Song Lyrics</h2>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 <button className="text-slate-400 hover:text-primary text-sm">Save as New Version</button>
-                <button className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm">
+                <button
+                  onClick={handleDownloadMd}
+                  className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm"
+                >
                   <Download className="w-4 h-4" />
                   <span>Download .md</span>
                 </button>
               </div>
             </div>
 
-            {/* Markdown content */}
-            <div className="prose prose-invert prose-sm max-w-none">
-              <ReactMarkdown>{song.raw_markdown}</ReactMarkdown>
-            </div>
+            {/* Structured Lyrics Viewer */}
+            <LyricsViewer markdown={song.raw_markdown} />
           </div>
         </div>
 
         {/* Right sidebar - metadata */}
-        <div className="w-80 flex-shrink-0 border-l border-dark-700/50 p-6 overflow-auto">
+        <div className="w-80 flex-shrink-0 border-l border-dark-700/50 p-6 overflow-auto max-h-screen">
           {/* Album Art */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
@@ -180,9 +211,21 @@ export const SongDetailPage: React.FC = () => {
             <h3 className="text-sm font-medium text-slate-400 mb-3">Metadata</h3>
 
             {/* Mode and Persona */}
-            <div className="flex items-center space-x-2 mb-4">
+            <div className="flex items-center space-x-2 mb-4 flex-wrap gap-2">
               <span className="tag">MODE: REMOTE</span>
-              <span className="tag">PERSONA: {song.metadata.persona || 'None'}</span>
+              <div className="relative">
+                <select
+                  value={selectedPersona}
+                  onChange={(e) => setSelectedPersona(e.target.value)}
+                  className="tag appearance-none pr-6 cursor-pointer bg-dark-700"
+                >
+                  <option value="">PERSONA: None</option>
+                  <option value="bleached_to_perfection">Bleached To Perfection</option>
+                  <option value="antidote">Antidote</option>
+                  <option value="anagram">Anagram</option>
+                </select>
+                <ChevronDown className="w-3 h-3 absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              </div>
             </div>
 
             {/* Suno Styles */}
@@ -193,7 +236,7 @@ export const SongDetailPage: React.FC = () => {
                   onClick={handleCopyStyles}
                   className="text-slate-400 hover:text-primary flex items-center space-x-1"
                 >
-                  {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  {copiedStyles ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   <span className="text-xs">Copy</span>
                 </button>
               </div>
@@ -209,8 +252,11 @@ export const SongDetailPage: React.FC = () => {
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-slate-500 uppercase">EXCLUDE</span>
-                  <button className="text-slate-400 hover:text-primary flex items-center space-x-1">
-                    <Copy className="w-3 h-3" />
+                  <button
+                    onClick={handleCopyExclude}
+                    className="text-slate-400 hover:text-primary flex items-center space-x-1"
+                  >
+                    {copiedExclude ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     <span className="text-xs">Copy</span>
                   </button>
                 </div>
@@ -225,23 +271,23 @@ export const SongDetailPage: React.FC = () => {
             {/* Other metadata */}
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">GENRE</span>
+                <span className="text-slate-500 text-xs uppercase">GENRE</span>
                 <span className="text-slate-300">{song.metadata.genre || 'rock'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">TEMPO / BPM</span>
+                <span className="text-slate-500 text-xs uppercase">TEMPO / BPM</span>
                 <span className="text-slate-300">{song.metadata.tempo || '120'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">MUSICAL KEY</span>
+                <span className="text-slate-500 text-xs uppercase">MUSICAL KEY</span>
                 <span className="text-slate-300">{song.metadata.key || 'C'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">EMOTIONAL ARC</span>
+                <span className="text-slate-500 text-xs uppercase">EMOTIONAL ARC</span>
                 <span className="text-slate-300">{song.metadata.emotional_arc || 'energetic'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">INSTRUMENTS</span>
+                <span className="text-slate-500 text-xs uppercase">INSTRUMENTS</span>
                 <span className="text-slate-300">{song.metadata.instruments || 'guitar'}</span>
               </div>
             </div>
