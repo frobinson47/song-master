@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWebSocket } from '../hooks/useWebSocket';
 import {
-  CheckCircle2, Circle, Loader2, AlertCircle, Wifi, WifiOff,
+  CheckCircle2, Loader2, AlertCircle, Wifi, WifiOff,
   Sparkles, Music, Clock, Zap, X
 } from 'lucide-react';
 
