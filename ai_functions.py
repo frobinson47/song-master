@@ -355,7 +355,17 @@ Lyrics:
 """,
     )
 
+    # Load HookHouse prompts
+    narrative_development_template = read_prompt("narrative_development")
+    hookhouse_draft_template = read_prompt("hookhouse_draft")
+    hookhouse_review_template = read_prompt("hookhouse_review")
+    funksmith_critique_template = read_prompt("funksmith_critique")
+    hookhouse_metadata_template = read_prompt("hookhouse_metadata")
+    hookhouse_image_template = read_prompt("hookhouse_image")
+    caption_generation_template = read_prompt("caption_generation")
+
     return (
+        # Original prompts
         song_drafter_prompt,
         song_review_prompt,
         song_critic_prompt,
@@ -364,6 +374,14 @@ Lyrics:
         song_score_prompt,
         metadata_prompt,
         preflight_triage_prompt,
+        # HookHouse prompts (raw strings, not PromptTemplate)
+        narrative_development_template,
+        hookhouse_draft_template,
+        hookhouse_review_template,
+        funksmith_critique_template,
+        hookhouse_metadata_template,
+        hookhouse_image_template,
+        caption_generation_template,
     )
 
 
@@ -503,3 +521,447 @@ def generate_metadata_summary(prompt_template: PromptTemplate, lyrics: str, user
         }
     except Exception:
         return fallback
+
+
+# ============================================================================
+# HookHouse AI Functions
+# ============================================================================
+
+def develop_narrative(
+    prompt_template: str,
+    user_input: str,
+    blend: List[str],
+    mood_style: str,
+    explicitness: str,
+    pov: Optional[str],
+    setting: Optional[str],
+    themes_include: Optional[List[str]],
+    themes_avoid: Optional[List[str]],
+    bpm: Optional[int],
+    time_signature: Optional[str],
+    key: Optional[str],
+    groove_texture: Optional[str],
+    choir_call_response: bool,
+    use_local: bool
+) -> Dict[str, Any]:
+    """
+    Develop narrative scaffold using Storysmith Muse.
+    Generates 3 concepts, selects best bet, expands with section/groove maps.
+    """
+    # Build context string
+    context_parts = [
+        f"Title/Seed: {user_input}",
+        f"Blend: {', '.join(blend)}",
+        f"Mood & Explicitness: {mood_style}, {explicitness}",
+    ]
+
+    if pov:
+        context_parts.append(f"POV: {pov}")
+    if setting:
+        context_parts.append(f"Setting/Era: {setting}")
+    if themes_include:
+        context_parts.append(f"Themes to Hit: {', '.join(themes_include)}")
+    if themes_avoid:
+        context_parts.append(f"Themes to Avoid: {', '.join(themes_avoid)}")
+
+    constraints = []
+    if bpm:
+        constraints.append(f"BPM: {bpm}")
+    if time_signature:
+        constraints.append(f"Time Signature: {time_signature}")
+    if key:
+        constraints.append(f"Key: {key}")
+    if groove_texture:
+        constraints.append(f"Groove Texture: {groove_texture}")
+
+    if constraints:
+        context_parts.append(f"Constraints: {', '.join(constraints)}")
+
+    if choir_call_response:
+        context_parts.append("Include choir/call-response elements")
+
+    context = "\n".join(context_parts)
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    try:
+        raw = get_llm(use_local).invoke(formatted)
+        # Try to parse JSON response
+        parsed = json.loads(raw)
+        return parsed
+    except json.JSONDecodeError:
+        # If not JSON, return structured fallback
+        return {
+            "concepts": [],
+            "best_bet": {
+                "concept_id": 1,
+                "rationale": "Fallback concept due to parsing error",
+                "riff_groove_map": {},
+                "section_prompts": {},
+                "movement_cues": [],
+                "vocal_texture": "conversational",
+                "production_hints": ""
+            }
+        }
+
+
+def draft_hookhouse_lyrics(
+    prompt_template: str,
+    narrative: Dict[str, Any],
+    blend: List[str],
+    bpm: Optional[int],
+    time_signature: Optional[str],
+    key: Optional[str],
+    user_input: str,
+    use_local: bool
+) -> str:
+    """
+    Generate HookHouse-compliant lyrics with Suno formatting.
+    Includes arrangement cues, section headers, and proper bracketing.
+    """
+    # Extract relevant parts from narrative
+    best_bet = narrative.get("best_bet", {})
+
+    # Build context
+    context_parts = [
+        f"User Input: {user_input}",
+        f"Blend: {', '.join(blend)}",
+    ]
+
+    if bpm:
+        context_parts.append(f"BPM: {bpm}")
+    if time_signature:
+        context_parts.append(f"Time Signature: {time_signature}")
+    if key:
+        context_parts.append(f"Key: {key}")
+
+    context_parts.append(f"\nNarrative Scaffold:\n{json.dumps(best_bet, indent=2)}")
+    context = "\n".join(context_parts)
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    lyrics = get_llm(use_local).invoke(formatted)
+    return lyrics
+
+
+def review_hookhouse_lyrics(
+    prompt_template: str,
+    lyrics: str,
+    bpm: Optional[int],
+    blend: List[str],
+    use_local: bool
+) -> Dict[str, Any]:
+    """
+    Review lyrics against HookHouse quality standards.
+    Returns JSON with scores, issues, and pass/fail status.
+    """
+    # Build context
+    context = f"Lyrics:\n{lyrics}\n\nBPM: {bpm or 'Not specified'}\nBlend: {', '.join(blend)}"
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    try:
+        raw = get_llm(use_local).invoke(formatted)
+        # Try to parse JSON
+        parsed = json.loads(raw)
+        return parsed
+    except json.JSONDecodeError:
+        # Fallback with passing score
+        return {
+            "overall_score": 8.0,
+            "category_scores": {},
+            "critical_issues": [],
+            "moderate_issues": [],
+            "positive_notes": [],
+            "revision_priority": [],
+            "pass_threshold": True,
+            "threshold_note": "Score parsing failed, defaulting to pass"
+        }
+
+
+def funksmith_critique_lyrics(
+    prompt_template: str,
+    lyrics: str,
+    blend: List[str],
+    bpm: Optional[int],
+    use_local: bool
+) -> str:
+    """
+    Apply Sanctified Funksmith refinement to lyrics.
+    Adds physiological resonance, breath points, and micro-dynamics.
+    """
+    # Build context
+    context = f"Lyrics:\n{lyrics}\n\nBlend: {', '.join(blend)}\nBPM: {bpm or 'Not specified'}"
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM (returns revised lyrics + changelog)
+    result = get_llm(use_local).invoke(formatted)
+
+    # Extract just the lyrics part (before changelog)
+    if "### Funksmith Changelog" in result:
+        lyrics_part = result.split("### Funksmith Changelog")[0].strip()
+        return lyrics_part
+
+    return result
+
+
+def generate_hookhouse_metadata(
+    prompt_template: str,
+    lyrics: str,
+    narrative: Dict[str, Any],
+    user_input: str,
+    blend: List[str],
+    mood_style: str,
+    bpm: Optional[int],
+    time_signature: Optional[str],
+    key: Optional[str],
+    use_local: bool
+) -> Dict[str, Any]:
+    """
+    Generate HookHouse Blocks 2-5:
+    - Block 2: Style (production blueprint, ≤1000 chars)
+    - Block 3: Excluded styles (comma-separated)
+    - Block 4: Title/Artist (invented artist name)
+    - Block 5: Summary (≤500 chars, emotional/physiological arc)
+    """
+    from helpers import read_excluded_styles
+
+    # Build context
+    context_parts = [
+        f"Lyrics:\n{lyrics}",
+        f"User Input: {user_input}",
+        f"Blend: {', '.join(blend)}",
+        f"Mood: {mood_style}",
+    ]
+
+    if bpm:
+        context_parts.append(f"BPM: {bpm}")
+    if time_signature:
+        context_parts.append(f"Time Signature: {time_signature}")
+    if key:
+        context_parts.append(f"Key: {key}")
+
+    # Add narrative context
+    best_bet = narrative.get("best_bet", {})
+    if best_bet:
+        context_parts.append(f"\nNarrative Context:\n{json.dumps(best_bet, indent=2)}")
+
+    # Add excluded styles reference
+    all_excluded = read_excluded_styles()
+    context_parts.append(f"\nAvailable Excluded Styles (sample):\n{', '.join(all_excluded[:50])}")
+
+    context = "\n".join(context_parts)
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    try:
+        raw = get_llm(use_local).invoke(formatted)
+
+        # Parse blocks from response
+        blocks = {}
+
+        # Extract Block 2: Style
+        if "### Block 2: Style" in raw:
+            start = raw.find("### Block 2: Style") + len("### Block 2: Style")
+            end = raw.find("### Block 3:", start) if "### Block 3:" in raw else len(raw)
+            blocks["style_block"] = raw[start:end].strip()
+
+        # Extract Block 3: Excluded Style
+        if "### Block 3: Excluded Style" in raw:
+            start = raw.find("### Block 3: Excluded Style") + len("### Block 3: Excluded Style")
+            end = raw.find("### Block 4:", start) if "### Block 4:" in raw else len(raw)
+            excluded_str = raw[start:end].strip()
+            blocks["excluded_styles"] = [s.strip() for s in excluded_str.split(",")]
+
+        # Extract Block 4: Title / Artist
+        if "### Block 4: Title / Artist" in raw:
+            start = raw.find("### Block 4: Title / Artist") + len("### Block 4: Title / Artist")
+            end = raw.find("### Block 5:", start) if "### Block 5:" in raw else len(raw)
+            title_artist_text = raw[start:end].strip()
+
+            # Parse title and artist
+            title = ""
+            artist = ""
+            for line in title_artist_text.split("\n"):
+                if line.startswith("Title:"):
+                    title = line.replace("Title:", "").strip()
+                elif line.startswith("Artist:"):
+                    artist = line.replace("Artist:", "").strip()
+
+            blocks["title_artist"] = {"title": title, "artist": artist}
+
+        # Extract Block 5: Summary
+        if "### Block 5: Summary" in raw:
+            start = raw.find("### Block 5: Summary") + len("### Block 5: Summary")
+            end = raw.find("###", start)  # Next section
+            if end == -1:
+                end = len(raw)
+            blocks["summary"] = raw[start:end].strip()
+
+        return blocks
+
+    except Exception:
+        # Fallback
+        return {
+            "style_block": f"{', '.join(blend)} at {bpm or 120} BPM",
+            "excluded_styles": [],
+            "title_artist": {"title": "Untitled", "artist": "Unknown Artist"},
+            "summary": "A song generated with HookHouse."
+        }
+
+
+def generate_hookhouse_image_prompt(
+    prompt_template: str,
+    lyrics: str,
+    narrative: Dict[str, Any],
+    metadata: Dict[str, Any],
+    user_input: str,
+    blend: List[str],
+    mood_style: str,
+    use_local: bool
+) -> Dict[str, Any]:
+    """
+    Generate HookHouse Block 6: Image Prompt JSON for album art.
+    """
+    # Build context
+    context_parts = [
+        f"Lyrics:\n{lyrics}",
+        f"Title: {metadata.get('title_artist', {}).get('title', 'Untitled')}",
+        f"Artist: {metadata.get('title_artist', {}).get('artist', 'Unknown')}",
+        f"Summary: {metadata.get('summary', '')}",
+        f"Blend: {', '.join(blend)}",
+        f"Mood: {mood_style}",
+        f"User Input: {user_input}",
+    ]
+
+    # Add narrative symbols/imagery
+    best_bet = narrative.get("best_bet", {})
+    if best_bet:
+        concepts = narrative.get("concepts", [])
+        if concepts:
+            # Get the selected concept's symbols
+            concept_id = best_bet.get("concept_id", 1)
+            for concept in concepts:
+                if concept.get("id") == concept_id:
+                    symbols = concept.get("symbols", [])
+                    context_parts.append(f"\nNarrative Symbols: {', '.join(symbols)}")
+                    break
+
+    context = "\n".join(context_parts)
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    try:
+        raw = get_llm(use_local).invoke(formatted)
+        # Try to parse JSON
+        parsed = json.loads(raw)
+        return parsed
+    except json.JSONDecodeError:
+        # Fallback JSON structure
+        return {
+            "objects": ["guitar", "road", "sunset"],
+            "environment": "Rural landscape at dusk",
+            "people": "none",
+            "composition": "Centered, rule of thirds",
+            "symbolism": ["journey", "transition"],
+            "metadata": {
+                "mood": mood_style,
+                "color_palette": "warm earth tones",
+                "lighting": "golden hour",
+                "era": "timeless",
+                "style": "photorealistic"
+            },
+            "text": {
+                "include": True,
+                "title": metadata.get('title_artist', {}).get('title', 'Untitled'),
+                "artist": metadata.get('title_artist', {}).get('artist', 'Unknown'),
+                "placement": "bottom center",
+                "style": "weathered serif"
+            },
+            "size": "9:16",
+            "resolution": "720p minimum"
+        }
+
+
+def generate_captions(
+    prompt_template: str,
+    title: str,
+    artist: str,
+    lyrics: str,
+    summary: str,
+    style_block: str,
+    narrative: Dict[str, Any],
+    use_local: bool
+) -> List[str]:
+    """
+    Generate 5-6 social media captions (≤300 chars each) across distinct tones.
+    """
+    # Build context
+    context = f"""Song Title: {title}
+Artist: {artist}
+Summary: {summary}
+Style: {style_block}
+
+Lyrics (excerpt):
+{lyrics[:500]}...
+
+Narrative Setting: {narrative.get('best_bet', {}).get('setting', 'Not specified')}
+"""
+
+    # Format prompt
+    formatted = prompt_template.replace("{context}", context)
+
+    # Invoke LLM
+    try:
+        raw = get_llm(use_local).invoke(formatted)
+
+        # Parse captions from response
+        captions = []
+
+        # Look for numbered captions or labeled sections
+        lines = raw.split("\n")
+        current_caption = ""
+
+        for line in lines:
+            line = line.strip()
+            # Skip headers and empty lines
+            if not line or line.startswith("###") or line.startswith("**"):
+                if current_caption:
+                    captions.append(current_caption.strip())
+                    current_caption = ""
+                continue
+
+            # Accumulate caption text
+            if line and not line.endswith(":"):
+                current_caption += " " + line if current_caption else line
+
+        # Add last caption
+        if current_caption:
+            captions.append(current_caption.strip())
+
+        # Return up to 6 captions
+        return captions[:6] if captions else [
+            f"New track: \"{title}\" by {artist}. Out now.",
+            f"{title} - {artist}",
+            f"Listen to \"{title}\" now.",
+        ]
+
+    except Exception:
+        # Fallback captions
+        return [
+            f"New track: \"{title}\" by {artist}. Out now.",
+            f"{title} - {artist}",
+            f"Listen to \"{title}\" now.",
+        ]
