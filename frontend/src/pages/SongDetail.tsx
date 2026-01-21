@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSongById, deleteSong, generateImagePrompt, regenerateLyrics, uploadAlbumArt } from '../api/songs';
 import { SongDetail } from '../types/song';
-import { Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown } from 'lucide-react';
+import {
+  Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown,
+  ArrowLeft, Image, Sparkles, Upload, Disc, Tag, TrendingUp, Users
+} from 'lucide-react';
 import { LyricsViewer } from '../components/LyricsViewer';
 import { useGenerationStore } from '../store/generationSlice';
 
@@ -44,7 +47,7 @@ export const SongDetailPage: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (!songId || !confirm('Are you sure you want to delete this song?')) return;
+    if (!songId || !confirm('Are you sure you want to delete this song? This action cannot be undone.')) return;
 
     setDeleting(true);
     try {
@@ -64,11 +67,8 @@ export const SongDetailPage: React.FC = () => {
     setGeneratingPrompt(true);
     try {
       const response = await generateImagePrompt(songId);
-      // Use the copy_ready_prompt directly (already formatted JSON)
       setImagePrompt(response.copy_ready_prompt);
       setShowPromptModal(true);
-
-      // Also copy to clipboard automatically
       await navigator.clipboard.writeText(response.copy_ready_prompt);
     } catch (error: any) {
       console.error('Failed to generate image prompt:', error);
@@ -91,10 +91,8 @@ export const SongDetailPage: React.FC = () => {
     setRegeneratingLyrics(true);
     try {
       const response = await regenerateLyrics(songId);
-      // Set the job in the generation store
       setJobId(response.job_id);
       setStatus('generating');
-      // Navigate to the new song page to show the progress tracker
       navigate('/new');
     } catch (error) {
       console.error('Failed to regenerate lyrics:', error);
@@ -124,7 +122,6 @@ export const SongDetailPage: React.FC = () => {
 
     const file = event.target.files[0];
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
@@ -133,7 +130,6 @@ export const SongDetailPage: React.FC = () => {
     setUploadingArt(true);
     try {
       await uploadAlbumArt(songId, file);
-      // Reload the song to show the new album art
       await loadSong();
       alert('Album art uploaded successfully!');
     } catch (error: any) {
@@ -156,10 +152,23 @@ export const SongDetailPage: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadAlbumArt = () => {
+    if (!song?.metadata.album_art_url) return;
+    const a = document.createElement('a');
+    a.href = `http://localhost:8000${song.metadata.album_art_url}`;
+    a.download = `${song.metadata.title.replace(/[^a-z0-9]/gi, '_')}_cover.png`;
+    a.click();
+  };
+
   if (loading) {
     return (
       <div className="min-h-full bg-dark-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent"></div>
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-purple-500/30 flex items-center justify-center mx-auto mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+          </div>
+          <p className="text-slate-400">Loading song...</p>
+        </div>
       </div>
     );
   }
@@ -168,6 +177,7 @@ export const SongDetailPage: React.FC = () => {
     return (
       <div className="min-h-full bg-dark-950 flex items-center justify-center">
         <div className="text-center">
+          <Music className="w-16 h-16 text-slate-600 mx-auto mb-4" />
           <p className="text-slate-400 text-lg mb-4">Song not found</p>
           <button
             onClick={() => navigate('/library')}
@@ -185,20 +195,37 @@ export const SongDetailPage: React.FC = () => {
       <div className="flex">
         {/* Main content - lyrics */}
         <div className="flex-1 p-6 overflow-auto">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('/library')}
+            className="flex items-center space-x-2 text-slate-400 hover:text-primary transition-colors mb-6 group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Library</span>
+          </button>
+
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-slate-500 text-sm">Song</p>
-              <h1 className="text-3xl font-bold gradient-text">{song.metadata.title}</h1>
+          <div className="mb-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-2">
+                  <h1 className="text-4xl md:text-5xl font-bold gradient-text">{song.metadata.title}</h1>
+                  <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-semibold rounded-full">
+                    COMPLETED
+                  </span>
+                </div>
+                <p className="text-slate-400 text-lg">{song.metadata.description}</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="tag status-completed px-3 py-1">COMPLETED</span>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3">
               <button
                 onClick={handleGenerateImagePrompt}
                 disabled={generatingPrompt}
                 className="btn-secondary flex items-center space-x-2"
               >
-                <Copy className={`w-4 h-4`} />
+                <Image className="w-4 h-4" />
                 <span>{generatingPrompt ? 'Generating...' : 'Create Image Prompt'}</span>
               </button>
               <button
@@ -210,9 +237,16 @@ export const SongDetailPage: React.FC = () => {
                 <span>{regeneratingLyrics ? 'Regenerating...' : 'Regenerate Lyrics'}</span>
               </button>
               <button
+                onClick={handleDownloadMd}
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <Download className="w-4 h-4" />
+                <span>Download .md</span>
+              </button>
+              <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="btn-danger flex items-center space-x-2"
+                className="btn-danger flex items-center space-x-2 ml-auto"
               >
                 <Trash2 className="w-4 h-4" />
                 <span>{deleting ? 'Deleting...' : 'Delete'}</span>
@@ -220,31 +254,24 @@ export const SongDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Description */}
-          <p className="text-slate-400 mb-4 text-sm">{song.metadata.description}</p>
-
           {/* User Prompt */}
           {song.metadata.user_prompt && (
-            <div className="mb-6 p-4 bg-dark-900 rounded-lg border border-dark-700/50">
-              <p className="text-xs text-slate-500 uppercase mb-1">USER PROMPT</p>
-              <p className="text-slate-300 text-sm">{song.metadata.user_prompt}</p>
+            <div className="mb-6 card p-4 bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/30">
+              <div className="flex items-center space-x-2 mb-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <p className="text-xs text-primary uppercase font-semibold">Original Prompt</p>
+              </div>
+              <p className="text-slate-300">{song.metadata.user_prompt}</p>
             </div>
           )}
 
           {/* Song Lyrics Card */}
-          <div className="card p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-50">Song Lyrics</h2>
-              <div className="flex items-center space-x-4">
-                <button className="text-slate-400 hover:text-primary text-sm">Save as New Version</button>
-                <button
-                  onClick={handleDownloadMd}
-                  className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download .md</span>
-                </button>
+          <div className="card p-6 mb-6 gradient-border-primary">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
+                <Music className="w-5 h-5 text-primary" />
               </div>
+              <h2 className="text-2xl font-bold text-slate-50">Song Lyrics</h2>
             </div>
 
             {/* Structured Lyrics Viewer */}
@@ -255,7 +282,15 @@ export const SongDetailPage: React.FC = () => {
           {song.raw_markdown.includes('## Image Blueprint') && (
             <div className="card p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-slate-50">Album Art Image Blueprint</h2>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center">
+                    <Image className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-50">Album Art Image Blueprint</h2>
+                    <p className="text-slate-500 text-sm">Ready for ChatGPT, Gemini, Sora, or any AI image generator</p>
+                  </div>
+                </div>
                 <button
                   onClick={() => {
                     const parts = song.raw_markdown.split('## Image Blueprint');
@@ -263,15 +298,12 @@ export const SongDetailPage: React.FC = () => {
                       navigator.clipboard.writeText(parts[1].trim());
                     }
                   }}
-                  className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm"
+                  className="btn-secondary flex items-center space-x-2"
                 >
                   <Copy className="w-4 h-4" />
                   <span>Copy Blueprint</span>
                 </button>
               </div>
-              <p className="text-slate-400 text-sm mb-4">
-                AI-generated blueprint ready to paste into ChatGPT, Gemini, Sora, or any image generator.
-              </p>
               <div className="bg-dark-800 rounded-lg p-4 border border-dark-700 max-h-96 overflow-y-auto">
                 <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">
                   {(() => {
@@ -285,30 +317,44 @@ export const SongDetailPage: React.FC = () => {
         </div>
 
         {/* Right sidebar - metadata */}
-        <div className="w-80 flex-shrink-0 border-l border-dark-700/50 p-6 overflow-auto max-h-screen">
+        <div className="w-96 flex-shrink-0 border-l border-dark-700/50 p-6 overflow-auto max-h-screen space-y-6">
           {/* Album Art */}
-          <div className="mb-6">
+          <div className="card p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-slate-400">Album Art</h3>
-              <button className="text-slate-400 hover:text-primary text-sm flex items-center space-x-1">
-                <Download className="w-3 h-3" />
-                <span>Download</span>
-              </button>
+              <h3 className="text-sm font-bold text-slate-50 flex items-center space-x-2">
+                <Disc className="w-4 h-4 text-primary" />
+                <span>Album Art</span>
+              </h3>
+              {song.metadata.album_art_url && (
+                <button
+                  onClick={handleDownloadAlbumArt}
+                  className="text-slate-400 hover:text-primary text-xs flex items-center space-x-1 transition-colors"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>Download</span>
+                </button>
+              )}
             </div>
-            <div className="aspect-square w-full rounded-lg overflow-hidden bg-dark-800">
+            <div className="aspect-square w-full rounded-lg overflow-hidden bg-gradient-to-br from-dark-800 to-dark-900 border-2 border-dark-700 relative group">
               {song.metadata.album_art_url ? (
-                <img
-                  src={`http://localhost:8000${song.metadata.album_art_url}`}
-                  alt="Album Art"
-                  className="w-full h-full object-cover"
-                />
+                <>
+                  <img
+                    src={`http://localhost:8000${song.metadata.album_art_url}`}
+                    alt="Album Art"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <p className="text-white text-sm font-medium">Click to replace</p>
+                  </div>
+                </>
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Music className="w-16 h-16 text-slate-600" />
+                <div className="w-full h-full flex flex-col items-center justify-center">
+                  <Music className="w-16 h-16 text-slate-600 mb-2" />
+                  <p className="text-slate-500 text-sm">No album art</p>
                 </div>
               )}
             </div>
-            <div className="mt-3 space-y-2">
+            <div className="mt-3">
               <input
                 type="file"
                 id="album-art-upload"
@@ -319,60 +365,58 @@ export const SongDetailPage: React.FC = () => {
               <button
                 onClick={() => document.getElementById('album-art-upload')?.click()}
                 disabled={uploadingArt}
-                className="w-full btn-primary text-sm"
+                className="w-full btn-primary text-sm flex items-center justify-center space-x-2"
               >
-                {uploadingArt ? 'Uploading...' : 'Upload Album Art'}
+                <Upload className="w-4 h-4" />
+                <span>{uploadingArt ? 'Uploading...' : 'Upload Album Art'}</span>
               </button>
             </div>
           </div>
 
-          {/* Live Listen Feedback */}
-          <div className="mb-6 card p-4">
-            <h3 className="text-sm font-medium text-slate-50 mb-2">Live Listen Feedback</h3>
-            <p className="text-slate-500 text-xs mb-3">
-              Upload an MP3 of your current generated song. The AI will listen and provide feedback to improve the lyrics fit.
-            </p>
-            <button className="w-full btn-secondary text-sm mb-2">Choose MP3</button>
-            <button className="w-full btn-primary text-sm">Submit for Feedback</button>
-          </div>
-
           {/* Metadata */}
-          <div>
-            <h3 className="text-sm font-medium text-slate-400 mb-3">Metadata</h3>
+          <div className="card p-4">
+            <h3 className="text-sm font-bold text-slate-50 mb-4 flex items-center space-x-2">
+              <Tag className="w-4 h-4 text-primary" />
+              <span>Metadata</span>
+            </h3>
 
             {/* Mode and Persona */}
             <div className="flex items-center space-x-2 mb-4 flex-wrap gap-2">
-              <span className="tag">MODE: REMOTE</span>
+              <span className="px-3 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold rounded-full">
+                MODE: REMOTE
+              </span>
               <div className="relative">
                 <select
                   value={selectedPersona}
                   onChange={(e) => setSelectedPersona(e.target.value)}
-                  className="tag appearance-none pr-6 cursor-pointer bg-dark-700"
+                  className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 text-xs font-semibold rounded-full appearance-none pr-6 cursor-pointer"
                 >
                   <option value="">PERSONA: None</option>
                   <option value="bleached_to_perfection">Bleached To Perfection</option>
                   <option value="antidote">Antidote</option>
                   <option value="anagram">Anagram</option>
                 </select>
-                <ChevronDown className="w-3 h-3 absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <ChevronDown className="w-3 h-3 absolute right-1.5 top-1/2 -translate-y-1/2 text-purple-400 pointer-events-none" />
               </div>
             </div>
 
             {/* Suno Styles */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-500 uppercase">SUNO STYLES</span>
+                <span className="text-xs text-slate-500 uppercase font-semibold">Suno Styles</span>
                 <button
                   onClick={handleCopyStyles}
-                  className="text-slate-400 hover:text-primary flex items-center space-x-1"
+                  className="text-slate-400 hover:text-primary flex items-center space-x-1 transition-colors"
                 >
-                  {copiedStyles ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  <span className="text-xs">Copy</span>
+                  {copiedStyles ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                  <span className="text-xs">{copiedStyles ? 'Copied!' : 'Copy'}</span>
                 </button>
               </div>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1.5">
                 {song.metadata.suno_styles?.map((style, idx) => (
-                  <span key={idx} className="tag-cyan text-xs">{style}</span>
+                  <span key={idx} className="px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs rounded-md font-medium">
+                    {style}
+                  </span>
                 ))}
               </div>
             </div>
@@ -381,84 +425,105 @@ export const SongDetailPage: React.FC = () => {
             {song.metadata.exclude_styles && song.metadata.exclude_styles.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-slate-500 uppercase">EXCLUDE</span>
+                  <span className="text-xs text-slate-500 uppercase font-semibold">Exclude Styles</span>
                   <button
                     onClick={handleCopyExclude}
-                    className="text-slate-400 hover:text-primary flex items-center space-x-1"
+                    className="text-slate-400 hover:text-primary flex items-center space-x-1 transition-colors"
                   >
-                    {copiedExclude ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                    <span className="text-xs">Copy</span>
+                    {copiedExclude ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                    <span className="text-xs">{copiedExclude ? 'Copied!' : 'Copy'}</span>
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {song.metadata.exclude_styles.map((style, idx) => (
-                    <span key={idx} className="tag text-xs bg-red-500/20 text-red-400 border border-red-500/30">{style}</span>
+                    <span key={idx} className="px-2 py-1 bg-red-500/20 text-red-400 border border-red-500/30 text-xs rounded-md font-medium">
+                      {style}
+                    </span>
                   ))}
                 </div>
               </div>
             )}
 
             {/* Other metadata */}
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500 text-xs uppercase">GENRE</span>
-                <span className="text-slate-300">{song.metadata.genre || 'rock'}</span>
+            <div className="space-y-3 pt-4 border-t border-dark-700">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 text-xs uppercase font-semibold">Genre</span>
+                <span className="text-slate-300 text-sm font-medium">{song.metadata.genre || 'Rock'}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 text-xs uppercase">TEMPO / BPM</span>
-                <span className="text-slate-300">{song.metadata.tempo || '120'}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 text-xs uppercase font-semibold">Tempo / BPM</span>
+                <span className="text-slate-300 text-sm font-medium">{song.metadata.tempo || '120'}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 text-xs uppercase">MUSICAL KEY</span>
-                <span className="text-slate-300">{song.metadata.key || 'C'}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 text-xs uppercase font-semibold">Musical Key</span>
+                <span className="text-slate-300 text-sm font-medium">{song.metadata.key || 'C'}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 text-xs uppercase">EMOTIONAL ARC</span>
-                <span className="text-slate-300">{song.metadata.emotional_arc || 'energetic'}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 text-xs uppercase font-semibold">Emotional Arc</span>
+                <span className="text-slate-300 text-sm font-medium">{song.metadata.emotional_arc || 'Energetic'}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 text-xs uppercase">INSTRUMENTS</span>
-                <span className="text-slate-300">{song.metadata.instruments || 'guitar'}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 text-xs uppercase font-semibold">Instruments</span>
+                <span className="text-slate-300 text-sm font-medium truncate ml-2" title={song.metadata.instruments}>
+                  {song.metadata.instruments || 'Guitar'}
+                </span>
               </div>
             </div>
-
-            {/* Target Audience */}
-            {song.metadata.target_audience && (
-              <div className="mt-4">
-                <span className="text-xs text-slate-500 uppercase block mb-1">TARGET AUDIENCE</span>
-                <p className="text-slate-400 text-xs">{song.metadata.target_audience}</p>
-              </div>
-            )}
-
-            {/* Commercial Assessment */}
-            {song.metadata.commercial_assessment && (
-              <div className="mt-4">
-                <span className="text-xs text-slate-500 uppercase block mb-1">COMMERCIAL ASSESSMENT</span>
-                <p className="text-slate-400 text-xs">{song.metadata.commercial_assessment}</p>
-              </div>
-            )}
           </div>
+
+          {/* Target Audience */}
+          {song.metadata.target_audience && (
+            <div className="card p-4">
+              <h3 className="text-sm font-bold text-slate-50 mb-2 flex items-center space-x-2">
+                <Users className="w-4 h-4 text-primary" />
+                <span>Target Audience</span>
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{song.metadata.target_audience}</p>
+            </div>
+          )}
+
+          {/* Commercial Assessment */}
+          {song.metadata.commercial_assessment && (
+            <div className="card p-4">
+              <h3 className="text-sm font-bold text-slate-50 mb-2 flex items-center space-x-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <span>Commercial Assessment</span>
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{song.metadata.commercial_assessment}</p>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Image Prompt Modal */}
       {showPromptModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="glass-card max-w-2xl w-full p-6 animate-scaleIn">
-            <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt Generated!</h2>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-dark-900 border border-dark-700 rounded-lg shadow-2xl max-w-3xl w-full p-6 animate-scaleIn">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/30 to-green-500/10 flex items-center justify-center">
+                <Check className="w-6 h-6 text-green-400" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-50">Image Prompt Generated!</h2>
+                <p className="text-slate-500 text-sm">Ready to use in any AI image generator</p>
+              </div>
+            </div>
+
             <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
               <p className="text-green-400 text-sm flex items-center">
                 <Check className="w-4 h-4 mr-2" />
                 Saved to song markdown file and copied to clipboard!
               </p>
             </div>
+
             <p className="text-slate-400 text-sm mb-4">
               This prompt has been saved to your song file and is ready to paste into ChatGPT, Gemini, Sora, or any AI image generator.
-              You can also view it on the song page below or in the downloaded markdown.
             </p>
+
             <div className="bg-dark-800 rounded-lg p-4 mb-4 border border-dark-700 max-h-64 overflow-y-auto">
               <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">{imagePrompt}</pre>
             </div>
+
             <div className="flex items-center justify-end space-x-3">
               <button
                 onClick={handleCopyPrompt}
@@ -470,7 +535,7 @@ export const SongDetailPage: React.FC = () => {
               <button
                 onClick={() => {
                   setShowPromptModal(false);
-                  loadSong(); // Reload to show the blueprint on the page
+                  loadSong();
                 }}
                 className="btn-primary"
               >
