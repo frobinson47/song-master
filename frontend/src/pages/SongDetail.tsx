@@ -206,7 +206,7 @@ export const SongDetailPage: React.FC = () => {
           )}
 
           {/* Song Lyrics Card */}
-          <div className="card p-6">
+          <div className="card p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-slate-50">Song Lyrics</h2>
               <div className="flex items-center space-x-4">
@@ -224,6 +224,38 @@ export const SongDetailPage: React.FC = () => {
             {/* Structured Lyrics Viewer */}
             <LyricsViewer markdown={song.raw_markdown} />
           </div>
+
+          {/* Image Blueprint Card (if exists) */}
+          {song.raw_markdown.includes('## Image Blueprint') && (
+            <div className="card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-slate-50">Album Art Image Blueprint</h2>
+                <button
+                  onClick={() => {
+                    const blueprintMatch = song.raw_markdown.match(/## Image Blueprint\n\n([\s\S]*?)(?=\n##|\Z)/);
+                    if (blueprintMatch) {
+                      navigator.clipboard.writeText(blueprintMatch[1].trim());
+                    }
+                  }}
+                  className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Copy Blueprint</span>
+                </button>
+              </div>
+              <p className="text-slate-400 text-sm mb-4">
+                AI-generated blueprint ready to paste into ChatGPT, Gemini, Sora, or any image generator.
+              </p>
+              <div className="bg-dark-800 rounded-lg p-4 border border-dark-700 max-h-96 overflow-y-auto">
+                <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">
+                  {(() => {
+                    const blueprintMatch = song.raw_markdown.match(/## Image Blueprint\n\n([\s\S]*?)(?=\n##|\Z)/);
+                    return blueprintMatch ? blueprintMatch[1].trim() : '';
+                  })()}
+                </pre>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right sidebar - metadata */}
@@ -375,10 +407,16 @@ export const SongDetailPage: React.FC = () => {
       {showPromptModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-900 rounded-lg max-w-2xl w-full p-6 border border-dark-700">
-            <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt</h2>
+            <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt Generated!</h2>
+            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
+              <p className="text-green-400 text-sm flex items-center">
+                <Check className="w-4 h-4 mr-2" />
+                Saved to song markdown file and copied to clipboard!
+              </p>
+            </div>
             <p className="text-slate-400 text-sm mb-4">
-              Use this prompt with ChatGPT, Gemini, Sora, or any AI image generator to create your album artwork.
-              The prompt has been automatically copied to your clipboard!
+              This prompt has been saved to your song file and is ready to paste into ChatGPT, Gemini, Sora, or any AI image generator.
+              You can also view it on the song page below or in the downloaded markdown.
             </p>
             <div className="bg-dark-800 rounded-lg p-4 mb-4 border border-dark-700 max-h-64 overflow-y-auto">
               <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">{imagePrompt}</pre>
@@ -392,7 +430,10 @@ export const SongDetailPage: React.FC = () => {
                 <span>Copy Again</span>
               </button>
               <button
-                onClick={() => setShowPromptModal(false)}
+                onClick={() => {
+                  setShowPromptModal(false);
+                  loadSong(); // Reload to show the blueprint on the page
+                }}
                 className="btn-primary"
               >
                 Close

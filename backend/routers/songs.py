@@ -149,19 +149,32 @@ Ensure the JSON is complete, valid, and captures all visual, spatial, semantic, 
         llm = get_llm(use_local=False)
         ai_response = llm.invoke(ai_prompt)
 
+        print(f"AI Response received (first 500 chars): {str(ai_response)[:500]}")
+
+        # Convert response to string if it's not already
+        response_text = str(ai_response)
+
         # Extract JSON from response (handle markdown code blocks)
-        json_match = re.search(r'```(?:json)?\s*(\{{.*?\}})\s*```', ai_response, re.DOTALL)
+        json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', response_text, re.DOTALL)
         if json_match:
             json_str = json_match.group(1)
+            print(f"Extracted JSON from code block")
         else:
             # Try to find JSON object directly
-            json_match = re.search(r'\{{.*\}}', ai_response, re.DOTALL)
+            json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', response_text, re.DOTALL)
             if json_match:
                 json_str = json_match.group(0)
+                print(f"Extracted JSON directly")
             else:
-                json_str = ai_response
+                # Last resort: try the whole response
+                json_str = response_text.strip()
+                print(f"Using entire response as JSON")
+
+        if not json_str or json_str == '':
+            raise ValueError("No JSON content found in AI response")
 
         # Parse the JSON
+        print(f"Attempting to parse JSON (first 200 chars): {json_str[:200]}")
         scene_blueprint = json.loads(json_str)
 
         # Build the header for the final output
@@ -178,16 +191,41 @@ This JSON should be structured to capture all interpretable visual, spatial, sem
         # Combine header and blueprint
         copy_ready_prompt = f"{prompt_header}\n\n{json.dumps(scene_blueprint, indent=2)}"
 
+        # Save the blueprint to the markdown file
+        try:
+            filepath = os.path.join("songs", song_id)
+            if os.path.exists(filepath):
+                with open(filepath, "r", encoding="utf-8", errors='replace') as f:
+                    content = f.read()
+
+                # Remove existing image blueprint section if present
+                content = re.sub(r'\n## Image Blueprint\n.*?(?=\n##|\Z)', '', content, flags=re.DOTALL)
+
+                # Append the new blueprint section
+                blueprint_section = f"\n\n## Image Blueprint\n\n{copy_ready_prompt}\n"
+
+                # Write back to file
+                with open(filepath, "w", encoding="utf-8") as f:
+                    f.write(content + blueprint_section)
+
+                print(f"Saved image blueprint to {song_id}")
+        except Exception as save_error:
+            print(f"Warning: Failed to save blueprint to file: {save_error}")
+            # Don't fail the request if saving fails
+
         return {
             "status": "success",
             "prompt_header": prompt_header,
             "scene_blueprint": scene_blueprint,
-            "copy_ready_prompt": copy_ready_prompt
+            "copy_ready_prompt": copy_ready_prompt,
+            "saved_to_file": True
         }
 
     except Exception as e:
         error_msg = str(e)
         print(f"Error generating image blueprint: {error_msg}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to generate image blueprint: {error_msg}")
 
 
