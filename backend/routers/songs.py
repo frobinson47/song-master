@@ -63,35 +63,73 @@ async def delete_song(song_id: str):
 @router.post("/{song_id}/generate-image-prompt")
 async def generate_image_prompt(song_id: str):
     """
-    Generate an image prompt for creating album art manually with external AI services.
-    Returns a JSON blueprint that can be used with Sora/ChatGPT/Gemini/etc.
+    Generate a high-fidelity image blueprint in JSON format for creating album art.
+    Returns structured data capturing visual, spatial, semantic, and atmospheric information.
     """
     # Get the song to extract metadata
     song = await file_service.get_song_by_id(song_id)
     if not song:
         raise HTTPException(status_code=404, detail="Song not found")
 
-    # Create a detailed image prompt blueprint in JSON format
-    image_blueprint = {
-        "task": "Generate album cover artwork",
-        "song_title": song.metadata.title,
-        "song_description": song.metadata.description,
-        "theme": song.metadata.user_prompt,
-        "styles": song.metadata.suno_styles,
-        "requirements": [
-            "Portrait aspect ratio (1024x1792 or similar)",
-            "High-fidelity, professional quality",
-            "Visually striking and unique",
-            "No text, lettering, or typography on the image",
-            "Album cover aesthetic"
-        ],
-        "suggested_prompt": f"Album cover artwork for the song '{song.metadata.title}'. Theme: {song.metadata.user_prompt}. Style: {', '.join(song.metadata.suno_styles[:5]) if song.metadata.suno_styles else 'modern'}. Create a visually striking portrait-oriented album cover with professional quality. Do not include any text, lettering, or typography on the image."
+    # Extract first 1000 characters of lyrics
+    lyrics_preview = song.lyrics[:1000] if len(song.lyrics) > 1000 else song.lyrics
+
+    # Build the detailed prompt header
+    prompt_header = f"""Based on song data, generate a high-fidelity image blueprint in JSON format.
+
+TITLE: {song.metadata.title}
+ARTIST: [Your Fictional Artist Name]
+SUMMARY: {song.metadata.description}
+PRODUCTION STYLE: {', '.join(song.metadata.suno_styles) if song.metadata.suno_styles else 'modern production'}
+LYRICS: {lyrics_preview}
+
+This JSON should be structured to capture all interpretable visual, spatial, semantic, and atmospheric data. Output the JSON as a single structured object."""
+
+    # Create the detailed scene blueprint
+    scene_blueprint = {
+        "spec_version": "scene-blueprint-2.0",
+        "global_scene": {
+            "environment": {
+                "location_type": "mixed",
+                "setting_description": f"Album cover scene for {song.metadata.title}. {song.metadata.description}",
+                "time_of_day": "contextual",
+                "weather": {
+                    "condition": "contextual",
+                    "intensity": "medium"
+                }
+            },
+            "lighting": {
+                "overall_mood": "cinematic"
+            },
+            "camera": {
+                "framing": "medium",
+                "angle": "eye_level"
+            },
+            "style": {
+                "render_type": "photoreal"
+            }
+        },
+        "objects": [],
+        "people": [],
+        "typography": {
+            "enabled": True,
+            "title": {
+                "text": song.metadata.title
+            },
+            "artist": {
+                "text": "[Your Artist Name]"
+            }
+        }
     }
+
+    # Combine header and blueprint into copy-ready format
+    copy_ready_prompt = f"{prompt_header}\n\n{str(scene_blueprint)}"
 
     return {
         "status": "success",
-        "blueprint": image_blueprint,
-        "copy_ready_prompt": image_blueprint["suggested_prompt"]
+        "prompt_header": prompt_header,
+        "scene_blueprint": scene_blueprint,
+        "copy_ready_prompt": copy_ready_prompt
     }
 
 

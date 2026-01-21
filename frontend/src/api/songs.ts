@@ -20,8 +20,8 @@ export const deleteSong = async (songId: string): Promise<void> => {
   await apiClient.delete(`/songs/${songId}`);
 };
 
-export const generateImagePrompt = async (songId: string): Promise<{ status: string; blueprint: any; copy_ready_prompt: string }> => {
-  const response = await apiClient.post<{ status: string; blueprint: any; copy_ready_prompt: string }>(`/songs/${songId}/generate-image-prompt`);
+export const generateImagePrompt = async (songId: string): Promise<{ status: string; prompt_header: string; scene_blueprint: any; copy_ready_prompt: string }> => {
+  const response = await apiClient.post<{ status: string; prompt_header: string; scene_blueprint: any; copy_ready_prompt: string }>(`/songs/${songId}/generate-image-prompt`);
   return response.data;
 };
 

@@ -14,7 +14,8 @@
       "Bash(git reset .claude/ nul)",
       "Bash(cd D:Claude Code Reposong-masterfrontend)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(unset:*)"
     ]
   }
 }
