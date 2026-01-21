@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Query
 from backend.models.responses import SongMetadata, SongDetailResponse, JobResponse
 from backend.services.file_service import FileService
 from typing import List, Optional
@@ -47,7 +47,7 @@ async def delete_song(song_id: str):
 
 
 @router.post("/{song_id}/regenerate-art")
-async def regenerate_art(song_id: str, background_tasks: BackgroundTasks):
+async def regenerate_art(song_id: str):
     """
     Regenerate album art for an existing song.
     """
@@ -68,28 +68,32 @@ async def regenerate_art(song_id: str, background_tasks: BackgroundTasks):
     art_filename = f"{base_name}_album_art.png"
     art_filepath = songs_dir / art_filename
 
-    async def generate_art():
-        """Background task to regenerate album art."""
-        try:
-            # Run the generation in a thread pool to avoid blocking
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(
-                None,
-                generate_album_art_image,
-                album_art_prompt,
-                str(art_filepath)
-            )
+    try:
+        # Run the generation in a thread pool to avoid blocking
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(
+            None,
+            generate_album_art_image,
+            album_art_prompt,
+            str(art_filepath)
+        )
 
-            # Update the song markdown file with new album art path
-            await file_service.update_album_art_path(song_id, f"/songs/{art_filename}")
+        # Update the song markdown file with new album art path
+        await file_service.update_album_art_path(song_id, f"/songs/{art_filename}")
 
-        except Exception as e:
-            print(f"Error regenerating album art: {e}")
+        return {"status": "success", "message": "Album art regenerated successfully", "art_url": f"/songs/{art_filename}"}
 
-    # Schedule the generation as a background task
-    background_tasks.add_task(generate_art)
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Error regenerating album art: {error_msg}")
 
-    return {"status": "regenerating", "message": "Album art regeneration started"}
+        # Check for common errors and provide helpful messages
+        if "401" in error_msg or "Incorrect API key" in error_msg:
+            raise HTTPException(status_code=400, detail="Invalid OpenAI API key. Please update your OPENAI_API_KEY in the .env file.")
+        elif "rate_limit" in error_msg.lower():
+            raise HTTPException(status_code=429, detail="OpenAI rate limit exceeded. Please try again in a moment.")
+        else:
+            raise HTTPException(status_code=500, detail=f"Failed to generate album art: {error_msg}")
 
 
 @router.post("/{song_id}/regenerate-lyrics", response_model=JobResponse)

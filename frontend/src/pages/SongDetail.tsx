@@ -61,14 +61,13 @@ export const SongDetailPage: React.FC = () => {
     setRegeneratingArt(true);
     try {
       await regenerateArt(songId);
-      // Wait a bit for the art to be generated, then reload
-      setTimeout(() => {
-        loadSong();
-        setRegeneratingArt(false);
-      }, 3000);
-    } catch (error) {
+      // Reload the song to show the new art
+      await loadSong();
+      setRegeneratingArt(false);
+    } catch (error: any) {
       console.error('Failed to regenerate art:', error);
-      alert('Failed to regenerate album art');
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to regenerate album art';
+      alert(errorMessage);
       setRegeneratingArt(false);
     }
   };
