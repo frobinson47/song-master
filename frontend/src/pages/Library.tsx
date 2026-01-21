@@ -23,10 +23,17 @@ export const Library: React.FC = () => {
   const [filterTime, setFilterTime] = useState('all');
 
   // Mock albums for now
-  const [albums] = useState<Album[]>([
+  const [albums, setAlbums] = useState<Album[]>([
     { id: '1', name: 'Testing', description: 'This is a test album!', createdAt: '2026-01-03' }
   ]);
   const [expandedAlbum, setExpandedAlbum] = useState<string | null>(null);
+
+  const handleDeleteAlbum = (albumId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent expanding/collapsing the album
+    if (confirm('Are you sure you want to delete this album?')) {
+      setAlbums(albums.filter(album => album.id !== albumId));
+    }
+  };
 
   useEffect(() => {
     loadSongs();
@@ -132,7 +139,10 @@ export const Library: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                   <span className="text-slate-500 text-sm">Created: {album.createdAt}</span>
-                  <button className="text-slate-400 hover:text-red-500 transition-colors">
+                  <button
+                    onClick={(e) => handleDeleteAlbum(album.id, e)}
+                    className="text-slate-400 hover:text-red-500 transition-colors"
+                  >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

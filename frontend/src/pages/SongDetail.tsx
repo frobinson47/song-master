@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSongById, deleteSong, generateImagePrompt, regenerateLyrics } from '../api/songs';
+import { getSongById, deleteSong, generateImagePrompt, regenerateLyrics, uploadAlbumArt } from '../api/songs';
 import { SongDetail } from '../types/song';
 import { Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown } from 'lucide-react';
 import { LyricsViewer } from '../components/LyricsViewer';
@@ -20,6 +20,7 @@ export const SongDetailPage: React.FC = () => {
   const [regeneratingLyrics, setRegeneratingLyrics] = useState(false);
   const [showPromptModal, setShowPromptModal] = useState(false);
   const [imagePrompt, setImagePrompt] = useState('');
+  const [uploadingArt, setUploadingArt] = useState(false);
 
   useEffect(() => {
     if (songId) {
@@ -115,6 +116,32 @@ export const SongDetailPage: React.FC = () => {
       navigator.clipboard.writeText(song.metadata.exclude_styles.join(', '));
       setCopiedExclude(true);
       setTimeout(() => setCopiedExclude(false), 2000);
+    }
+  };
+
+  const handleUploadArt = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!songId || !event.target.files || event.target.files.length === 0) return;
+
+    const file = event.target.files[0];
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    setUploadingArt(true);
+    try {
+      await uploadAlbumArt(songId, file);
+      // Reload the song to show the new album art
+      await loadSong();
+      alert('Album art uploaded successfully!');
+    } catch (error: any) {
+      console.error('Failed to upload album art:', error);
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to upload album art';
+      alert(errorMessage);
+    } finally {
+      setUploadingArt(false);
     }
   };
 
@@ -221,19 +248,19 @@ export const SongDetailPage: React.FC = () => {
             </div>
 
             {/* Structured Lyrics Viewer */}
-            <LyricsViewer markdown={song.raw_markdown} />
+            <LyricsViewer markdown={song.raw_markdown.replace(/\n## Image Blueprint\n[\s\S]*$/, '')} />
           </div>
 
           {/* Image Blueprint Card (if exists) */}
           {song.raw_markdown.includes('## Image Blueprint') && (
-            <div className="card p-6">
+            <div className="card p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-slate-50">Album Art Image Blueprint</h2>
                 <button
                   onClick={() => {
-                    const blueprintMatch = song.raw_markdown.match(/## Image Blueprint\n\n([\s\S]*?)(?=\n##|\Z)/);
-                    if (blueprintMatch) {
-                      navigator.clipboard.writeText(blueprintMatch[1].trim());
+                    const parts = song.raw_markdown.split('## Image Blueprint');
+                    if (parts.length > 1) {
+                      navigator.clipboard.writeText(parts[1].trim());
                     }
                   }}
                   className="flex items-center space-x-1 text-slate-400 hover:text-primary text-sm"
@@ -248,8 +275,8 @@ export const SongDetailPage: React.FC = () => {
               <div className="bg-dark-800 rounded-lg p-4 border border-dark-700 max-h-96 overflow-y-auto">
                 <pre className="text-slate-300 text-sm whitespace-pre-wrap font-mono">
                   {(() => {
-                    const blueprintMatch = song.raw_markdown.match(/## Image Blueprint\n\n([\s\S]*?)(?=\n##|\Z)/);
-                    return blueprintMatch ? blueprintMatch[1].trim() : '';
+                    const parts = song.raw_markdown.split('## Image Blueprint');
+                    return parts.length > 1 ? parts[1].trim() : '';
                   })()}
                 </pre>
               </div>
@@ -282,8 +309,20 @@ export const SongDetailPage: React.FC = () => {
               )}
             </div>
             <div className="mt-3 space-y-2">
-              <button className="w-full btn-secondary text-sm">Choose Image</button>
-              <button className="w-full btn-primary text-sm">Upload Art</button>
+              <input
+                type="file"
+                id="album-art-upload"
+                accept="image/*"
+                onChange={handleUploadArt}
+                className="hidden"
+              />
+              <button
+                onClick={() => document.getElementById('album-art-upload')?.click()}
+                disabled={uploadingArt}
+                className="w-full btn-primary text-sm"
+              >
+                {uploadingArt ? 'Uploading...' : 'Upload Album Art'}
+              </button>
             </div>
           </div>
 

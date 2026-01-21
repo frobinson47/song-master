@@ -29,3 +29,14 @@ export const regenerateLyrics = async (songId: string): Promise<{ job_id: string
   const response = await apiClient.post<{ job_id: string; status: string; websocket_url: string }>(`/songs/${songId}/regenerate-lyrics`);
   return response.data;
 };
+
+export const uploadAlbumArt = async (songId: string, file: File): Promise<{ status: string; album_art_url: string; message: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<{ status: string; album_art_url: string; message: string }>(`/songs/${songId}/upload-art`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};

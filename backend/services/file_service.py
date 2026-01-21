@@ -90,10 +90,15 @@ class FileService:
             date_match = re.match(r"(\d{8})_", filename)
             created_at = datetime.strptime(date_match.group(1), "%Y%m%d") if date_match else datetime.now()
 
-            # Check for album art
-            album_art_filename = filename.replace(".md", "_cover.jpg")
-            album_art_path = os.path.join(self.songs_dir, album_art_filename)
-            album_art_url = f"/songs/{album_art_filename}" if os.path.exists(album_art_path) else None
+            # Check for album art (multiple possible extensions)
+            album_art_url = None
+            base_name = filename.replace(".md", "")
+            for ext in ['.jpg', '.png', '.webp', '.jpeg']:
+                album_art_filename = f"{base_name}_cover{ext}"
+                album_art_path = os.path.join(self.songs_dir, album_art_filename)
+                if os.path.exists(album_art_path):
+                    album_art_url = f"/songs/{album_art_filename}"
+                    break
 
             return SongMetadata(
                 title=title,
@@ -121,10 +126,12 @@ class FileService:
         # Delete markdown file
         os.remove(filepath)
 
-        # Delete album art if exists
-        album_art_path = filepath.replace(".md", "_cover.jpg")
-        if os.path.exists(album_art_path):
-            os.remove(album_art_path)
+        # Delete album art if exists (check multiple extensions)
+        base_name = filepath.replace(".md", "")
+        for ext in ['.jpg', '.png', '.webp', '.jpeg']:
+            album_art_path = f"{base_name}_cover{ext}"
+            if os.path.exists(album_art_path):
+                os.remove(album_art_path)
 
         return True
 

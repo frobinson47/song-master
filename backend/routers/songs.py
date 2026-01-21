@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File
 from backend.models.responses import SongMetadata, SongDetailResponse, JobResponse
 from backend.services.file_service import FileService
 from backend.services.job_manager import JobManager
@@ -273,3 +273,49 @@ async def regenerate_lyrics(
     # Return job info
     websocket_url = f"ws://localhost:8000/ws/{job_id}"
     return JobResponse(job_id=job_id, status="running", websocket_url=websocket_url)
+
+
+@router.post("/{song_id}/upload-art")
+async def upload_album_art(song_id: str, file: UploadFile = File(...)):
+    """
+    Upload custom album art for a song.
+    Accepts an image file and saves it as the song's album art.
+    """
+    import shutil
+
+    # Verify song exists
+    song = await file_service.get_song_by_id(song_id)
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+
+    # Validate file type
+    if not file.content_type or not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="File must be an image")
+
+    # Determine file extension
+    ext = '.jpg'
+    if 'png' in file.content_type:
+        ext = '.png'
+    elif 'jpeg' in file.content_type or 'jpg' in file.content_type:
+        ext = '.jpg'
+    elif 'webp' in file.content_type:
+        ext = '.webp'
+
+    # Create filename: remove .md extension and add _cover.jpg
+    base_name = song_id.replace('.md', '')
+    art_filename = f"{base_name}_cover{ext}"
+    art_path = os.path.join("songs", art_filename)
+
+    # Save the uploaded file
+    try:
+        with open(art_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save image: {str(e)}")
+
+    # Return the new album art URL
+    return {
+        "status": "success",
+        "album_art_url": f"/songs/{art_filename}",
+        "message": "Album art uploaded successfully"
+    }
