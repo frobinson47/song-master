@@ -15,7 +15,8 @@
       "Bash(cd D:Claude Code Reposong-masterfrontend)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(unset:*)"
+      "Bash(unset:*)",
+      "Bash(ls:*)"
     ]
   }
 }

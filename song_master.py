@@ -259,6 +259,9 @@ def generate_song(
         """Develop narrative scaffold using Storysmith Muse."""
         from ai_functions import develop_narrative
 
+        tqdm.write(f"[DEBUG] HookHouse workflow starting with blend: {state['blend']}")
+        tqdm.write(f"[DEBUG] Mood: {state['mood_style']}, Explicitness: {state['explicitness']}")
+
         narrative = develop_narrative(
             narrative_prompt,
             state["user_input"],
@@ -283,6 +286,7 @@ def generate_song(
         groove_map = best_bet.get("riff_groove_map", {})
 
         tqdm.write("[OK] Narrative development completed.")
+        tqdm.write(f"[DEBUG] Best bet title: {best_bet.get('title', 'N/A')}")
         if progress_callback:
             progress_callback("narrative", 1, "Narrative scaffold generated")
 
@@ -403,6 +407,8 @@ def generate_song(
         """Generate HookHouse Blocks 2-5 metadata."""
         from ai_functions import generate_hookhouse_metadata
 
+        tqdm.write(f"[DEBUG] Generating metadata with blend: {state['blend']}")
+
         metadata_blocks = generate_hookhouse_metadata(
             hookhouse_metadata_prompt,
             state["lyrics"],
@@ -421,6 +427,12 @@ def generate_song(
         excluded_styles = metadata_blocks.get("excluded_styles", [])
         title_artist = metadata_blocks.get("title_artist", {"title": "Untitled", "artist": "Unknown"})
         summary = metadata_blocks.get("summary", "")
+
+        tqdm.write(f"[DEBUG] Style block length: {len(style_block)} chars")
+        tqdm.write(f"[DEBUG] Style block preview: {style_block[:200] if style_block else 'EMPTY'}")
+        tqdm.write(f"[DEBUG] Excluded styles count: {len(excluded_styles)}")
+        tqdm.write(f"[DEBUG] Title/Artist: {title_artist}")
+        tqdm.write(f"[DEBUG] Summary length: {len(summary)} chars")
 
         # Also update metadata for compatibility with save_song
         metadata = {
