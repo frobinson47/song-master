@@ -39,9 +39,18 @@ class SongGenerator:
         """
         loop = asyncio.get_event_loop()
 
+        # Create a synchronous wrapper for the async callback
+        # This allows the synchronous generate_song() to call it from a worker thread
+        def sync_progress_callback(step: str, step_index: int, message: str):
+            # Schedule the async callback on the event loop from the worker thread
+            future = asyncio.run_coroutine_threadsafe(
+                progress_callback(step, step_index, message), loop
+            )
+            # Don't wait for completion to avoid blocking the generation
+
         # Wrap the synchronous function
         def _run_generation():
-            return generate_song(user_input, use_local, song_name, persona, progress_callback)
+            return generate_song(user_input, use_local, song_name, persona, sync_progress_callback)
 
         # Run in executor to avoid blocking event loop
         result = await loop.run_in_executor(self.executor, _run_generation)

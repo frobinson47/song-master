@@ -25,6 +25,19 @@ class ConnectionManager:
                 # Connection closed, remove it
                 self.disconnect(job_id)
 
+    async def send_error(self, job_id: str, error_message: str):
+        """Send error message to client"""
+        if job_id in self.active_connections:
+            try:
+                error_data = {
+                    "type": "error",
+                    "error": error_message,
+                    "job_id": job_id
+                }
+                await self.active_connections[job_id].send_text(json.dumps(error_data))
+            except Exception:
+                self.disconnect(job_id)
+
 
 manager = ConnectionManager()
 

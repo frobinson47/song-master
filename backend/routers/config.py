@@ -17,23 +17,24 @@ async def get_config():
     # Map of available models per provider
     available_models = {
         "anthropic": [
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-5-20250929",
             "claude-3-5-sonnet-20241022",
             "claude-3-5-haiku-20241022",
-            "claude-sonnet-4-5-20250929",
             "claude-3-opus-20240229",
         ],
-        "openai": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "o1", "o3-mini"],
-        "google": ["gemini/gemini-2.0-flash-exp", "gemini/gemini-1.5-pro", "gemini/gemini-1.5-flash"],
+        "openai": ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo", "o1", "o3-mini"],
+        "google": ["gemini/gemini-2.5-flash", "gemini/gemini-2.0-flash-exp", "gemini/gemini-1.5-pro", "gemini/gemini-1.5-flash"],
     }
 
     # Get current model based on provider
     current_model = ""
     if current_provider == "anthropic":
-        current_model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+        current_model = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
     elif current_provider == "openai":
-        current_model = os.getenv("OPENAI_MODEL", "gpt-4o")
+        current_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     elif current_provider == "google":
-        current_model = os.getenv("GOOGLE_MODEL", "gemini/gemini-2.0-flash-exp")
+        current_model = os.getenv("GOOGLE_MODEL", "gemini/gemini-2.5-flash")
 
     return ProviderConfigResponse(
         current_provider=current_provider,

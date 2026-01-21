@@ -90,18 +90,18 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
             default_params=state["resources"].default_params,
             use_local=state["use_local"],
         )
-        tqdm.write("✓ Draft generated.")
+        tqdm.write("[OK] Draft generated.")
         if progress_callback:
-            progress_callback("draft", 2, "✓ Draft generated")
+            progress_callback("draft", 2, "Draft generated")
         return {"lyrics": lyrics}
 
     def review_node(state: SongState):
         feedback = run_parallel_reviews(review_prompt, state["lyrics"], state["use_local"])
         revised_lyrics = revise_lyrics(revision_prompt, state["lyrics"], feedback, state["use_local"])
         score = score_lyrics(scoring_prompt, revised_lyrics, state["use_local"])
-        tqdm.write(f"✓ Review round {state['round'] + 1}: score {score:.2f}")
+        tqdm.write(f"[OK] Review round {state['round'] + 1}: score {score:.2f}")
         if progress_callback:
-            progress_callback("review", 3, f"✓ Review round {state['round'] + 1}: score {score:.2f}")
+            progress_callback("review", 3, f"Review round {state['round'] + 1}: score {score:.2f}")
         return {"lyrics": revised_lyrics, "feedback": feedback, "score": score, "round": state["round"] + 1}
 
     def review_router(state: SongState):
@@ -112,9 +112,9 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
 
     def critic_node(state: SongState):
         revised = critique_song(critic_prompt, revision_prompt, state["lyrics"], state["use_local"])
-        tqdm.write("✓ Critic feedback applied.")
+        tqdm.write("[OK] Critic feedback applied.")
         if progress_callback:
-            progress_callback("critic", 4, "✓ Critic feedback applied")
+            progress_callback("critic", 4, "Critic feedback applied")
         return {"lyrics": revised}
 
     def preflight_node(state: SongState):
@@ -123,11 +123,11 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
         passed = bool(triaged.get("pass", False))
         issues = triaged.get("issues", [])
         if passed:
-            tqdm.write("✓ Preflight passed.")
+            tqdm.write("[OK] Preflight passed.")
         else:
-            tqdm.write(f"! Preflight flagged {len(issues)} issue(s).")
+            tqdm.write(f"[!] Preflight flagged {len(issues)} issue(s).")
         if progress_callback:
-            progress_callback("preflight", 5, "✓ Preflight checks completed")
+            progress_callback("preflight", 5, "Preflight checks completed")
         return {"preflight_passed": passed, "preflight_issues": issues}
 
     def preflight_router(state: SongState):
@@ -140,9 +140,9 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
         issues = state.get("preflight_issues", [])
         feedback = "Fix these preflight issues:\n" + "\n".join(f"- {issue}" for issue in issues)
         revised = revise_lyrics(revision_prompt, state["lyrics"], feedback, state["use_local"])
-        tqdm.write("✓ Applied targeted fixes from preflight.")
+        tqdm.write("[OK] Applied targeted fixes from preflight.")
         if progress_callback:
-            progress_callback("targeted_revise", 5, "✓ Applied targeted fixes")
+            progress_callback("targeted_revise", 5, "Applied targeted fixes")
         return {"lyrics": revised, "feedback": feedback, "round": state["round"] + 1}
 
     def metadata_node(state: SongState):
@@ -154,31 +154,31 @@ def generate_song(user_input: str, use_local: bool = False, song_name: Optional[
             state["resources"].persona_styles,
             state["use_local"],
         )
-        tqdm.write("✓ Metadata summary generated.")
+        tqdm.write("[OK] Metadata summary generated.")
         if progress_callback:
-            progress_callback("metadata", 6, "✓ Metadata summary generated")
+            progress_callback("metadata", 6, "Metadata summary generated")
         return {"metadata": metadata}
 
     def album_art_node(state: SongState):
         """Generate album artwork if not in local mode."""
         if state["use_local"]:
-            tqdm.write("✓ Album artwork skipped (local mode).")
+            tqdm.write("[OK] Album artwork skipped (local mode).")
             if progress_callback:
-                progress_callback("album_art", 7, "✓ Album artwork skipped (local mode)")
+                progress_callback("album_art", 7, "Album artwork skipped (local mode)")
             return {"album_art": None}
         title = extract_title(state["lyrics"], state.get("song_name"))
         artwork_path = generate_album_art(title, state["user_input"])
-        tqdm.write(f"✓ Album artwork generated: {artwork_path}")
+        tqdm.write(f"[OK] Album artwork generated: {artwork_path}")
         if progress_callback:
-            progress_callback("album_art", 7, f"✓ Album artwork generated")
+            progress_callback("album_art", 7, "Album artwork generated")
         return {"album_art": artwork_path}
 
     def save_node(state: SongState):
         title = extract_title(state["lyrics"], state.get("song_name"))
         filename = save_song(title, state["user_input"], state["lyrics"], state["resources"].default_params, state["metadata"])
-        tqdm.write(f"✓ Song saved to {filename}")
+        tqdm.write(f"[OK] Song saved to {filename}")
         if progress_callback:
-            progress_callback("save", 8, f"✓ Song saved to {filename}")
+            progress_callback("save", 8, f"Song saved to {filename}")
         return {"filename": filename}
 
     graph = StateGraph(SongState)

@@ -49,7 +49,7 @@ class FileService:
         if not os.path.exists(filepath):
             return None
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8", errors='replace') as f:
             content = f.read()
 
         metadata = await self._parse_song_metadata(song_id)
@@ -67,7 +67,7 @@ class FileService:
         filepath = os.path.join(self.songs_dir, filename)
 
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(filepath, "r", encoding="utf-8", errors='replace') as f:
                 content = f.read()
 
             # Extract title (first ## heading)
@@ -105,7 +105,10 @@ class FileService:
                 user_prompt=user_prompt,
             )
 
-        except Exception:
+        except Exception as e:
+            print(f"Error parsing {filename}: {e}")
+            import traceback
+            traceback.print_exc()
             return None
 
     async def delete_song(self, song_id: str) -> bool:

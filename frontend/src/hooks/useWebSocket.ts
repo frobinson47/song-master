@@ -6,6 +6,7 @@ const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000/ws'
 export const useWebSocket = () => {
   const [progress, setProgress] = useState<ProgressUpdate | null>(null);
   const [connected, setConnected] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   const connect = useCallback((jobId: string) => {
@@ -13,16 +14,27 @@ export const useWebSocket = () => {
 
     ws.onopen = () => {
       setConnected(true);
+      setError(null);
       console.log('WebSocket connected');
     };
 
     ws.onmessage = (event) => {
-      const update: ProgressUpdate = JSON.parse(event.data);
-      setProgress(update);
+      const data = JSON.parse(event.data);
+
+      // Check if it's an error message
+      if (data.type === 'error') {
+        setError(data.error);
+        setConnected(false);
+      } else {
+        // It's a progress update
+        const update: ProgressUpdate = data;
+        setProgress(update);
+      }
     };
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
+      setError('WebSocket connection error');
       setConnected(false);
     };
 
@@ -40,6 +52,7 @@ export const useWebSocket = () => {
       wsRef.current = null;
       setConnected(false);
       setProgress(null);
+      setError(null);
     }
   }, []);
 
@@ -56,5 +69,5 @@ export const useWebSocket = () => {
     };
   }, [disconnect]);
 
-  return { progress, connected, connect, disconnect, cancelJob };
+  return { progress, connected, error, connect, disconnect, cancelJob };
 };

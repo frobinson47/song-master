@@ -75,14 +75,48 @@ class JobManager:
             )
             job.result = result
             job.status = JobStatus.COMPLETED
+            # Send completion message through WebSocket
+            await self._notify_completion(job.job_id, result.get("filename", ""))
         except asyncio.CancelledError:
             job.status = JobStatus.CANCELLED
             job.error = "Job cancelled by user"
+            # Send error through WebSocket
+            await self._notify_error(job.job_id, job.error)
         except Exception as e:
             job.status = JobStatus.FAILED
             job.error = str(e)
+            # Send error through WebSocket
+            await self._notify_error(job.job_id, job.error)
         finally:
             job.completed_at = datetime.utcnow()
+
+    async def _notify_completion(self, job_id: str, filename: str):
+        """Send completion notification through WebSocket"""
+        try:
+            from backend.routers.websocket import manager as ws_manager
+            from backend.models.responses import ProgressUpdate
+
+            # Send 100% completion message
+            completion_update = ProgressUpdate(
+                job_id=job_id,
+                step="complete",
+                step_index=9,
+                total_steps=9,
+                message=f"Song generation complete!",
+                percentage=100.0,
+                timestamp=datetime.utcnow(),
+            )
+            await ws_manager.send_progress(job_id, completion_update)
+        except Exception:
+            pass  # If WebSocket fails, job still completed successfully
+
+    async def _notify_error(self, job_id: str, error: str):
+        """Send error notification through WebSocket"""
+        try:
+            from backend.routers.websocket import manager as ws_manager
+            await ws_manager.send_error(job_id, error)
+        except Exception:
+            pass  # If WebSocket fails, error is still stored in job.error
 
     async def cancel_job(self, job_id: str) -> bool:
         """Cancel a running job."""

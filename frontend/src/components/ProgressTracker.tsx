@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { CheckCircle2, Circle, Loader2, AlertCircle, Wifi, WifiOff } from 'lucide-react';
 
 interface ProgressTrackerProps {
   jobId: string;
@@ -7,7 +8,7 @@ interface ProgressTrackerProps {
 }
 
 export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ jobId, onComplete }) => {
-  const { progress, connected, connect, disconnect } = useWebSocket();
+  const { progress, connected, error, connect, disconnect } = useWebSocket();
 
   useEffect(() => {
     connect(jobId);
@@ -34,64 +35,81 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ jobId, onCompl
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold">Generating Your Song</h3>
+      <div className="card p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-slate-50">Generating Your Song</h3>
           {connected ? (
-            <span className="text-green-600 text-sm flex items-center">
-              <span className="h-2 w-2 bg-green-600 rounded-full mr-2"></span>
-              Connected
+            <span className="flex items-center space-x-2 text-green-400 text-sm">
+              <Wifi className="w-4 h-4" />
+              <span>Connected</span>
             </span>
           ) : (
-            <span className="text-gray-400 text-sm">Connecting...</span>
+            <span className="flex items-center space-x-2 text-slate-500 text-sm">
+              <WifiOff className="w-4 h-4" />
+              <span>Connecting...</span>
+            </span>
           )}
         </div>
 
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h4 className="text-red-400 font-semibold mb-1">Generation Failed</h4>
+                <p className="text-red-300 text-sm">{error}</p>
+                {error.includes('rate_limit') && (
+                  <p className="text-red-300/70 text-xs mt-2">
+                    Tip: Wait a minute for the rate limit to reset, or switch to a different provider in Settings.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-          <div
-            className="bg-blue-600 h-4 rounded-full transition-all duration-300"
-            style={{ width: `${progress?.percentage || 0}%` }}
-          />
+        <div className="mb-6">
+          <div className="w-full bg-dark-700 rounded-full h-3 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-primary to-cyan-500 h-3 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress?.percentage || 0}%` }}
+            />
+          </div>
         </div>
 
-        {/* Current step */}
+        {/* Current step message */}
         {progress && (
-          <p className="text-lg text-gray-700 mb-6 font-medium">{progress.message}</p>
+          <p className="text-lg text-slate-300 mb-6 font-medium">{progress.message}</p>
         )}
 
         {/* Step list */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {steps.map((step, index) => {
             const isCompleted = progress && index < progress.step_index;
             const isCurrent = progress && index === progress.step_index;
-            const isPending = !progress || index > progress.step_index;
 
             return (
               <div
                 key={index}
-                className={`flex items-center space-x-3 ${
+                className={`flex items-center space-x-3 transition-colors ${
                   isCompleted
-                    ? 'text-green-600'
+                    ? 'text-green-400'
                     : isCurrent
-                    ? 'text-blue-600 font-semibold'
-                    : 'text-gray-400'
+                    ? 'text-primary'
+                    : 'text-slate-600'
                 }`}
               >
                 {isCompleted ? (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <CheckCircle2 className="w-5 h-5" />
                 ) : isCurrent ? (
-                  <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
+                  <Circle className="w-5 h-5" />
                 )}
-                <span>{step}</span>
+                <span className={isCurrent ? 'font-semibold' : ''}>{step}</span>
               </div>
             );
           })}
@@ -99,8 +117,10 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ jobId, onCompl
 
         {/* Percentage */}
         {progress && (
-          <div className="mt-6 text-center">
-            <span className="text-2xl font-bold text-blue-600">{Math.round(progress.percentage)}%</span>
+          <div className="mt-8 text-center">
+            <span className="text-4xl font-bold bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent">
+              {Math.round(progress.percentage)}%
+            </span>
           </div>
         )}
       </div>
