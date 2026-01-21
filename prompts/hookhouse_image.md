@@ -302,3 +302,11 @@ Before returning, verify:
 - [ ] Text object complete with title, artist, placement, style
 - [ ] Size and resolution specified
 - [ ] No generic clichés or stock photo tropes
+
+---
+
+## INPUTS
+
+{context}
+
+**NOW GENERATE** the output using the format specified above.

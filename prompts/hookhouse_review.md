@@ -202,3 +202,11 @@ Return a JSON object:
 - **Overall score ≥ 8.5**: Proceed to Funksmith critique
 - **Overall score < 8.5**: Return for revision with prioritized feedback
 - **Critical issues present**: Auto-fail, require fixes before re-review
+
+---
+
+## INPUTS
+
+{context}
+
+**NOW GENERATE** the output using the format specified above.

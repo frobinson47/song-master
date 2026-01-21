@@ -168,3 +168,11 @@ Your goal is not to make the lyrics "better" in a literary sense—it's to make 
 Ask yourself: **Would this groove?** **Would this breathe?** **Would this move a body?**
 
 If the answer is no, refine until it does.
+
+---
+
+## INPUTS
+
+{context}
+
+**NOW GENERATE** the output using the format specified above.

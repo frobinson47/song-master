@@ -267,3 +267,11 @@ These captions are for **real people** to use in **real contexts**. They should:
 - Avoid overselling or hyperbole
 
 **Think like a fan sharing a song they love, not a marketer pushing a product.**
+
+---
+
+## INPUTS
+
+{context}
+
+**NOW GENERATE** the output using the format specified above.
