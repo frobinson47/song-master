@@ -177,19 +177,8 @@ Ensure the JSON is complete, valid, and captures all visual, spatial, semantic, 
         print(f"Attempting to parse JSON (first 200 chars): {json_str[:200]}")
         scene_blueprint = json.loads(json_str)
 
-        # Build the header for the final output
-        prompt_header = f"""Based on song data, generate a high-fidelity image blueprint in JSON format.
-
-TITLE: {song.metadata.title}
-ARTIST: [Your Fictional Artist Name]
-SUMMARY: {song.metadata.description}
-PRODUCTION STYLE: {', '.join(song.metadata.suno_styles) if song.metadata.suno_styles else 'modern production'}
-LYRICS: {lyrics_preview}
-
-This JSON should be structured to capture all interpretable visual, spatial, semantic, and atmospheric data. Output the JSON as a single structured object."""
-
-        # Combine header and blueprint
-        copy_ready_prompt = f"{prompt_header}\n\n{json.dumps(scene_blueprint, indent=2)}"
+        # Format JSON for output (only JSON, no header)
+        copy_ready_prompt = json.dumps(scene_blueprint, indent=2)
 
         # Save the blueprint to the markdown file
         try:
@@ -215,7 +204,6 @@ This JSON should be structured to capture all interpretable visual, spatial, sem
 
         return {
             "status": "success",
-            "prompt_header": prompt_header,
             "scene_blueprint": scene_blueprint,
             "copy_ready_prompt": copy_ready_prompt,
             "saved_to_file": True

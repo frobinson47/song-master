@@ -63,13 +63,12 @@ export const SongDetailPage: React.FC = () => {
     setGeneratingPrompt(true);
     try {
       const response = await generateImagePrompt(songId);
-      // Format the JSON blueprint nicely
-      const formattedPrompt = `${response.prompt_header}\n\n${JSON.stringify(response.scene_blueprint, null, 2)}`;
-      setImagePrompt(formattedPrompt);
+      // Use the copy_ready_prompt directly (already formatted JSON)
+      setImagePrompt(response.copy_ready_prompt);
       setShowPromptModal(true);
 
       // Also copy to clipboard automatically
-      await navigator.clipboard.writeText(formattedPrompt);
+      await navigator.clipboard.writeText(response.copy_ready_prompt);
     } catch (error: any) {
       console.error('Failed to generate image prompt:', error);
       const errorMessage = error.response?.data?.detail || error.message || 'Failed to generate image prompt';
