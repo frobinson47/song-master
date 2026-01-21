@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getSongs } from '../api/songs';
 import { SongCard } from '../components/SongCard';
 import { useSongsStore } from '../store/songsSlice';
-import { Search, LayoutGrid, List, ChevronRight, Plus, Trash2, Import } from 'lucide-react';
+import { Search, LayoutGrid, List, ChevronRight, Plus, Trash2, Import, Sparkles } from 'lucide-react';
+import { FloatingActionButton } from '../components/FloatingActionButton';
 
 interface Album {
   id: string;
@@ -311,6 +312,13 @@ export const Library: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        icon={Sparkles}
+        onClick={() => navigate('/new')}
+        label="Create New Song"
+      />
     </div>
   );
 };

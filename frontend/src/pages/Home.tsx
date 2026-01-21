@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getSongs } from '../api/songs';
 import { SongMetadata } from '../types/song';
 import { Sparkles, Library, Music, TrendingUp, Clock, ChevronRight } from 'lucide-react';
+import { ParticleBackground } from '../components/ParticleBackground';
 
 export const Home: React.FC = () => {
   const [recentSongs, setRecentSongs] = useState<SongMetadata[]>([]);
@@ -42,8 +43,9 @@ export const Home: React.FC = () => {
     <div className="min-h-full bg-dark-950 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-50 mb-4">
+        <div className="text-center mb-12 relative">
+          <ParticleBackground />
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-50 mb-4 relative z-10">
             Welcome to <span className="gradient-text">Song Master</span>
           </h1>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">

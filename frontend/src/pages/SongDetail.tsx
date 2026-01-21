@@ -443,8 +443,8 @@ export const SongDetailPage: React.FC = () => {
 
       {/* Image Prompt Modal */}
       {showPromptModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass-card max-w-2xl w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="glass-card max-w-2xl w-full p-6 animate-scaleIn">
             <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt Generated!</h2>
             <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
               <p className="text-green-400 text-sm flex items-center">

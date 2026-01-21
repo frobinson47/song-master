@@ -197,8 +197,8 @@ export const Personas: React.FC = () => {
 
         {/* Modal for Create/Edit Persona */}
         {showModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="glass-card max-w-2xl w-full p-6">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+            <div className="glass-card max-w-2xl w-full p-6 animate-scaleIn">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-slate-50">
                   {editingPersona ? 'Edit Persona' : 'Create New Persona'}

@@ -59,14 +59,16 @@ function App() {
 
           {/* Page content */}
           <main className="flex-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/new" element={<NewSong />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="/song/:songId" element={<SongDetailPage />} />
-              <Route path="/personas" element={<Personas />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
+            <div className="animate-fadeIn">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/new" element={<NewSong />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="/song/:songId" element={<SongDetailPage />} />
+                <Route path="/personas" element={<Personas />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
+            </div>
           </main>
         </div>
       </div>
