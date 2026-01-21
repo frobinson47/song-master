@@ -696,6 +696,12 @@ def funksmith_critique_lyrics(
     Apply Sanctified Funksmith refinement to lyrics.
     Adds physiological resonance, breath points, and micro-dynamics.
     """
+    # DEBUG: Log what lyrics we received
+    import sys
+    sys.stderr.write(f"[DEBUG FUNKSMITH] Received lyrics length: {len(lyrics)} chars\n")
+    sys.stderr.write(f"[DEBUG FUNKSMITH] First 200 chars: {lyrics[:200]}\n")
+    sys.stderr.flush()
+
     # Build context
     context = f"Lyrics:\n{lyrics}\n\nBlend: {', '.join(blend)}\nBPM: {bpm or 'Not specified'}"
 
@@ -839,6 +845,29 @@ def generate_hookhouse_metadata(
                 "title_artist": {"title": "Untitled", "artist": "Unknown Artist"},
                 "summary": "A song generated with HookHouse."
             }
+
+        # VALIDATE AND TRIM: Enforce HookHouse character limits
+        # Block 2: Style must be ≤1000 chars
+        if "style_block" in blocks and len(blocks["style_block"]) > 1000:
+            original_len = len(blocks["style_block"])
+            # Trim at last sentence boundary before 1000 chars
+            trimmed = blocks["style_block"][:1000]
+            last_period = trimmed.rfind('. ')
+            if last_period > 800:  # Only trim at sentence if we found one reasonably close
+                trimmed = trimmed[:last_period + 1]
+            blocks["style_block"] = trimmed
+            sys.stderr.write(f"[WARNING] Block 2 trimmed from {original_len} to {len(blocks['style_block'])} chars\n")
+
+        # Block 5: Summary must be ≤500 chars
+        if "summary" in blocks and len(blocks["summary"]) > 500:
+            original_len = len(blocks["summary"])
+            # Trim at last sentence boundary before 500 chars
+            trimmed = blocks["summary"][:500]
+            last_period = trimmed.rfind('. ')
+            if last_period > 400:  # Only trim at sentence if we found one reasonably close
+                trimmed = trimmed[:last_period + 1]
+            blocks["summary"] = trimmed
+            sys.stderr.write(f"[WARNING] Block 5 trimmed from {original_len} to {len(blocks['summary'])} chars\n")
 
         return blocks
 
