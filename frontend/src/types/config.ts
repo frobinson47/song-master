@@ -3,6 +3,7 @@ export interface ProviderConfig {
   available_providers: string[];
   current_model: string;
   available_models: Record<string, string[]>;
+  api_keys_configured: Record<string, boolean>;
 }
 
 export interface UpdateProviderRequest {

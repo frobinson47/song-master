@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getSongs } from '../api/songs';
 import { SongMetadata } from '../types/song';
-import { Sparkles, Library, Music, TrendingUp, Clock, ChevronRight } from 'lucide-react';
+import { Sparkles, Library, Music, TrendingUp, Clock, ChevronRight, LayoutGrid, List } from 'lucide-react';
 import { ParticleBackground } from '../components/ParticleBackground';
+import { SongCard } from '../components/SongCard';
 
 export const Home: React.FC = () => {
   const [recentSongs, setRecentSongs] = useState<SongMetadata[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [stats, setStats] = useState({
     totalSongs: 0,
     thisWeek: 0,
@@ -113,27 +115,69 @@ export const Home: React.FC = () => {
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold gradient-text-cool">Recent Songs</h2>
-            <Link
-              to="/library"
-              className="text-primary hover:text-primary-400 flex items-center space-x-1 text-sm font-medium transition-colors"
-            >
-              <span>View All</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
+            <div className="flex items-center space-x-3">
+              {/* View switcher */}
+              <div className="flex items-center bg-dark-800 rounded-md border border-dark-700">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-l-md transition-colors ${
+                    viewMode === 'grid'
+                      ? 'bg-primary text-dark-950'
+                      : 'text-slate-400 hover:text-slate-50'
+                  }`}
+                  title="Grid view"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-r-md transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-primary text-dark-950'
+                      : 'text-slate-400 hover:text-slate-50'
+                  }`}
+                  title="List view"
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
+
+              <Link
+                to="/library"
+                className="text-primary hover:text-primary-400 flex items-center space-x-1 text-sm font-medium transition-colors"
+              >
+                <span>View All</span>
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
 
           {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center space-x-4 p-3 rounded-lg">
-                  <div className="skeleton-circle w-12 h-12"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="skeleton-title"></div>
-                    <div className="skeleton-text w-1/2"></div>
+            viewMode === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="card overflow-hidden">
+                    <div className="aspect-square w-full skeleton animate-shimmer"></div>
+                    <div className="p-4 space-y-2">
+                      <div className="skeleton-title"></div>
+                      <div className="skeleton-text w-1/2"></div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="card p-4 flex items-center space-x-4">
+                    <div className="skeleton-circle w-16 h-16"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="skeleton-title"></div>
+                      <div className="skeleton-text w-1/3"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
           ) : recentSongs.length === 0 ? (
             <div className="text-center py-8">
               <Music className="w-12 h-12 text-slate-600 mx-auto mb-4" />
@@ -143,48 +187,16 @@ export const Home: React.FC = () => {
                 <span>Create Song</span>
               </Link>
             </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {recentSongs.map((song) => (
+                <SongCard key={song.filename} song={song} viewMode="grid" />
+              ))}
+            </div>
           ) : (
             <div className="space-y-2">
-              {recentSongs.map((song, index) => (
-                <Link
-                  key={song.filename}
-                  to={`/song/${song.filename}`}
-                  className="flex items-center space-x-4 p-3 rounded-lg hover:bg-dark-700/50 transition-all duration-200 hover:translate-x-1 animate-slideIn"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  {/* Album art */}
-                  <div className="w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                    {song.album_art_url ? (
-                      <img
-                        src={`http://localhost:8000${song.album_art_url}`}
-                        alt={song.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/30 to-cyan-500/30 flex items-center justify-center">
-                        <Music className="w-5 h-5 text-primary/70" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Song info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-slate-50 font-medium truncate">{song.title}</h3>
-                    <p className="text-slate-500 text-sm">
-                      {song.persona ? song.persona.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'No Persona'}
-                    </p>
-                  </div>
-
-                  {/* Date */}
-                  <div className="text-slate-500 text-sm">
-                    {new Date(song.created_at).toLocaleDateString()}
-                  </div>
-
-                  {/* Status */}
-                  <span className="tag status-completed px-2 py-1 text-xs rounded">
-                    COMPLETED
-                  </span>
-                </Link>
+              {recentSongs.map((song) => (
+                <SongCard key={song.filename} song={song} viewMode="list" />
               ))}
             </div>
           )}

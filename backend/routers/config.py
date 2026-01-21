@@ -10,7 +10,10 @@ router = APIRouter()
 @router.get("/", response_model=ProviderConfigResponse)
 async def get_config():
     """Get current provider configuration."""
-    load_dotenv()
+    # Load .env from project root (one level up from backend/)
+    import pathlib
+    env_path = pathlib.Path(__file__).parent.parent.parent / ".env"
+    load_dotenv(dotenv_path=env_path)
 
     current_provider = os.getenv("LLM_PROVIDER", "anthropic")
 
@@ -36,11 +39,19 @@ async def get_config():
     elif current_provider == "google":
         current_model = os.getenv("GOOGLE_MODEL", "gemini/gemini-2.5-flash")
 
+    # Check which API keys are configured (without exposing the actual keys)
+    api_keys_configured = {
+        "anthropic": bool(os.getenv("ANTHROPIC_API_KEY")),
+        "openai": bool(os.getenv("OPENAI_API_KEY")),
+        "google": bool(os.getenv("GOOGLE_API_KEY")),
+    }
+
     return ProviderConfigResponse(
         current_provider=current_provider,
         available_providers=["anthropic", "openai", "google"],
         current_model=current_model,
         available_models=available_models,
+        api_keys_configured=api_keys_configured,
     )
 
 
@@ -50,7 +61,9 @@ async def update_config(request: UpdateProviderRequest):
     Update provider configuration.
     Modifies .env file to persist changes.
     """
-    env_file = ".env"
+    # Use .env from project root
+    import pathlib
+    env_file = str(pathlib.Path(__file__).parent.parent.parent / ".env")
 
     # Update LLM_PROVIDER
     set_key(env_file, "LLM_PROVIDER", request.provider)
@@ -73,8 +86,8 @@ async def update_config(request: UpdateProviderRequest):
         elif request.provider == "google":
             set_key(env_file, "GOOGLE_API_KEY", request.api_key)
 
-    # Reload environment variables
-    load_dotenv(override=True)
+    # Reload environment variables from the same path
+    load_dotenv(dotenv_path=env_file, override=True)
 
     # Reset LLM singleton to force re-initialization
     import ai_functions

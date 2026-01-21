@@ -40,3 +40,4 @@ class ProviderConfigResponse(BaseModel):
     available_providers: List[str]
     current_model: str
     available_models: Dict[str, List[str]]  # {provider: [models]}
+    api_keys_configured: Dict[str, bool]  # {provider: has_key}

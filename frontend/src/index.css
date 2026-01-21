@@ -87,7 +87,7 @@ code {
   /* Glass morphism card */
   .glass-card {
     @apply rounded-lg border border-slate-50/10 shadow-2xl;
-    background: rgba(30, 41, 59, 0.6);
+    background: rgba(30, 41, 59, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
