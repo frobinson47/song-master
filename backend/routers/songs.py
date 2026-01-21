@@ -64,7 +64,7 @@ async def delete_song(song_id: str):
 async def generate_image_prompt(song_id: str):
     """
     Generate a high-fidelity image blueprint in JSON format for creating album art.
-    Returns structured data capturing visual, spatial, semantic, and atmospheric information.
+    Uses AI to analyze the song and create a complete, detailed scene blueprint.
     """
     # Get the song to extract metadata
     song = await file_service.get_song_by_id(song_id)
@@ -74,8 +74,98 @@ async def generate_image_prompt(song_id: str):
     # Extract first 1000 characters of lyrics
     lyrics_preview = song.lyrics[:1000] if len(song.lyrics) > 1000 else song.lyrics
 
-    # Build the detailed prompt header
-    prompt_header = f"""Based on song data, generate a high-fidelity image blueprint in JSON format.
+    # Import AI functions
+    from ai_functions import get_llm
+    import json
+    import re
+
+    # Build the prompt for the AI to generate the complete blueprint
+    ai_prompt = f"""Based on the following song data, generate a high-fidelity image blueprint in JSON format for album cover artwork.
+
+TITLE: {song.metadata.title}
+ARTIST: [Your Fictional Artist Name]
+SUMMARY: {song.metadata.description}
+PRODUCTION STYLE: {', '.join(song.metadata.suno_styles) if song.metadata.suno_styles else 'modern production'}
+LYRICS: {lyrics_preview}
+
+Analyze the song's theme, mood, imagery, and style. Then output a complete JSON scene blueprint with ALL fields filled in thoughtfully based on the song's content. Be specific and creative.
+
+Output ONLY the JSON object in this exact format:
+
+{{
+  "spec_version": "scene-blueprint-2.0",
+  "global_scene": {{
+    "environment": {{
+      "location_type": "[indoor|outdoor|vehicle|mixed - choose based on song theme]",
+      "setting_description": "[Detailed 2-3 sentence description of the visual scene that captures the song's essence]",
+      "time_of_day": "[dawn|morning|noon|afternoon|dusk|night|timeless - choose based on mood]",
+      "weather": {{
+        "condition": "[clear|overcast|rain|fog|snow|storm|dust|indoors - choose based on song mood]",
+        "intensity": "[none|light|medium|heavy]"
+      }}
+    }},
+    "lighting": {{
+      "overall_mood": "[naturalistic|cinematic|noir|high_key|low_key - choose based on song style]"
+    }},
+    "camera": {{
+      "framing": "[wide|medium|close|macro - choose what fits the album cover aesthetic]",
+      "angle": "[eye_level|low_angle|high_angle|overhead|dutch - choose for dramatic effect]"
+    }},
+    "style": {{
+      "render_type": "[photoreal|illustration|graphic|mixed - choose based on genre]"
+    }}
+  }},
+  "objects": [
+    {{
+      "name": "[specific object name]",
+      "description": "[detailed visual description]",
+      "position": "[foreground|midground|background]",
+      "importance": "[primary|secondary|tertiary]"
+    }}
+  ],
+  "people": [
+    {{
+      "role": "[main subject|supporting character|crowd]",
+      "description": "[detailed appearance, clothing, pose, expression]",
+      "position": "[specific position in frame]",
+      "action": "[what they're doing]"
+    }}
+  ],
+  "typography": {{
+    "enabled": true,
+    "title": {{
+      "text": "{song.metadata.title}"
+    }},
+    "artist": {{
+      "text": "[Your Artist Name]"
+    }}
+  }}
+}}
+
+Ensure the JSON is complete, valid, and captures all visual, spatial, semantic, and atmospheric elements that would make a compelling album cover for this song."""
+
+    try:
+        # Get LLM and generate the blueprint
+        llm = get_llm(use_local=False)
+        ai_response = llm.invoke(ai_prompt)
+
+        # Extract JSON from response (handle markdown code blocks)
+        json_match = re.search(r'```(?:json)?\s*(\{{.*?\}})\s*```', ai_response, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1)
+        else:
+            # Try to find JSON object directly
+            json_match = re.search(r'\{{.*\}}', ai_response, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+            else:
+                json_str = ai_response
+
+        # Parse the JSON
+        scene_blueprint = json.loads(json_str)
+
+        # Build the header for the final output
+        prompt_header = f"""Based on song data, generate a high-fidelity image blueprint in JSON format.
 
 TITLE: {song.metadata.title}
 ARTIST: [Your Fictional Artist Name]
@@ -85,52 +175,20 @@ LYRICS: {lyrics_preview}
 
 This JSON should be structured to capture all interpretable visual, spatial, semantic, and atmospheric data. Output the JSON as a single structured object."""
 
-    # Create the detailed scene blueprint
-    scene_blueprint = {
-        "spec_version": "scene-blueprint-2.0",
-        "global_scene": {
-            "environment": {
-                "location_type": "mixed",
-                "setting_description": f"Album cover scene for {song.metadata.title}. {song.metadata.description}",
-                "time_of_day": "contextual",
-                "weather": {
-                    "condition": "contextual",
-                    "intensity": "medium"
-                }
-            },
-            "lighting": {
-                "overall_mood": "cinematic"
-            },
-            "camera": {
-                "framing": "medium",
-                "angle": "eye_level"
-            },
-            "style": {
-                "render_type": "photoreal"
-            }
-        },
-        "objects": [],
-        "people": [],
-        "typography": {
-            "enabled": True,
-            "title": {
-                "text": song.metadata.title
-            },
-            "artist": {
-                "text": "[Your Artist Name]"
-            }
+        # Combine header and blueprint
+        copy_ready_prompt = f"{prompt_header}\n\n{json.dumps(scene_blueprint, indent=2)}"
+
+        return {
+            "status": "success",
+            "prompt_header": prompt_header,
+            "scene_blueprint": scene_blueprint,
+            "copy_ready_prompt": copy_ready_prompt
         }
-    }
 
-    # Combine header and blueprint into copy-ready format
-    copy_ready_prompt = f"{prompt_header}\n\n{str(scene_blueprint)}"
-
-    return {
-        "status": "success",
-        "prompt_header": prompt_header,
-        "scene_blueprint": scene_blueprint,
-        "copy_ready_prompt": copy_ready_prompt
-    }
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Error generating image blueprint: {error_msg}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate image blueprint: {error_msg}")
 
 
 @router.post("/{song_id}/regenerate-lyrics", response_model=JobResponse)
