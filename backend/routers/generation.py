@@ -39,18 +39,38 @@ async def generate_song_endpoint(
     """
     # Create job
     job_id = job_manager.create_job(
-        user_input=request.user_input, song_name=request.song_name, persona=request.persona, use_local=request.use_local
+        user_input=request.user_input,
+        song_name=request.song_name,
+        persona=request.persona,
+        use_local=request.use_local,
+        # HookHouse parameters
+        use_hookhouse=request.use_hookhouse,
+        blend=request.blend,
+        mood_style=request.mood_style,
+        explicitness=request.explicitness,
+        pov=request.pov,
+        setting=request.setting,
+        themes_include=request.themes_include,
+        themes_avoid=request.themes_avoid,
+        bpm=request.bpm,
+        time_signature=request.time_signature,
+        key=request.key,
+        groove_texture=request.groove_texture,
+        choir_call_response=request.choir_call_response,
     )
 
     # Define progress callback that sends to WebSocket
+    # HookHouse has 8 steps, original has 9 (album art vs. image prompt)
+    total_steps = 8 if request.use_hookhouse else 9
+
     async def progress_callback(step: str, step_index: int, message: str):
         update = ProgressUpdate(
             job_id=job_id,
             step=step,
             step_index=step_index,
-            total_steps=9,
+            total_steps=total_steps,
             message=message,
-            percentage=round((step_index / 9) * 100, 2),
+            percentage=round((step_index / total_steps) * 100, 2),
             timestamp=datetime.utcnow(),
         )
         await ws_manager.send_progress(job_id, update)
