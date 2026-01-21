@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from backend.models.responses import SongMetadata, SongDetailResponse, JobResponse
 from backend.services.file_service import FileService
+from backend.services.job_manager import JobManager
+from backend.services.song_generator import SongGenerator
 from typing import List, Optional
 import os
 import asyncio
@@ -8,6 +10,18 @@ from pathlib import Path
 
 router = APIRouter()
 file_service = FileService()
+
+
+def get_job_manager():
+    """Dependency injection for job manager."""
+    from backend.main import app
+    return app.state.job_manager
+
+
+def get_song_generator():
+    """Dependency injection for song generator."""
+    from backend.main import app
+    return app.state.song_generator
 
 
 @router.get("/", response_model=List[SongMetadata])
@@ -97,7 +111,11 @@ async def regenerate_art(song_id: str):
 
 
 @router.post("/{song_id}/regenerate-lyrics", response_model=JobResponse)
-async def regenerate_lyrics(song_id: str):
+async def regenerate_lyrics(
+    song_id: str,
+    job_manager: JobManager = Depends(get_job_manager),
+    generator: SongGenerator = Depends(get_song_generator),
+):
     """
     Regenerate lyrics for an existing song.
     This triggers a new song generation job with the original prompt.
@@ -114,34 +132,22 @@ async def regenerate_lyrics(song_id: str):
         )
 
     # Import dependencies
-    from backend.services.job_manager import job_manager
-    from backend.services.song_generator import song_generator
-    from backend.routers.websocket import ws_manager
-    from backend.models.requests import GenerateSongRequest
+    from backend.routers.websocket import manager as ws_manager
+    from backend.models.responses import ProgressUpdate
+    from datetime import datetime
 
-    # Create a new generation request with the original prompt
-    request = GenerateSongRequest(
+    # Create a new job
+    job_id = job_manager.create_job(
         user_input=song.metadata.user_prompt,
         use_local=False,
         song_name=None,  # Let it generate a new name
         persona=None  # Use original persona if we tracked it
     )
 
-    # Create a new job
-    job_id = job_manager.create_job(
-        user_input=request.user_input,
-        use_local=request.use_local,
-        song_name=request.song_name,
-        persona=request.persona,
-    )
-
     # Define progress callback
     async def progress_callback(step: str, step_index: int, message: str):
-        from backend.models.responses import ProgressUpdate
-        from datetime import datetime
-
         # Calculate percentage (9 total steps)
-        percentage = (step_index / 9) * 100
+        percentage = round((step_index / 9) * 100, 2)
 
         update = ProgressUpdate(
             job_id=job_id,
@@ -155,7 +161,7 @@ async def regenerate_lyrics(song_id: str):
         await ws_manager.send_progress(job_id, update)
 
     # Start the job
-    await job_manager.start_job(job_id, song_generator, progress_callback)
+    await job_manager.start_job(job_id, generator, progress_callback)
 
     # Return job info
     websocket_url = f"ws://localhost:8000/ws/{job_id}"
