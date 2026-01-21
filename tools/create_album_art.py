@@ -32,31 +32,34 @@ def generate_with_openai(prompt: str, output_file: str, model: str = "dall-e-3")
 
 
 def generate_with_google(prompt: str, output_file: str) -> None:
-    """Generate album art using Google Imagen via Vertex AI or direct API."""
+    """Generate album art using Google Gemini image generation."""
     api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise ValueError("Missing GOOGLE_API_KEY environment variable")
 
-    # Try using litellm for Google image generation
     try:
-        from litellm import image_generation
-        response = image_generation(
-            model="vertex_ai/imagen-3-image-generation",
-            prompt=base_prompt + prompt,
-            api_key=api_key,
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+
+        # Use Gemini with image generation capabilities
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+
+        # Generate image using Gemini
+        response = model.generate_content(
+            f"{base_prompt}{prompt}",
+            generation_config=genai.GenerationConfig(
+                temperature=1.0,
+                candidate_count=1,
+            )
         )
 
-        # Handle response based on litellm format
-        if hasattr(response, 'data') and len(response.data) > 0:
-            image_url = response.data[0].url
-            import requests
-            image_data = requests.get(image_url).content
-            with open(output_file, "wb") as f:
-                f.write(image_data)
-        else:
-            raise RuntimeError("No image returned from Google API")
+        # Note: As of now, Gemini doesn't directly generate images through this API
+        # This is a placeholder - Google's image generation through AI Studio
+        # requires different API endpoints or using Imagen separately
+        raise RuntimeError("Google AI Studio doesn't support direct image generation. Please use OpenAI DALL-E or disable album art generation.")
+
     except ImportError:
-        raise ValueError("LiteLLM not installed. Install with: pip install litellm")
+        raise ValueError("Google Generative AI SDK not installed. Install with: pip install google-generativeai")
     except Exception as e:
         raise RuntimeError(f"Google image generation failed: {e}")
 

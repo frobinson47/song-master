@@ -399,9 +399,26 @@ def score_lyrics(prompt_template: PromptTemplate, lyrics: str, use_local: bool) 
     formatted_prompt = prompt_template.format(lyrics=lyrics)
     try:
         raw = get_llm(use_local).invoke(formatted_prompt)
+
+        # Try to extract JSON from markdown code blocks if present
+        import re
+        json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', raw, re.DOTALL)
+        if json_match:
+            raw = json_match.group(1)
+
+        # Remove any leading/trailing whitespace
+        raw = raw.strip()
+
+        # Parse JSON
         parsed = json.loads(raw)
-        return float(parsed.get("score", 0))
-    except Exception:
+        score = float(parsed.get("score", 0))
+
+        # Print score for debugging
+        print(f"Score: {score} - {parsed.get('rationale', 'No rationale')}")
+
+        return score
+    except Exception as e:
+        print(f"Failed to parse score from response: {raw[:200] if 'raw' in locals() else 'No response'}... Error: {e}")
         return 0.0
 
 
