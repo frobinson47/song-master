@@ -19,3 +19,12 @@ export const getSongById = async (songId: string): Promise<SongDetail> => {
 export const deleteSong = async (songId: string): Promise<void> => {
   await apiClient.delete(`/songs/${songId}`);
 };
+
+export const regenerateArt = async (songId: string): Promise<void> => {
+  await apiClient.post(`/songs/${songId}/regenerate-art`);
+};
+
+export const regenerateLyrics = async (songId: string): Promise<{ job_id: string; status: string; websocket_url: string }> => {
+  const response = await apiClient.post<{ job_id: string; status: string; websocket_url: string }>(`/songs/${songId}/regenerate-lyrics`);
+  return response.data;
+};

@@ -1,7 +1,10 @@
-from fastapi import APIRouter, HTTPException, Query
-from backend.models.responses import SongMetadata, SongDetailResponse
+from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from backend.models.responses import SongMetadata, SongDetailResponse, JobResponse
 from backend.services.file_service import FileService
 from typing import List, Optional
+import os
+import asyncio
+from pathlib import Path
 
 router = APIRouter()
 file_service = FileService()
@@ -41,3 +44,115 @@ async def delete_song(song_id: str):
     if not success:
         raise HTTPException(status_code=404, detail="Song not found")
     return {"status": "deleted"}
+
+
+@router.post("/{song_id}/regenerate-art")
+async def regenerate_art(song_id: str, background_tasks: BackgroundTasks):
+    """
+    Regenerate album art for an existing song.
+    """
+    # Get the song to extract metadata
+    song = await file_service.get_song_by_id(song_id)
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+
+    # Import the album art generation function
+    from tools.create_album_art import generate_album_art_image
+
+    # Prepare the album art prompt from song metadata
+    album_art_prompt = f"{song.metadata.title} - {song.metadata.description}"
+
+    # Generate output filename
+    songs_dir = Path("songs")
+    base_name = song_id.replace(".md", "")
+    art_filename = f"{base_name}_album_art.png"
+    art_filepath = songs_dir / art_filename
+
+    async def generate_art():
+        """Background task to regenerate album art."""
+        try:
+            # Run the generation in a thread pool to avoid blocking
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(
+                None,
+                generate_album_art_image,
+                album_art_prompt,
+                str(art_filepath)
+            )
+
+            # Update the song markdown file with new album art path
+            await file_service.update_album_art_path(song_id, f"/songs/{art_filename}")
+
+        except Exception as e:
+            print(f"Error regenerating album art: {e}")
+
+    # Schedule the generation as a background task
+    background_tasks.add_task(generate_art)
+
+    return {"status": "regenerating", "message": "Album art regeneration started"}
+
+
+@router.post("/{song_id}/regenerate-lyrics", response_model=JobResponse)
+async def regenerate_lyrics(song_id: str):
+    """
+    Regenerate lyrics for an existing song.
+    This triggers a new song generation job with the original prompt.
+    """
+    # Get the song to extract the original user prompt
+    song = await file_service.get_song_by_id(song_id)
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+
+    if not song.metadata.user_prompt:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot regenerate: original prompt not found in song metadata"
+        )
+
+    # Import dependencies
+    from backend.services.job_manager import job_manager
+    from backend.services.song_generator import song_generator
+    from backend.routers.websocket import ws_manager
+    from backend.models.requests import GenerateSongRequest
+
+    # Create a new generation request with the original prompt
+    request = GenerateSongRequest(
+        user_input=song.metadata.user_prompt,
+        use_local=False,
+        song_name=None,  # Let it generate a new name
+        persona=None  # Use original persona if we tracked it
+    )
+
+    # Create a new job
+    job_id = job_manager.create_job(
+        user_input=request.user_input,
+        use_local=request.use_local,
+        song_name=request.song_name,
+        persona=request.persona,
+    )
+
+    # Define progress callback
+    async def progress_callback(step: str, step_index: int, message: str):
+        from backend.models.responses import ProgressUpdate
+        from datetime import datetime
+
+        # Calculate percentage (9 total steps)
+        percentage = (step_index / 9) * 100
+
+        update = ProgressUpdate(
+            job_id=job_id,
+            step=step,
+            step_index=step_index,
+            total_steps=9,
+            message=message,
+            percentage=percentage,
+            timestamp=datetime.utcnow(),
+        )
+        await ws_manager.send_progress(job_id, update)
+
+    # Start the job
+    await job_manager.start_job(job_id, song_generator, progress_callback)
+
+    # Return job info
+    websocket_url = f"ws://localhost:8000/ws/{job_id}"
+    return JobResponse(job_id=job_id, status="running", websocket_url=websocket_url)

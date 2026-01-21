@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo:*)",
+      "Bash(curl:*)",
+      "Bash(uvicorn:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(xargs:*)",
+      "Bash(git add:*)",
+      "Bash(git reset .claude/ nul)",
+      "Bash(cd D:Claude Code Reposong-masterfrontend)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

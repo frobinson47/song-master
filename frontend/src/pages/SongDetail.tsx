@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSongById, deleteSong } from '../api/songs';
+import { getSongById, deleteSong, regenerateArt, regenerateLyrics } from '../api/songs';
 import { SongDetail } from '../types/song';
 import { Trash2, Download, RefreshCw, Music, Copy, Check, ChevronDown } from 'lucide-react';
 import { LyricsViewer } from '../components/LyricsViewer';
+import { useGenerationStore } from '../store/generationSlice';
 
 export const SongDetailPage: React.FC = () => {
   const { songId } = useParams<{ songId: string }>();
   const navigate = useNavigate();
+  const { setJobId, setStatus } = useGenerationStore();
   const [song, setSong] = useState<SongDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [copiedStyles, setCopiedStyles] = useState(false);
   const [copiedExclude, setCopiedExclude] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState('');
+  const [regeneratingArt, setRegeneratingArt] = useState(false);
+  const [regeneratingLyrics, setRegeneratingLyrics] = useState(false);
 
   useEffect(() => {
     if (songId) {
@@ -48,6 +52,44 @@ export const SongDetailPage: React.FC = () => {
       alert('Failed to delete song');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleRegenerateArt = async () => {
+    if (!songId) return;
+
+    setRegeneratingArt(true);
+    try {
+      await regenerateArt(songId);
+      // Wait a bit for the art to be generated, then reload
+      setTimeout(() => {
+        loadSong();
+        setRegeneratingArt(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Failed to regenerate art:', error);
+      alert('Failed to regenerate album art');
+      setRegeneratingArt(false);
+    }
+  };
+
+  const handleRegenerateLyrics = async () => {
+    if (!songId) return;
+
+    if (!confirm('This will create a new song with regenerated lyrics. Continue?')) return;
+
+    setRegeneratingLyrics(true);
+    try {
+      const response = await regenerateLyrics(songId);
+      // Set the job in the generation store
+      setJobId(response.job_id);
+      setStatus('generating');
+      // Navigate to the new song page to show the progress tracker
+      navigate('/new');
+    } catch (error) {
+      console.error('Failed to regenerate lyrics:', error);
+      alert('Failed to regenerate lyrics');
+      setRegeneratingLyrics(false);
     }
   };
 
@@ -115,13 +157,21 @@ export const SongDetailPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2">
               <span className="tag status-completed px-3 py-1">COMPLETED</span>
-              <button className="btn-secondary flex items-center space-x-2">
-                <RefreshCw className="w-4 h-4" />
-                <span>Regenerate Art</span>
+              <button
+                onClick={handleRegenerateArt}
+                disabled={regeneratingArt}
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${regeneratingArt ? 'animate-spin' : ''}`} />
+                <span>{regeneratingArt ? 'Regenerating...' : 'Regenerate Art'}</span>
               </button>
-              <button className="btn-secondary flex items-center space-x-2">
-                <RefreshCw className="w-4 h-4" />
-                <span>Regenerate Lyrics</span>
+              <button
+                onClick={handleRegenerateLyrics}
+                disabled={regeneratingLyrics}
+                className="btn-secondary flex items-center space-x-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${regeneratingLyrics ? 'animate-spin' : ''}`} />
+                <span>{regeneratingLyrics ? 'Regenerating...' : 'Regenerate Lyrics'}</span>
               </button>
               <button
                 onClick={handleDelete}
