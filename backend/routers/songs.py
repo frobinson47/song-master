@@ -74,7 +74,11 @@ async def regenerate_art(song_id: str):
     from tools.create_album_art import generate_album_art_image
 
     # Prepare the album art prompt from song metadata
-    album_art_prompt = f"{song.metadata.title} - {song.metadata.description}"
+    # Use the full user prompt for better image quality (matches original generation)
+    album_art_prompt = (
+        f"Album cover for song '{song.metadata.title}' with theme {song.metadata.user_prompt}. "
+        "Do not include any text, lettering, or typography on the image."
+    )
 
     # Generate output filename (match the naming convention used in song generation)
     songs_dir = Path("songs")
