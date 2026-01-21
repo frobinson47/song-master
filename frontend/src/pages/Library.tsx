@@ -107,7 +107,7 @@ export const Library: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-slate-500 text-sm">Workspace</p>
-            <h1 className="text-2xl font-bold text-slate-50">Albums & Songs</h1>
+            <h1 className="text-3xl font-bold gradient-text-purple">Albums & Songs</h1>
           </div>
           <div className="flex items-center space-x-3">
             <button className="btn-secondary flex items-center space-x-2">
@@ -126,7 +126,7 @@ export const Library: React.FC = () => {
 
         {/* Albums Section */}
         <div className="card p-4 mb-6">
-          <h2 className="text-lg font-semibold text-slate-50 mb-4">Albums</h2>
+          <h2 className="text-xl font-bold gradient-text-warm mb-4">Albums</h2>
 
           {albums.map((album) => (
             <div key={album.id} className="mb-2">

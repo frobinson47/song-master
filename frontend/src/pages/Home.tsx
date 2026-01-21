@@ -43,11 +43,11 @@ export const Home: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-50 mb-4">
-            Welcome to <span className="text-primary">Song Master</span>
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-50 mb-4">
+            Welcome to <span className="gradient-text">Song Master</span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-8">
-            AI-powered song generation with Claude, GPT, and Gemini.
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+            AI-powered song generation with <span className="text-primary font-semibold">Claude</span>, <span className="text-cyan-400 font-semibold">GPT</span>, and <span className="text-purple-400 font-semibold">Gemini</span>.
             Create professional lyrics with style tags, metadata, and album art.
           </p>
           <div className="flex items-center justify-center space-x-4">
@@ -110,10 +110,10 @@ export const Home: React.FC = () => {
         {/* Recent Songs */}
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-slate-50">Recent Songs</h2>
+            <h2 className="text-2xl font-bold gradient-text-cool">Recent Songs</h2>
             <Link
               to="/library"
-              className="text-primary hover:text-primary-400 flex items-center space-x-1 text-sm font-medium"
+              className="text-primary hover:text-primary-400 flex items-center space-x-1 text-sm font-medium transition-colors"
             >
               <span>View All</span>
               <ChevronRight className="w-4 h-4" />

@@ -16,6 +16,18 @@
   --color-text-secondary: #94a3b8;
   --color-success: #22c55e;
   --color-danger: #dc2626;
+
+  /* Extended color palette */
+  --color-accent-purple: #a855f7;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-pink: #ec4899;
+  --color-accent-green: #10b981;
+
+  /* Gradient presets */
+  --gradient-primary: linear-gradient(135deg, #F5A623 0%, #ec4899 100%);
+  --gradient-cool: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+  --gradient-warm: linear-gradient(135deg, #f97316 0%, #F5A623 100%);
+  --gradient-purple: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
 }
 
 body {
@@ -52,24 +64,61 @@ code {
 
 /* Custom component classes */
 @layer components {
-  /* Primary button */
+  /* Primary button - Enhanced with hover effects */
   .btn-primary {
-    @apply px-6 py-2 bg-primary text-dark-950 font-semibold rounded-md hover:bg-primary-600 transition-colors;
+    @apply px-6 py-2 bg-primary text-dark-950 font-semibold rounded-md hover:bg-primary-600 transition-all duration-200 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5;
   }
 
-  /* Secondary button */
+  /* Secondary button - Enhanced with hover effects */
   .btn-secondary {
-    @apply px-6 py-2 bg-dark-800 text-slate-50 border border-dark-700 font-medium rounded-md hover:bg-dark-700 transition-colors;
+    @apply px-6 py-2 bg-dark-800 text-slate-50 border border-dark-700 font-medium rounded-md hover:bg-dark-700 transition-all duration-200 hover:border-primary/50 hover:-translate-y-0.5;
   }
 
-  /* Danger button */
+  /* Danger button - Enhanced with hover effects */
   .btn-danger {
-    @apply px-4 py-2 bg-red-700 text-white font-medium rounded-md hover:bg-red-600 transition-colors;
+    @apply px-4 py-2 bg-red-700 text-white font-medium rounded-md hover:bg-red-600 transition-all duration-200 hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5;
   }
 
-  /* Card container */
+  /* Card container - Enhanced with hover lift */
   .card {
-    @apply bg-dark-800 border border-dark-700/50 rounded-lg;
+    @apply bg-dark-800 border border-dark-700/50 rounded-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50;
+  }
+
+  /* Glass morphism card */
+  .glass-card {
+    @apply rounded-lg border border-slate-50/10 shadow-2xl;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Gradient text utilities */
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-cool {
+    background: var(--gradient-cool);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-warm {
+    background: var(--gradient-warm);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-purple {
+    background: var(--gradient-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Input fields */

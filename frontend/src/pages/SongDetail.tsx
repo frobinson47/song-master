@@ -189,7 +189,7 @@ export const SongDetailPage: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-slate-500 text-sm">Song</p>
-              <h1 className="text-2xl font-bold text-slate-50">{song.metadata.title}</h1>
+              <h1 className="text-3xl font-bold gradient-text">{song.metadata.title}</h1>
             </div>
             <div className="flex items-center space-x-2">
               <span className="tag status-completed px-3 py-1">COMPLETED</span>
@@ -443,8 +443,8 @@ export const SongDetailPage: React.FC = () => {
 
       {/* Image Prompt Modal */}
       {showPromptModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-900 rounded-lg max-w-2xl w-full p-6 border border-dark-700">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card max-w-2xl w-full p-6">
             <h2 className="text-xl font-bold text-slate-50 mb-4">Album Art Image Prompt Generated!</h2>
             <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
               <p className="text-green-400 text-sm flex items-center">
