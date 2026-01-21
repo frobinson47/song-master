@@ -8,6 +8,17 @@ import {
   Search, X, Server, Wifi, Image as ImageIcon
 } from 'lucide-react';
 
+// HookHouse blend options
+const BLEND_OPTIONS = [
+  'Southern Rock', 'Gospel', 'Soul', 'Metal', 'Boogie', 'Groove',
+  'Funk', 'Jam', 'Nashville Country', 'Americana', 'Singer-Songwriter',
+  'Blues', 'R&B', 'Jazz', 'Rock'
+];
+
+const POV_OPTIONS = [
+  'First-person', 'Third-person', 'Second-person', 'Omniscient'
+];
+
 // Available instruments
 const INSTRUMENTS = [
   '808 BEAT', 'ACOUSTIC GUITAR', 'ARPEGGIATED SYNTHS', 'BASS GUITAR', 'DELAYED GUITARS', 'DISTORTED BASS',
@@ -67,6 +78,19 @@ export const NewSong: React.FC = () => {
   const [album, setAlbum] = useState('');
   const [instrumentSearch, setInstrumentSearch] = useState('');
 
+  // HookHouse state
+  const [useHookHouse, setUseHookHouse] = useState(true);
+  const [blend, setBlend] = useState<string[]>([]);
+  const [moodStyle, setMoodStyle] = useState<'dark' | 'clean'>('dark');
+  const [explicitness, setExplicitness] = useState<'explicit' | 'mature'>('mature');
+  const [pov, setPov] = useState('');
+  const [setting, setSetting] = useState('');
+  const [themesInclude, setThemesInclude] = useState('');
+  const [themesAvoid, setThemesAvoid] = useState('');
+  const [timeSignature, setTimeSignature] = useState('');
+  const [grooveTexture, setGrooveTexture] = useState('');
+  const [choirCallResponse, setChoirCallResponse] = useState(false);
+
   const toggleInstrument = (instrument: string) => {
     setSelectedInstruments(prev =>
       prev.includes(instrument)
@@ -75,16 +99,52 @@ export const NewSong: React.FC = () => {
     );
   };
 
+  const handleBlendToggle = (style: string) => {
+    setBlend(prev => {
+      if (prev.includes(style)) {
+        return prev.filter(s => s !== style);
+      } else if (prev.length < 3) {
+        return [...prev, style];
+      }
+      return prev;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate blend selection for HookHouse (2-3 required)
+    if (useHookHouse && (blend.length < 2 || blend.length > 3)) {
+      alert('Please select 2-3 musical styles for the blend');
+      return;
+    }
+
     try {
-      await startGeneration({
+      const params: any = {
         user_input: description,
         song_name: songTitle || null,
         persona: selectedPersona || null,
         use_local: llmLocation === 'local',
-      });
+        use_hookhouse: useHookHouse,
+      };
+
+      // Add HookHouse parameters if enabled
+      if (useHookHouse) {
+        params.blend = blend;
+        params.mood_style = moodStyle;
+        params.explicitness = explicitness;
+        params.pov = pov || null;
+        params.setting = setting || null;
+        params.themes_include = themesInclude ? themesInclude.split(',').map((t: string) => t.trim()) : null;
+        params.themes_avoid = themesAvoid ? themesAvoid.split(',').map((t: string) => t.trim()) : null;
+        params.bpm = tempo ? parseInt(tempo) : null;
+        params.time_signature = timeSignature || null;
+        params.key = musicalKey || null;
+        params.groove_texture = grooveTexture || null;
+        params.choir_call_response = choirCallResponse;
+      }
+
+      await startGeneration(params);
     } catch (err) {
       console.error('Failed to start generation:', err);
     }
@@ -146,6 +206,227 @@ export const NewSong: React.FC = () => {
               💡 Tip: Be specific about the theme, mood, and story you want to tell
             </p>
           </div>
+
+          {/* Workflow Mode Toggle */}
+          <div className="card p-6 bg-gradient-to-br from-purple-500/10 to-blue-500/10 border-2 border-purple-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-slate-50 mb-1">🎤 Workflow Mode</h3>
+                <p className="text-slate-400 text-sm">
+                  {useHookHouse
+                    ? 'HookHouse v2.6.1: Production-ready lyrics with Suno compliance & physiological resonance'
+                    : 'Original: Classic song generation workflow'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setUseHookHouse(!useHookHouse)}
+                className={`relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-300 ${
+                  useHookHouse ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-dark-600'
+                }`}
+              >
+                <span
+                  className={`inline-block h-8 w-8 transform rounded-full bg-white transition-transform shadow-lg ${
+                    useHookHouse ? 'translate-x-11' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* HookHouse Configuration */}
+          {useHookHouse && (
+            <div className="card p-6 border-2 border-purple-500/30">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-50">HookHouse Configuration</h2>
+                  <p className="text-slate-500 text-sm">Fine-tune your HookHouse song generation</p>
+                </div>
+              </div>
+
+              {/* Musical Blend */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-slate-300 mb-3">
+                  Musical Blend * (Select 2-3 styles)
+                  <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full">
+                    {blend.length}/3 selected
+                  </span>
+                </label>
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                  {BLEND_OPTIONS.map(style => (
+                    <button
+                      key={style}
+                      type="button"
+                      onClick={() => handleBlendToggle(style)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        blend.includes(style)
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105'
+                          : 'bg-dark-700 text-slate-300 hover:bg-dark-600 hover:scale-105'
+                      }`}
+                    >
+                      {style}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mood & Explicitness */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Mood Style</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setMoodStyle('dark')}
+                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+                        moodStyle === 'dark'
+                          ? 'bg-slate-800 text-white border-2 border-slate-600'
+                          : 'bg-dark-700 text-slate-400 border-2 border-dark-600'
+                      }`}
+                    >
+                      🌙 Dark
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMoodStyle('clean')}
+                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+                        moodStyle === 'clean'
+                          ? 'bg-blue-600 text-white border-2 border-blue-500'
+                          : 'bg-dark-700 text-slate-400 border-2 border-dark-600'
+                      }`}
+                    >
+                      ☀️ Clean
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Explicitness</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setExplicitness('mature')}
+                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+                        explicitness === 'mature'
+                          ? 'bg-orange-600 text-white border-2 border-orange-500'
+                          : 'bg-dark-700 text-slate-400 border-2 border-dark-600'
+                      }`}
+                    >
+                      Mature
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setExplicitness('explicit')}
+                      className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+                        explicitness === 'explicit'
+                          ? 'bg-red-600 text-white border-2 border-red-500'
+                          : 'bg-dark-700 text-slate-400 border-2 border-dark-600'
+                      }`}
+                    >
+                      ⚠️ Explicit
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* POV & Setting */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Point of View (Optional)</label>
+                  <select
+                    value={pov}
+                    onChange={(e) => setPov(e.target.value)}
+                    className="select-field"
+                  >
+                    <option value="">Auto-detect</option>
+                    {POV_OPTIONS.map(option => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Setting (Optional)</label>
+                  <input
+                    type="text"
+                    value={setting}
+                    onChange={(e) => setSetting(e.target.value)}
+                    placeholder="e.g., '1970s rural South', 'Modern urban'"
+                    className="input-field"
+                  />
+                </div>
+              </div>
+
+              {/* Themes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Themes to Include (Optional)</label>
+                  <input
+                    type="text"
+                    value={themesInclude}
+                    onChange={(e) => setThemesInclude(e.target.value)}
+                    placeholder="redemption, faith, struggle (comma-separated)"
+                    className="input-field"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Themes to Avoid (Optional)</label>
+                  <input
+                    type="text"
+                    value={themesAvoid}
+                    onChange={(e) => setThemesAvoid(e.target.value)}
+                    placeholder="violence, politics (comma-separated)"
+                    className="input-field"
+                  />
+                </div>
+              </div>
+
+              {/* Time Signature & Groove */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Time Signature (Optional)</label>
+                  <input
+                    type="text"
+                    value={timeSignature}
+                    onChange={(e) => setTimeSignature(e.target.value)}
+                    placeholder="4/4"
+                    className="input-field"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Groove/Texture (Optional)</label>
+                  <input
+                    type="text"
+                    value={grooveTexture}
+                    onChange={(e) => setGrooveTexture(e.target.value)}
+                    placeholder="e.g., 'Pocket-oriented, loose feel'"
+                    className="input-field"
+                  />
+                </div>
+              </div>
+
+              {/* Choir/Call-Response */}
+              <div className="bg-dark-800/50 border border-dark-700 p-4 rounded-lg">
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={choirCallResponse}
+                      onChange={(e) => setChoirCallResponse(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-dark-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                  </div>
+                  <span className="text-slate-300 text-sm font-medium">Include choir/call-response elements</span>
+                </label>
+              </div>
+            </div>
+          )}
 
           {/* AI Configuration */}
           <div className="card p-6">
