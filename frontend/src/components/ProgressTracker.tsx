@@ -8,9 +8,14 @@ import {
 interface ProgressTrackerProps {
   jobId: string;
   onComplete: () => void;
+  useHookhouse?: boolean; // NEW: Track which workflow is being used
 }
 
-export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ jobId, onComplete }) => {
+export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
+  jobId,
+  onComplete,
+  useHookhouse = true
+}) => {
   const { progress, connected, error, connect, disconnect, cancelJob } = useWebSocket();
   const [showSuccess, setShowSuccess] = useState(false);
   const [startTime] = useState(Date.now());
@@ -50,17 +55,33 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ jobId, onCompl
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const steps = [
+  // HookHouse workflow steps
+  const hookhouseSteps = [
+    { name: '🎭 Narrative Development', description: 'Crafting story concepts with Storysmith Muse', icon: Sparkles },
+    { name: '✍️ HookHouse Draft', description: 'Generating Suno-compliant lyrics', icon: Music },
+    { name: '🔍 HookHouse Review', description: 'Quality check against HookHouse standards', icon: CheckCircle2 },
+    { name: '🎸 Funksmith Refinement', description: 'Adding physiological resonance & groove', icon: Zap },
+    { name: '✅ Preflight Checks', description: 'Final validation before metadata', icon: CheckCircle2 },
+    { name: '📋 HookHouse Metadata', description: 'Generating Blocks 2-5 (Style, Exclude, Title, Summary)', icon: Music },
+    { name: '🎨 Image Prompt', description: 'Creating album art concept (Block 6)', icon: Sparkles },
+    { name: '📱 Social Captions', description: 'Generating promotional captions', icon: Music },
+    { name: '💾 Saving Song', description: 'Finalizing and saving', icon: CheckCircle2 },
+  ];
+
+  // Original workflow steps
+  const originalSteps = [
     { name: 'Loading resources', description: 'Initializing AI models and resources', icon: Zap },
     { name: 'Parsing input', description: 'Understanding your song requirements', icon: Music },
     { name: 'Drafting lyrics', description: 'Crafting original lyrics', icon: Sparkles },
-    { name: 'Reviewing (rounds)', description: 'Refining and improving quality', icon: CheckCircle2 },
+    { name: 'Reviewing (rounds)', description: 'Multiple critique rounds for refinement', icon: CheckCircle2 },
     { name: 'Applying critique', description: 'Enhancing lyrical flow', icon: Sparkles },
     { name: 'Preflight checks', description: 'Validating song structure', icon: CheckCircle2 },
     { name: 'Generating metadata', description: 'Creating song information', icon: Music },
     { name: 'Creating album art', description: 'Designing cover artwork', icon: Sparkles },
     { name: 'Saving song', description: 'Finalizing and saving', icon: CheckCircle2 },
   ];
+
+  const steps = useHookhouse ? hookhouseSteps : originalSteps;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">

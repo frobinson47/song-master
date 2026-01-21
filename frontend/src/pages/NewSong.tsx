@@ -164,7 +164,11 @@ export const NewSong: React.FC = () => {
     return (
       <div className="min-h-full bg-dark-950 p-6">
         <div className="max-w-4xl mx-auto">
-          <ProgressTracker jobId={jobId} onComplete={handleGenerationComplete} />
+          <ProgressTracker
+            jobId={jobId}
+            onComplete={handleGenerationComplete}
+            useHookhouse={useHookHouse}
+          />
         </div>
       </div>
     );
