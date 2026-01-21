@@ -208,3 +208,13 @@ If you exceed 1000:
 2. Merge sentences with em dashes
 3. Remove "creates a sense of" type phrases
 4. Focus on what happens, not what it's like
+
+---
+
+## NOW GENERATE
+
+Here is all the information you need:
+
+{context}
+
+**Generate Blocks 2-5 NOW** using the format above. Do not ask for more information - use what's provided above to create the metadata blocks.

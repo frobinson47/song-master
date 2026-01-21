@@ -134,3 +134,11 @@ Return a JSON object with this structure:
 ## Assumptions
 
 If any input is missing, state your assumptions briefly (one line) at the top of your response.
+
+---
+
+## USER INPUTS
+
+{context}
+
+**NOW GENERATE** the 3 narrative concepts and best bet selection using the user inputs above. Return your response in the JSON format specified at the beginning of this prompt.

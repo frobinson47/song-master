@@ -231,3 +231,11 @@ Lyrics or fade cue here
 - **Groove-aware phrasing**
 - **No AI-poetic flourishes**
 - **Respect the culture** (Southern, faith, working-class authenticity)
+
+---
+
+## INPUTS
+
+{context}
+
+**NOW GENERATE** the complete song lyrics with proper Suno formatting using the narrative and inputs above. Include arrangement cues in brackets.
