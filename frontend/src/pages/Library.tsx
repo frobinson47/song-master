@@ -22,16 +22,24 @@ export const Library: React.FC = () => {
   const [filterPersona, setFilterPersona] = useState('all');
   const [filterTime, setFilterTime] = useState('all');
 
-  // Mock albums for now
-  const [albums, setAlbums] = useState<Album[]>([
-    { id: '1', name: 'Testing', description: 'This is a test album!', createdAt: '2026-01-03' }
-  ]);
+  // Mock albums - persisted in localStorage
+  const [albums, setAlbums] = useState<Album[]>(() => {
+    const stored = localStorage.getItem('albums');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return [
+      { id: '1', name: 'Testing', description: 'This is a test album!', createdAt: '2026-01-03' }
+    ];
+  });
   const [expandedAlbum, setExpandedAlbum] = useState<string | null>(null);
 
   const handleDeleteAlbum = (albumId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent expanding/collapsing the album
     if (confirm('Are you sure you want to delete this album?')) {
-      setAlbums(albums.filter(album => album.id !== albumId));
+      const updatedAlbums = albums.filter(album => album.id !== albumId);
+      setAlbums(updatedAlbums);
+      localStorage.setItem('albums', JSON.stringify(updatedAlbums));
     }
   };
 
