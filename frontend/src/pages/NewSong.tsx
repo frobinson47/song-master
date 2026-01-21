@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useSongGeneration } from '../hooks/useSongGeneration';
 import { ProgressTracker } from '../components/ProgressTracker';
 import { useGenerationStore } from '../store/generationSlice';
-import { Sparkles, Check } from 'lucide-react';
+import {
+  Sparkles, Check, Music, Disc, Sliders, Users, Wand2,
+  Search, X, Server, Wifi, Image as ImageIcon
+} from 'lucide-react';
 
 // Available instruments
 const INSTRUMENTS = [
@@ -62,6 +65,7 @@ export const NewSong: React.FC = () => {
   const [generateCoverArt, setGenerateCoverArt] = useState(true);
   const [selectedPersona, setSelectedPersona] = useState('');
   const [album, setAlbum] = useState('');
+  const [instrumentSearch, setInstrumentSearch] = useState('');
 
   const toggleInstrument = (instrument: string) => {
     setSelectedInstruments(prev =>
@@ -91,6 +95,10 @@ export const NewSong: React.FC = () => {
     navigate('/library');
   };
 
+  const filteredInstruments = INSTRUMENTS.filter(inst =>
+    inst.toLowerCase().includes(instrumentSearch.toLowerCase())
+  );
+
   // Show progress tracker if generating
   if (status === 'generating' && jobId) {
     return (
@@ -104,186 +112,282 @@ export const NewSong: React.FC = () => {
 
   return (
     <div className="min-h-full bg-dark-950 p-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <p className="text-slate-500 text-sm">Create</p>
-          <h1 className="text-2xl font-bold text-slate-50">New Song</h1>
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-purple-500/30 mb-4">
+            <Wand2 className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">Create New Song</h1>
+          <p className="text-slate-400 text-lg">Transform your ideas into music with AI</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Song Description */}
-          <div className="card p-6">
-            <h2 className="text-lg font-semibold text-slate-50 mb-4">Song Description</h2>
+          <div className="card p-6 gradient-border-primary">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
+                <Music className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-50">Song Description</h2>
+                <p className="text-slate-500 text-sm">What kind of song do you want to create?</p>
+              </div>
+            </div>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={6}
               className="input-field resize-none"
-              placeholder="Describe the song you want to create..."
+              placeholder="Example: A high-energy rock anthem about overcoming challenges, with powerful vocals and electric guitar solos..."
               required
             />
+            <p className="text-slate-500 text-xs mt-2">
+              💡 Tip: Be specific about the theme, mood, and story you want to tell
+            </p>
           </div>
 
-          {/* LLM Location */}
+          {/* AI Configuration */}
           <div className="card p-6">
-            <h3 className="text-sm font-medium text-slate-400 mb-3">LLM Location</h3>
-            <div className="flex items-center space-x-2 mb-2">
-              <button
-                type="button"
-                onClick={() => setLlmLocation('remote')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  llmLocation === 'remote'
-                    ? 'bg-cyan-500 text-dark-950'
-                    : 'bg-dark-700 text-slate-400 hover:bg-dark-600'
-                }`}
-              >
-                Remote
-              </button>
-              <button
-                type="button"
-                onClick={() => setLlmLocation('local')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  llmLocation === 'local'
-                    ? 'bg-cyan-500 text-dark-950'
-                    : 'bg-dark-700 text-slate-400 hover:bg-dark-600'
-                }`}
-              >
-                Local
-              </button>
-              <span className="text-slate-500 text-sm ml-2">
-                Using Remote LLM (includes album art)
-              </span>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center">
+                <Server className="w-5 h-5 text-cyan-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-50">AI Configuration</h2>
+                <p className="text-slate-500 text-sm">Choose your generation settings</p>
+              </div>
             </div>
 
-            {/* Cover Art */}
-            <div className="mt-4">
-              <h3 className="text-sm font-medium text-slate-400 mb-2">Cover Art</h3>
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={generateCoverArt}
-                  onChange={(e) => setGenerateCoverArt(e.target.checked)}
-                  className="w-4 h-4 rounded border-dark-700 bg-dark-900 text-cyan-500 focus:ring-cyan-500/50"
-                />
-                <span className="text-slate-300 text-sm">Generate Cover Art</span>
-              </label>
+            {/* LLM Location Toggle */}
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-slate-300 mb-3">LLM Location</h3>
+              <div className="inline-flex items-center bg-dark-800 rounded-lg border border-dark-700 p-1">
+                <button
+                  type="button"
+                  onClick={() => setLlmLocation('remote')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center space-x-2 ${
+                    llmLocation === 'remote'
+                      ? 'bg-cyan-500 text-dark-950 shadow-lg'
+                      : 'text-slate-400 hover:text-slate-50'
+                  }`}
+                >
+                  <Wifi className="w-4 h-4" />
+                  <span>Remote</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLlmLocation('local')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center space-x-2 ${
+                    llmLocation === 'local'
+                      ? 'bg-cyan-500 text-dark-950 shadow-lg'
+                      : 'text-slate-400 hover:text-slate-50'
+                  }`}
+                >
+                  <Server className="w-4 h-4" />
+                  <span>Local</span>
+                </button>
+              </div>
+              <p className="text-slate-500 text-xs mt-2">
+                {llmLocation === 'remote' ? '☁️ Using cloud AI (includes album art generation)' : '💻 Using local LM Studio'}
+              </p>
             </div>
+
+            {/* Cover Art Toggle */}
+            {llmLocation === 'remote' && (
+              <div className="bg-dark-800/50 border border-dark-700 p-4 rounded-lg">
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={generateCoverArt}
+                      onChange={(e) => setGenerateCoverArt(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-dark-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <ImageIcon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                    <span className="text-slate-300 text-sm font-medium">Generate Album Art</span>
+                  </div>
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Song Details */}
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-slate-50 mb-4">Song Details</h2>
-
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              {/* Song Title */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Song Title</label>
-                <input
-                  type="text"
-                  value={songTitle}
-                  onChange={(e) => setSongTitle(e.target.value)}
-                  className="input-field"
-                  placeholder="Give your song a name"
-                />
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
+                <Sliders className="w-5 h-5 text-purple-400" />
               </div>
-
-              {/* Core Style & Genre */}
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Core Style & Genre</label>
-                <select
-                  value={coreStyle}
-                  onChange={(e) => setCoreStyle(e.target.value)}
-                  className="select-field"
-                >
-                  {CORE_STYLES.map(style => (
-                    <option key={style} value={style}>{style}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Tempo */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Tempo (BPM)</label>
-                <input
-                  type="number"
-                  value={tempo}
-                  onChange={(e) => setTempo(e.target.value)}
-                  className="input-field"
-                  min="40"
-                  max="240"
-                />
+                <h2 className="text-xl font-bold text-slate-50">Song Details</h2>
+                <p className="text-slate-500 text-sm">Fine-tune your song's characteristics</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              {/* Key */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Key</label>
-                <select
-                  value={musicalKey}
-                  onChange={(e) => setMusicalKey(e.target.value)}
-                  className="select-field"
-                >
-                  {KEYS.map(key => (
-                    <option key={key} value={key}>{key}</option>
-                  ))}
-                </select>
-              </div>
+            <div className="space-y-4">
+              {/* Row 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Song Title (Optional)</label>
+                  <input
+                    type="text"
+                    value={songTitle}
+                    onChange={(e) => setSongTitle(e.target.value)}
+                    className="input-field"
+                    placeholder="Leave empty for AI-generated title"
+                  />
+                </div>
 
-              {/* Mood */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Mood</label>
-                <select
-                  value={mood}
-                  onChange={(e) => setMood(e.target.value)}
-                  className="select-field"
-                >
-                  {MOODS.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Vocal Gender */}
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Vocal Gender</label>
-                <select
-                  value={vocalGender}
-                  onChange={(e) => setVocalGender(e.target.value)}
-                  className="select-field"
-                >
-                  <option value="auto">Auto (Persona / AI choice)</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Instruments */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-400 mb-2">Instruments</label>
-              <div className="flex flex-wrap gap-2">
-                {INSTRUMENTS.map(instrument => (
-                  <button
-                    key={instrument}
-                    type="button"
-                    onClick={() => toggleInstrument(instrument)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                      selectedInstruments.includes(instrument)
-                        ? 'bg-primary text-dark-950'
-                        : 'bg-dark-700 text-slate-300 hover:bg-dark-600'
-                    }`}
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Genre</label>
+                  <select
+                    value={coreStyle}
+                    onChange={(e) => setCoreStyle(e.target.value)}
+                    className="select-field"
                   >
-                    {instrument}
-                  </button>
-                ))}
+                    {CORE_STYLES.map(style => (
+                      <option key={style} value={style}>{style}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {/* Row 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Tempo (BPM)</label>
+                  <input
+                    type="number"
+                    value={tempo}
+                    onChange={(e) => setTempo(e.target.value)}
+                    className="input-field"
+                    min="40"
+                    max="240"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Key</label>
+                  <select
+                    value={musicalKey}
+                    onChange={(e) => setMusicalKey(e.target.value)}
+                    className="select-field"
+                  >
+                    {KEYS.map(key => (
+                      <option key={key} value={key}>{key}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Mood</label>
+                  <select
+                    value={mood}
+                    onChange={(e) => setMood(e.target.value)}
+                    className="select-field"
+                  >
+                    {MOODS.map(m => (
+                      <option key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 3 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Vocal Gender</label>
+                  <select
+                    value={vocalGender}
+                    onChange={(e) => setVocalGender(e.target.value)}
+                    className="select-field"
+                  >
+                    <option value="auto">Auto (Persona / AI choice)</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Album (Optional)</label>
+                  <select
+                    value={album}
+                    onChange={(e) => setAlbum(e.target.value)}
+                    className="select-field"
+                  >
+                    <option value="">No Album</option>
+                    <option value="testing">Testing</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Instruments */}
+          <div className="card p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/30 to-green-500/10 flex items-center justify-center">
+                <Disc className="w-5 h-5 text-green-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-slate-50">Instruments</h2>
+                <p className="text-slate-500 text-sm">Select instruments for your song</p>
+              </div>
+              {selectedInstruments.length > 0 && (
+                <span className="px-3 py-1 bg-primary/20 text-primary text-sm font-semibold rounded-full">
+                  {selectedInstruments.length} selected
+                </span>
+              )}
+            </div>
+
+            {/* Search */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                value={instrumentSearch}
+                onChange={(e) => setInstrumentSearch(e.target.value)}
+                className="input-field pl-10 pr-10"
+                placeholder="Search instruments..."
+              />
+              {instrumentSearch && (
+                <button
+                  type="button"
+                  onClick={() => setInstrumentSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Instrument chips */}
+            <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-1">
+              {filteredInstruments.map(instrument => (
+                <button
+                  key={instrument}
+                  type="button"
+                  onClick={() => toggleInstrument(instrument)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
+                    selectedInstruments.includes(instrument)
+                      ? 'bg-primary text-dark-950 shadow-lg scale-105'
+                      : 'bg-dark-700 text-slate-300 hover:bg-dark-600 hover:scale-105'
+                  }`}
+                >
+                  {selectedInstruments.includes(instrument) && (
+                    <Check className="w-3 h-3 inline mr-1" />
+                  )}
+                  {instrument}
+                </button>
+              ))}
             </div>
 
             {/* Custom Instruments */}
-            <div className="mb-4">
-              <label className="block text-xs font-medium text-slate-500 uppercase mb-2">Manual / Custom Instruments</label>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-slate-300 mb-2">Custom Instruments</label>
               <input
                 type="text"
                 value={customInstruments}
@@ -292,52 +396,71 @@ export const NewSong: React.FC = () => {
                 placeholder="e.g. sitar, bagpipes, laser sounds"
               />
             </div>
-
-            {/* Album */}
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-2">Album (optional)</label>
-              <select
-                value={album}
-                onChange={(e) => setAlbum(e.target.value)}
-                className="select-field"
-              >
-                <option value="">No Album</option>
-                <option value="testing">Testing</option>
-              </select>
-            </div>
           </div>
 
           {/* Persona Selection */}
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-slate-50 mb-4">Persona</h2>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/30 to-pink-500/10 flex items-center justify-center">
+                <Users className="w-5 h-5 text-pink-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-50">Persona (Optional)</h2>
+                <p className="text-slate-500 text-sm">Choose a vocal style and personality</p>
+              </div>
+            </div>
+
             <div className="space-y-3">
+              {/* None option */}
+              <button
+                type="button"
+                onClick={() => setSelectedPersona('')}
+                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+                  selectedPersona === ''
+                    ? 'border-primary bg-gradient-to-br from-primary/10 to-purple-500/10 shadow-lg'
+                    : 'border-dark-700 hover:border-dark-600'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-slate-50 font-semibold">No Persona</h3>
+                    <p className="text-slate-500 text-sm mt-1">Let the AI decide the vocal style</p>
+                  </div>
+                  {selectedPersona === '' && (
+                    <Check className="w-5 h-5 text-primary flex-shrink-0" />
+                  )}
+                </div>
+              </button>
+
+              {/* Persona options */}
               {PERSONAS.map(persona => (
-                <div
+                <button
                   key={persona.id}
+                  type="button"
                   onClick={() => setSelectedPersona(persona.id)}
-                  className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                  className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                     selectedPersona === persona.id
-                      ? 'border-primary bg-primary/10'
+                      ? 'border-primary bg-gradient-to-br from-primary/10 to-purple-500/10 shadow-lg'
                       : 'border-dark-700 hover:border-dark-600'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-slate-50 font-semibold">{persona.name}</h3>
-                      <p className="text-slate-500 text-sm mt-1">{persona.description}</p>
+                      <h3 className="text-slate-50 font-semibold text-lg">{persona.name}</h3>
+                      <p className="text-slate-400 text-sm mt-1 leading-relaxed">{persona.description}</p>
                     </div>
                     {selectedPersona === persona.id && (
                       <Check className="w-5 h-5 text-primary flex-shrink-0 ml-4" />
                     )}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
           {/* Error message */}
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg">
+            <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg animate-fadeIn">
               {error}
             </div>
           )}
@@ -346,9 +469,9 @@ export const NewSong: React.FC = () => {
           <button
             type="submit"
             disabled={isGenerating || !description}
-            className="w-full btn-primary py-4 text-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full btn-primary py-5 text-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-primary/20 hover:shadow-primary/40"
           >
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-6 h-6" />
             <span>{isGenerating ? 'Starting Generation...' : 'Generate Song'}</span>
           </button>
         </form>
