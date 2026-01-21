@@ -70,38 +70,38 @@ export const Home: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-6 mb-12">
-          <div className="card p-6">
+          <div className="card p-6 gradient-border-primary animate-fadeIn">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Music className="w-6 h-6 text-primary" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg shadow-primary/20">
+                <Music className="w-7 h-7 text-primary" />
               </div>
               <div>
-                <p className="text-slate-500 text-sm">Total Songs</p>
-                <p className="text-2xl font-bold text-slate-50">{stats.totalSongs}</p>
+                <p className="text-slate-400 text-xs uppercase font-semibold tracking-wide">Total Songs</p>
+                <p className="text-3xl font-bold gradient-text">{stats.totalSongs}</p>
               </div>
             </div>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-6 gradient-border-cool animate-fadeIn" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-cyan-400" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/30 to-purple-500/10 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <TrendingUp className="w-7 h-7 text-cyan-400" />
               </div>
               <div>
-                <p className="text-slate-500 text-sm">This Week</p>
-                <p className="text-2xl font-bold text-slate-50">{stats.thisWeek}</p>
+                <p className="text-slate-400 text-xs uppercase font-semibold tracking-wide">This Week</p>
+                <p className="text-3xl font-bold gradient-text-cool">{stats.thisWeek}</p>
               </div>
             </div>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-6 gradient-border-warm animate-fadeIn" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-green-400" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500/30 to-green-500/10 flex items-center justify-center shadow-lg shadow-green-500/20">
+                <Clock className="w-7 h-7 text-green-400" />
               </div>
               <div>
-                <p className="text-slate-500 text-sm">Personas</p>
-                <p className="text-2xl font-bold text-slate-50">{stats.personas}</p>
+                <p className="text-slate-400 text-xs uppercase font-semibold tracking-wide">Personas</p>
+                <p className="text-3xl font-bold gradient-text-warm">{stats.personas}</p>
               </div>
             </div>
           </div>
@@ -121,8 +121,16 @@ export const Home: React.FC = () => {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center space-x-4 p-3 rounded-lg">
+                  <div className="skeleton-circle w-12 h-12"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="skeleton-title"></div>
+                    <div className="skeleton-text w-1/2"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : recentSongs.length === 0 ? (
             <div className="text-center py-8">
@@ -135,11 +143,12 @@ export const Home: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-2">
-              {recentSongs.map((song) => (
+              {recentSongs.map((song, index) => (
                 <Link
                   key={song.filename}
                   to={`/song/${song.filename}`}
-                  className="flex items-center space-x-4 p-3 rounded-lg hover:bg-dark-700/50 transition-colors"
+                  className="flex items-center space-x-4 p-3 rounded-lg hover:bg-dark-700/50 transition-all duration-200 hover:translate-x-1 animate-slideIn"
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {/* Album art */}
                   <div className="w-12 h-12 rounded-md overflow-hidden flex-shrink-0">

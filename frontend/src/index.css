@@ -121,9 +121,119 @@ code {
     background-clip: text;
   }
 
+  /* Gradient border utilities */
+  .gradient-border {
+    border: 2px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+
+  .gradient-border-primary {
+    @apply gradient-border;
+    background-image: linear-gradient(#1e293b, #1e293b), var(--gradient-primary);
+  }
+
+  .gradient-border-cool {
+    @apply gradient-border;
+    background-image: linear-gradient(#1e293b, #1e293b), var(--gradient-cool);
+  }
+
+  .gradient-border-warm {
+    @apply gradient-border;
+    background-image: linear-gradient(#1e293b, #1e293b), var(--gradient-warm);
+  }
+
+  .gradient-border-purple {
+    @apply gradient-border;
+    background-image: linear-gradient(#1e293b, #1e293b), var(--gradient-purple);
+  }
+
+  /* Skeleton loaders */
+  .skeleton {
+    @apply bg-dark-700 rounded-md animate-pulse;
+  }
+
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-title {
+    @apply skeleton h-8 w-3/4;
+  }
+
+  .skeleton-circle {
+    @apply skeleton rounded-full;
+  }
+
+  /* Micro-animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      #1e293b 0%,
+      #334155 50%,
+      #1e293b 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+
   /* Input fields */
   .input-field {
-    @apply w-full px-4 py-2 bg-dark-900 border border-dark-700 rounded-md text-slate-50 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary;
+    @apply w-full px-4 py-2 bg-dark-900 border border-dark-700 rounded-md text-slate-50 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200;
   }
 
   /* Select fields */

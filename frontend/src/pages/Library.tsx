@@ -259,9 +259,31 @@ export const Library: React.FC = () => {
 
         {/* Song grid/list */}
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent"></div>
-          </div>
+          viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="card overflow-hidden">
+                  <div className="aspect-square w-full skeleton animate-shimmer"></div>
+                  <div className="p-4 space-y-2">
+                    <div className="skeleton-title"></div>
+                    <div className="skeleton-text w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="card p-4 flex items-center space-x-4">
+                  <div className="skeleton-circle w-16 h-16"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="skeleton-title"></div>
+                    <div className="skeleton-text w-1/3"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
         ) : sortedSongs.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-slate-500 text-lg">No songs found. Generate your first song!</p>

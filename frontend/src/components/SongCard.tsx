@@ -22,15 +22,15 @@ export const SongCard: React.FC<SongCardProps> = ({ song, viewMode = 'grid' }) =
     return (
       <div
         onClick={() => navigate(`/song/${song.filename}`)}
-        className="card p-4 flex items-center space-x-4 hover:bg-dark-700/50 cursor-pointer transition-colors"
+        className="card p-4 flex items-center space-x-4 hover:bg-dark-700/50 cursor-pointer transition-all duration-200 hover:translate-x-1 group animate-fadeIn"
       >
         {/* Album art */}
-        <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden">
+        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden shadow-lg group-hover:shadow-primary/20">
           {song.album_art_url ? (
             <img
               src={`http://localhost:8000${song.album_art_url}`}
               alt={song.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/30 to-cyan-500/30 flex items-center justify-center">
@@ -41,13 +41,13 @@ export const SongCard: React.FC<SongCardProps> = ({ song, viewMode = 'grid' }) =
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-slate-50 font-semibold truncate">{song.title}</h3>
-          <p className="text-slate-500 text-sm">{getPersonaDisplay(song.persona) || 'No Persona'}</p>
+          <h3 className="text-slate-50 font-semibold truncate group-hover:text-primary transition-colors">{song.title}</h3>
+          <p className="text-slate-400 text-sm">{getPersonaDisplay(song.persona) || 'No Persona'}</p>
         </div>
 
         {/* Status */}
         <div className="flex items-center space-x-3">
-          <span className="tag status-completed px-3 py-1 text-xs rounded-full">
+          <span className="px-3 py-1 text-xs rounded-full bg-green-500/20 text-green-400 border border-green-500/30 font-semibold">
             COMPLETED
           </span>
         </div>
@@ -59,30 +59,32 @@ export const SongCard: React.FC<SongCardProps> = ({ song, viewMode = 'grid' }) =
   return (
     <div
       onClick={() => navigate(`/song/${song.filename}`)}
-      className="card overflow-hidden hover:border-dark-600 cursor-pointer transition-all group"
+      className="card overflow-hidden hover:border-primary/30 cursor-pointer transition-all group animate-scaleIn relative"
     >
       {/* Album art */}
-      <div className="aspect-square w-full overflow-hidden">
+      <div className="aspect-square w-full overflow-hidden relative">
         {song.album_art_url ? (
           <img
             src={`http://localhost:8000${song.album_art_url}`}
             alt={song.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center">
             <Music className="w-16 h-16 text-primary/50" />
           </div>
         )}
+        {/* Gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
 
       {/* Content */}
-      <div className="p-3">
-        <h3 className="text-slate-50 font-semibold text-sm truncate mb-1">{song.title}</h3>
-        <p className="text-slate-500 text-xs mb-2">{getPersonaDisplay(song.persona) || 'No Persona'}</p>
+      <div className="p-4 relative">
+        <h3 className="text-slate-50 font-bold text-sm truncate mb-1 group-hover:text-primary transition-colors">{song.title}</h3>
+        <p className="text-slate-400 text-xs mb-3">{getPersonaDisplay(song.persona) || 'No Persona'}</p>
 
         {/* Status tag */}
-        <span className="tag status-completed px-2 py-0.5 text-xs rounded">
+        <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-400 border border-green-500/30 font-semibold inline-block">
           COMPLETED
         </span>
       </div>
