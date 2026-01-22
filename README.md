@@ -11,6 +11,7 @@ Song Master leverages AI models from multiple providers (Anthropic Claude, OpenA
 **Features:**
 - 🌐 **Web Interface**: Modern React SPA with real-time progress tracking
 - 🚀 **FastAPI Backend**: RESTful API with WebSocket support
+- 🎸 **HookHouse Integration**: Professional songwriting workflow with Storysmith Muse + Sanctified Funksmith
 - 🎵 **Song Library**: Browse, search, and manage generated songs
 - ⚙️ **Provider Configuration**: Switch between AI providers without editing files
 - 📊 **Real-time Progress**: Watch your song being created step-by-step
@@ -41,6 +42,7 @@ Then open http://localhost:5173 in your browser!
 
 - [Quick Start](#quick-start)
 - [Features](#features)
+- [HookHouse Workflow](#hookhouse-workflow)
 - [Installation](#installation)
 - [Web Interface](#web-interface)
 - [Usage (CLI)](#usage)
@@ -76,6 +78,58 @@ Then open http://localhost:5173 in your browser!
 - **Metadata Generation**: Automatically generates emotional arc, target audience, and commercial potential data
 - **Review Process**: Built-in song review and refinement capabilities
 - **Album Art Generation**: Supports DALL-E, Google Imagen, and OpenRouter for cover art
+
+## HookHouse Workflow
+
+**HookHouse v2.6.1** is a professional songwriting system that generates Suno-compliant lyrics with production blueprints, arrangement cues, and physiological resonance. It combines **Storysmith Muse** (narrative development) with **Sanctified Funksmith** (groove refinement) to create radio-ready songs.
+
+### What Makes HookHouse Different?
+
+Unlike the standard workflow, HookHouse uses a specialized 8-step process:
+
+1. **🎭 Narrative Development** - Storysmith Muse crafts 3 story concepts with emotional arcs
+2. **✍️ HookHouse Draft** - Generates Suno-compliant lyrics with arrangement cues
+3. **🔍 HookHouse Review** - Quality check against 10 HookHouse standards (must score ≥8.5/10)
+4. **🎸 Funksmith Refinement** - Adds breath points, physiological resonance, and groove
+5. **✅ Preflight Checks** - Final validation before metadata generation
+6. **📋 HookHouse Metadata** - Generates 4 metadata blocks (Style ≤1000 chars, Excluded Styles, Title/Artist, Summary ≤500 chars)
+7. **🎨 Album Art** - Generates cover artwork
+8. **💾 Saving** - Finalizes and saves complete song
+
+### HookHouse Output Format
+
+HookHouse songs include:
+- **Block 1 (Lyrics)**: Complete song with `[arrangement_cues | ...]` at top, proper section headers `[Verse]`, `[Chorus]`, etc.
+- **Block 2 (Style)**: Flowing prose production blueprint (≤1000 chars) with BPM, key, instrument arrangement
+- **Block 3 (Excluded Styles)**: 5-12 comma-separated genres to avoid
+- **Block 4 (Title/Artist)**: Song title from lyrics + invented artist name fitting the genre
+- **Block 5 (Summary)**: Emotional/physiological arc summary (≤500 chars) with concrete imagery
+- **Funksmith Changelog**: Detailed explanation of every refinement made
+
+### Using HookHouse in the Web Interface
+
+1. Navigate to the **New Song** page
+2. Enable the **"Use HookHouse Workflow"** toggle
+3. Fill in the required HookHouse parameters:
+   - **Song Description**: What kind of song you want
+   - **Blend**: 2-3 musical styles (e.g., "Southern Rock, Gospel")
+   - **Mood**: "dark" or "clean"
+4. Optional parameters: BPM, Key, Time Signature, POV, Setting, Themes
+5. Click **Generate Song** and watch the 8-step HookHouse workflow in real-time
+
+### Manual HookHouse Workflow (Claude Desktop)
+
+For detailed instructions on running the HookHouse workflow manually in Claude Desktop using the prompt files, see:
+- **[HOOKHOUSE_CLAUDE_DESKTOP_INSTRUCTIONS.md](HOOKHOUSE_CLAUDE_DESKTOP_INSTRUCTIONS.md)** - Complete 7-step manual workflow guide
+
+### HookHouse Philosophy
+
+- **Spoken-first**: Would this sound natural muttered in a bar?
+- **Concrete over abstract**: Show with objects/actions, don't tell emotions
+- **Groove-aware**: Does the rhythm suggest physical movement?
+- **Physiologically resonant**: Does it mirror breath, heartbeat, tension/release?
+- **Suno-compliant**: Proper bracket formatting for AI music generation
+- **Character limits enforced**: Auto-trims Block 2 (Style) to ≤1000 chars, Block 5 (Summary) to ≤500 chars
 
 ## Installation
 
@@ -138,7 +192,10 @@ cp .env.example .env
 ### Web Interface Features
 
 - **Home Page**: Generate new songs with a user-friendly form
+  - **HookHouse Toggle**: Switch between standard and HookHouse professional workflows
+  - **Dynamic Form**: Shows HookHouse-specific fields (Blend, Mood, BPM, etc.) when enabled
 - **Live Progress**: Real-time WebSocket updates showing generation progress
+  - **Workflow-Specific Steps**: Displays different progress steps for HookHouse vs standard workflow
 - **Library Page**: Browse all generated songs with search functionality
 - **Song Detail Page**: View full lyrics, metadata, and album art
 - **Settings Page**: Switch AI providers and models without editing config files
@@ -525,20 +582,40 @@ flowchart TD
 
 ```
 song-master/
-├── README.md                 # This file
-├── song_master.py            # Main script
-├── ai_functions.py           # AI interaction functions
-├── helpers.py                # Utility functions
-├── requirements.txt          # Python dependencies
-├── .env.example              # Environment variables template
-├── examples/                 # Example outputs
-│   ├── local/                # Local model examples
-│   ├── openrouter/           # OpenRouter model examples
-│   └── testing-ideas.txt     # Example input
-├── prompts/                  # AI prompts
-├── styles/                   # Style definitions
-├── personas/                 # AI personas
-└── tags/                     # Default tags
+├── README.md                                    # This file
+├── HOOKHOUSE_CLAUDE_DESKTOP_INSTRUCTIONS.md     # HookHouse manual workflow guide
+├── song_master.py                               # Main script with HookHouse workflow
+├── ai_functions.py                              # AI interaction functions
+├── helpers.py                                   # Utility functions
+├── requirements.txt                             # Python dependencies
+├── .env.example                                 # Environment variables template
+├── backend/                                     # FastAPI backend
+│   ├── main.py                                  # API server
+│   ├── models/                                  # Request/response models
+│   ├── routers/                                 # API endpoints
+│   └── services/                                # Business logic
+├── frontend/                                    # React SPA
+│   ├── src/
+│   │   ├── components/                          # React components (including ProgressTracker)
+│   │   ├── pages/                               # Page components (including NewSong with HookHouse toggle)
+│   │   ├── hooks/                               # Custom hooks (WebSocket, etc.)
+│   │   └── api/                                 # API client
+│   └── package.json
+├── examples/                                    # Example outputs
+│   ├── local/                                   # Local model examples
+│   ├── openrouter/                              # OpenRouter model examples
+│   └── testing-ideas.txt                        # Example input
+├── prompts/                                     # AI prompts
+│   ├── narrative_development.md                 # HookHouse: Storysmith Muse
+│   ├── hookhouse_draft.md                       # HookHouse: Draft lyrics
+│   ├── hookhouse_review.md                      # HookHouse: Quality review
+│   ├── funksmith_critique.md                    # HookHouse: Funksmith refinement
+│   ├── hookhouse_metadata.md                    # HookHouse: Metadata blocks
+│   ├── hookhouse_image.md                       # HookHouse: Image prompt
+│   └── caption_generation.md                    # HookHouse: Social captions
+├── styles/                                      # Style definitions
+├── personas/                                    # AI personas
+└── tags/                                        # Default tags
 ```
 
 ## Contributing
