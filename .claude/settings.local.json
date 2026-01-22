@@ -17,7 +17,9 @@
       "Bash(git push:*)",
       "Bash(unset:*)",
       "Bash(ls:*)",
-      "Bash(python song_master.py:*)"
+      "Bash(python song_master.py:*)",
+      "Bash(timeout 180 python:*)",
+      "Bash(tee:*)"
     ]
   }
 }
