@@ -464,6 +464,101 @@ Breakin' the silence — keep shoutin' through the years!
 | **Formatting** | Standard formatting | Detailed style annotations |
 | **Exclude Styles** | Specific exclusions (melodic hooks, catchy chorus) | No exclusions |
 
+### HookHouse Workflow Output
+
+The HookHouse workflow generates professional, Suno-compliant songs with complete metadata blocks, arrangement cues, and Funksmith refinements:
+
+**Example Input:**
+```
+A song about finding redemption on dusty back roads, leaving behind old mistakes
+and finding peace in simple faith
+
+--blend "Southern Rock" "Gospel" --mood clean --bpm 95 --key G --pov first-person
+```
+
+**Output:**
+
+```markdown
+## On These Dusty Back Roads
+### A slow-burning Southern gospel journey from desperation to grace, moving through dusty back roads toward spiritual homecoming. Opens with gravel-road imagery and restrained baritone, building through a church-light revelation into full-throated affirmation of belonging. Physiologically mirrors held tension in verses, exhale and release in chorus, vulnerability whisper in bridge. Ends with the lingering image of coming home, never walking alone—a redemption arc grounded in simple faith and concrete imagery.
+
+## Suno Styles
+Southern gospel rock at 95 BPM in 4/4, anchored in conversational authenticity and redemptive arc. Intro opens with fingerpicked acoustic guitar—sparse, open tuning, natural room tone. Verses sit intimate: baritone vocal delivery with natural breath breaks, minimal percussion (brushed snare only), clean Telecaster arpeggios underneath. Pre-chorus builds tension as bass enters low and steady, vocal compression tightens slightly, drums shift to driving pocket. Chorus explodes full-band: tight kick-snare groove, walking bass, electric guitar melodic and confident, vocal sits front-center with conviction.
+
+## Suno Exclude-styles
+synthpop, EDM, dubstep, trap, K-pop, J-pop, eurobeat, vaporwave, synthwave, chiptune, bubblegum pop, electro house
+
+### Song Lyrics:
+[arrangement_cues |
+- Intro: fingerpicked acoustic guitar, sparse and open, room tone, 95 BPM steady
+- Verse 1: conversational delivery, natural breath at line breaks, minimal percussion
+- Pre-Chorus: bass enters low and steady, slight compression on vocal, building momentum
+- Chorus: full band kicks in—drums, bass, electric guitar—open and driving
+- Bridge: stripped back to acoustic only, vulnerability peak, vocal intimate and raw
+]
+
+[Intro]
+[Fingerpicked acoustic guitar, sparse and open]
+
+[Verse 1]
+Took the long way out of town
+Left some wreckage on the ground
+Couldn't face what I had done
+So I ran toward the setting sun
+
+Dust on my boots / Doubt in my chest
+Figured moving on was better than the rest
+Mile markers blur into the night
+Hoping distance makes it right
+
+[Pre-Chorus]
+But the road keeps asking me
+Who I'm gonna be
+(Who am I?)
+
+[Chorus]
+On these dusty back roads, I'm finding my way
+Leaving all the old ghosts where they lay
+Simple faith and gravel underneath my feet
+That's all I need to feel complete
+On these dusty back roads, I'm coming home
+Never have to walk this alone
+
+[Bridge]
+[Acoustic guitar only, intimate and raw]
+I don't need the city lights
+Don't need to run through the night
+
+Just a quiet place to breathe
+And the grace to believe
+
+(That I'm enough)
+
+[Outro]
+[Fingerpicked acoustic, sustained vocal hum, reverb tail]
+On these dusty back roads
+Yeah, I'm coming home
+
+[5 second fade out]
+[end]
+```
+
+**HookHouse Features Demonstrated:**
+- **Arrangement Cues Block**: `[arrangement_cues | ...]` at the top with micro-dynamics
+- **Block 2 (Style)**: Flowing prose production blueprint (911 chars, auto-trimmed to ≤1000)
+- **Block 3 (Excluded Styles)**: 12 comma-separated genres to avoid
+- **Block 5 (Summary)**: Emotional/physiological arc with concrete imagery (500 chars, auto-trimmed)
+- **Funksmith Refinements**: Breath points indicated with `/`, vocal texture cues in parentheses
+- **Physiological Resonance**: "Dust on my boots / Doubt in my chest" (breath space), "my legs could stand" (concrete)
+- **Suno Compliance**: Perfect bracket formatting, proper section headers, ends with `[end]`
+
+**Funksmith Changelog Extract:**
+> **Verse 1, Line 5**: Changed "and" to "/" to create breath space at 95 BPM
+> **Verse 2, Line 4**: Changed "that I" to "my legs" for concrete physicality
+> **Bridge**: Added "(That I'm enough)" as vulnerability whisper—core realization
+
+See full example: [examples/hookhouse/On_These_Dusty_Back_Roads.md](examples/hookhouse/On_These_Dusty_Back_Roads.md)
+
 ### Cover Art Output
 
 The script also generates cover art for the songs using Nano Banana on OpenRouter. Here's an example of the cover art created for the "Testing Ideas" song:
