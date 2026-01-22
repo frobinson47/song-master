@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSongGeneration } from '../hooks/useSongGeneration';
 import { ProgressTracker } from '../components/ProgressTracker';
 import { useGenerationStore } from '../store/generationSlice';
+import { getPersonas, type Persona } from '../api/personas';
 import {
   Sparkles, Check, Music, Disc, Sliders, Users, Wand2,
-  Search, X, Server, Wifi, Image as ImageIcon
+  Search, X, Server, Wifi, Image as ImageIcon, ChevronDown
 } from 'lucide-react';
 
 // HookHouse blend options
@@ -50,13 +51,6 @@ const MOODS = [
   'uplifting', 'dark', 'mysterious', 'epic', 'playful', 'nostalgic', 'intense'
 ];
 
-// Personas
-const PERSONAS = [
-  { id: 'anagram', name: 'Anagram', description: 'alt pop rock, modern rock, stadium anthem, male lead, energetic, half-spoken verses, soaring chorus, group chants, stomps, claps, bass synth, electric guitar bursts, big drums, Spatial Audio, Dolby ATMOS' },
-  { id: 'antidote', name: 'Antidote', description: '80s hair metal, glam rock, arena rock, party anthem, high-energy, explosive guitar riffs, pounding drums, melodic hooks, gang vocals, power ballad dynamics, rock and roll lifestyle, catchy chorus, guitar solo, anthemic, festive, passionate, raw energy, stadium rock, glam metal swagger, Spatial Audio, Dolby Atmos mix, high-fidelity' },
-  { id: 'bleached_to_perfection', name: 'Bleached To Perfection', description: 'Modern Soulful Electronic, Powerful Cynth-Rock, Hard Rock String Bending Guitar Riffs, Mezzo-soprano-heavy, female rock singer, power vocals, expressive vibrato, emotional delivery, dynamic range, rock attitude, smoky timbre, soulful grit, intense presence, Spatial Audio, Dolby Atmos mix, high-fidelity' },
-];
-
 export const NewSong: React.FC = () => {
   const navigate = useNavigate();
   const { jobId, status, reset } = useGenerationStore();
@@ -78,6 +72,12 @@ export const NewSong: React.FC = () => {
   const [album, setAlbum] = useState('');
   const [instrumentSearch, setInstrumentSearch] = useState('');
 
+  // Personas state
+  const [personas, setPersonas] = useState<Persona[]>([]);
+  const [personasLoading, setPersonasLoading] = useState(true);
+  const [personaSearchOpen, setPersonaSearchOpen] = useState(false);
+  const [personaSearch, setPersonaSearch] = useState('');
+
   // HookHouse state
   const [useHookHouse, setUseHookHouse] = useState(true);
   const [blend, setBlend] = useState<string[]>([]);
@@ -90,6 +90,35 @@ export const NewSong: React.FC = () => {
   const [timeSignature, setTimeSignature] = useState('');
   const [grooveTexture, setGrooveTexture] = useState('');
   const [choirCallResponse, setChoirCallResponse] = useState(false);
+
+  // Fetch personas on mount
+  useEffect(() => {
+    const fetchPersonas = async () => {
+      try {
+        const data = await getPersonas();
+        setPersonas(data);
+      } catch (error) {
+        console.error('Failed to fetch personas:', error);
+        // Fallback to empty list if fetch fails
+        setPersonas([{ id: '', name: 'None', description: 'No persona - use default settings' }]);
+      } finally {
+        setPersonasLoading(false);
+      }
+    };
+
+    fetchPersonas();
+  }, []);
+
+  // Get selected persona object
+  const selectedPersonaObj = personas.find(p => p.id === selectedPersona);
+
+  // Filter personas based on search
+  const filteredPersonas = personaSearch
+    ? personas.filter(p =>
+        p.name.toLowerCase().includes(personaSearch.toLowerCase()) ||
+        p.description.toLowerCase().includes(personaSearch.toLowerCase())
+      )
+    : personas;
 
   const toggleInstrument = (instrument: string) => {
     setSelectedInstruments(prev =>
@@ -696,50 +725,100 @@ export const NewSong: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {/* None option */}
-              <button
-                type="button"
-                onClick={() => setSelectedPersona('')}
-                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left ${
-                  selectedPersona === ''
-                    ? 'border-primary bg-gradient-to-br from-primary/10 to-purple-500/10 shadow-lg'
-                    : 'border-dark-700 hover:border-dark-600'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-slate-50 font-semibold">No Persona</h3>
-                    <p className="text-slate-500 text-sm mt-1">Let the AI decide the vocal style</p>
-                  </div>
-                  {selectedPersona === '' && (
-                    <Check className="w-5 h-5 text-primary flex-shrink-0" />
-                  )}
-                </div>
-              </button>
-
-              {/* Persona options */}
-              {PERSONAS.map(persona => (
+              {/* Searchable dropdown */}
+              <div className="relative">
                 <button
-                  key={persona.id}
                   type="button"
-                  onClick={() => setSelectedPersona(persona.id)}
-                  className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left ${
-                    selectedPersona === persona.id
-                      ? 'border-primary bg-gradient-to-br from-primary/10 to-purple-500/10 shadow-lg'
-                      : 'border-dark-700 hover:border-dark-600'
-                  }`}
+                  onClick={() => setPersonaSearchOpen(!personaSearchOpen)}
+                  className="w-full p-4 rounded-lg border-2 border-dark-700 hover:border-dark-600 transition-all duration-200 text-left bg-dark-800/50"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-slate-50 font-semibold text-lg">{persona.name}</h3>
-                      <p className="text-slate-400 text-sm mt-1 leading-relaxed">{persona.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-slate-50 font-semibold">
+                        {selectedPersonaObj ? selectedPersonaObj.name : 'None'}
+                      </div>
+                      {selectedPersonaObj && selectedPersonaObj.id && (
+                        <p className="text-slate-400 text-sm mt-1 truncate">
+                          {selectedPersonaObj.description.substring(0, 100)}...
+                        </p>
+                      )}
                     </div>
-                    {selectedPersona === persona.id && (
-                      <Check className="w-5 h-5 text-primary flex-shrink-0 ml-4" />
-                    )}
+                    <ChevronDown className={`w-5 h-5 text-slate-400 ml-4 flex-shrink-0 transition-transform ${personaSearchOpen ? 'rotate-180' : ''}`} />
                   </div>
                 </button>
-              ))}
+
+                {/* Dropdown menu */}
+                {personaSearchOpen && (
+                  <div className="absolute z-10 mt-2 w-full bg-dark-800 border border-dark-700 rounded-lg shadow-xl max-h-96 overflow-hidden">
+                    {/* Search input */}
+                    <div className="p-3 border-b border-dark-700">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <input
+                          type="text"
+                          value={personaSearch}
+                          onChange={(e) => setPersonaSearch(e.target.value)}
+                          placeholder="Search personas..."
+                          className="w-full pl-10 pr-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-slate-50 placeholder-slate-500 focus:outline-none focus:border-primary"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Persona list */}
+                    <div className="overflow-y-auto max-h-80">
+                      {personasLoading ? (
+                        <div className="p-4 text-center text-slate-500">
+                          Loading personas...
+                        </div>
+                      ) : filteredPersonas.length === 0 ? (
+                        <div className="p-4 text-center text-slate-500">
+                          No personas found
+                        </div>
+                      ) : (
+                        filteredPersonas.map((persona) => (
+                          <button
+                            key={persona.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPersona(persona.id);
+                              setPersonaSearchOpen(false);
+                              setPersonaSearch('');
+                            }}
+                            className={`w-full p-4 text-left hover:bg-dark-700/50 transition-colors border-b border-dark-700 last:border-b-0 ${
+                              selectedPersona === persona.id ? 'bg-primary/10' : ''
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <div className="text-slate-50 font-semibold">
+                                  {persona.name}
+                                </div>
+                                <p className="text-slate-400 text-sm mt-1 line-clamp-2">
+                                  {persona.description}
+                                </p>
+                              </div>
+                              {selectedPersona === persona.id && (
+                                <Check className="w-5 h-5 text-primary flex-shrink-0 ml-4" />
+                              )}
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Selected persona description (full text when not in dropdown) */}
+              {selectedPersonaObj && selectedPersonaObj.id && (
+                <div className="p-4 rounded-lg bg-dark-800/30 border border-dark-700">
+                  <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">Selected Persona</div>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    {selectedPersonaObj.description}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

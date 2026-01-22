@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import os
 
-from backend.routers import generation, songs, config, websocket
+from backend.routers import generation, songs, config, websocket, personas
 from backend.services.job_manager import JobManager
 from backend.services.song_generator import SongGenerator
 
@@ -46,6 +46,7 @@ if os.path.exists("songs"):
 app.include_router(generation.router, prefix="/api/generation", tags=["generation"])
 app.include_router(songs.router, prefix="/api/songs", tags=["songs"])
 app.include_router(config.router, prefix="/api/config", tags=["config"])
+app.include_router(personas.router, prefix="/api/personas", tags=["personas"])
 app.include_router(websocket.router, prefix="/ws", tags=["websocket"])
 
 
