@@ -1,7 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { ProgressUpdate } from '../types/generation';
 
-const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000/ws';
+// Derive WebSocket URL from current host so it works through proxied domains
+const getWsBaseUrl = () => {
+  if (import.meta.env.VITE_WS_BASE_URL) return import.meta.env.VITE_WS_BASE_URL;
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${window.location.host}/ws`;
+};
 
 export const useWebSocket = () => {
   const [progress, setProgress] = useState<ProgressUpdate | null>(null);
@@ -10,7 +15,7 @@ export const useWebSocket = () => {
   const wsRef = useRef<WebSocket | null>(null);
 
   const connect = useCallback((jobId: string) => {
-    const ws = new WebSocket(`${WS_BASE_URL}/${jobId}`);
+    const ws = new WebSocket(`${getWsBaseUrl()}/${jobId}`);
 
     ws.onopen = () => {
       setConnected(true);

@@ -29,7 +29,7 @@ app = FastAPI(
 )
 
 # CORS middleware for frontend access
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000,http://songmaster.fmr.local").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
