@@ -101,13 +101,13 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           <div className="card p-8 relative overflow-hidden">
             {/* Background gradient orb */}
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#F5A623]/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
 
             <div className="relative">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/30 to-purple-500/30 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/30 to-[#FFB84D]/30 flex items-center justify-center">
                     <Sparkles className="w-6 h-6 text-primary animate-pulse" />
                   </div>
                   <div>
@@ -168,7 +168,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 </div>
                 <div className="relative w-full bg-dark-700 rounded-full h-4 overflow-hidden shadow-inner">
                   <div
-                    className="bg-gradient-to-r from-primary via-purple-500 to-cyan-500 h-4 rounded-full transition-all duration-500 ease-out relative"
+                    className="bg-gradient-to-r from-[#D48A0A] via-primary to-[#FFB84D] h-4 rounded-full transition-all duration-500 ease-out relative"
                     style={{ width: `${progress?.percentage || 0}%` }}
                   >
                     <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
@@ -178,7 +178,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
               {/* Current Step Message */}
               {progress && (
-                <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/30 rounded-lg p-4 mb-6">
+                <div className="bg-gradient-to-r from-primary/10 to-[#FFB84D]/10 border border-primary/30 rounded-lg p-4 mb-6">
                   <p className="text-lg text-slate-50 font-semibold">{progress.message}</p>
                 </div>
               )}
@@ -193,7 +193,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 <div className="bg-dark-800/50 border border-dark-700 rounded-lg p-3 text-center">
                   <Sparkles className="w-5 h-5 text-slate-400 mx-auto mb-1" />
                   <p className="text-xs text-slate-500 mb-1">Current Step</p>
-                  <p className="text-lg font-bold text-cyan-400">
+                  <p className="text-lg font-bold text-[#F5A623]">
                     {progress ? `${progress.step_index + 1} of ${steps.length}` : '0 of 9'}
                   </p>
                 </div>
@@ -292,7 +292,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           </div>
 
           {/* Tips Card */}
-          <div className="card p-6 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+          <div className="card p-6 bg-gradient-to-br from-primary/5 to-[#FFB84D]/5 border-primary/20">
             <div className="flex items-start space-x-3">
               <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
               <div>

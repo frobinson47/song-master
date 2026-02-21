@@ -33,7 +33,7 @@ export const SongCard: React.FC<SongCardProps> = ({ song, viewMode = 'grid' }) =
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/30 to-cyan-500/30 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-primary/30 to-[#FFB84D]/30 flex items-center justify-center">
               <Music className="w-6 h-6 text-primary/70" />
             </div>
           )}
@@ -70,7 +70,7 @@ export const SongCard: React.FC<SongCardProps> = ({ song, viewMode = 'grid' }) =
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-[#FFB84D]/20 flex items-center justify-center">
             <Music className="w-16 h-16 text-primary/50" />
           </div>
         )}

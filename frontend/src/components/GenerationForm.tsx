@@ -94,13 +94,13 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto bg-dark-800 border border-dark-700 p-8 rounded-lg">
       {/* Workflow Toggle */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
+      <div className="bg-gradient-to-r from-[#F5A623]/10 to-[#FFB84D]/10 p-4 rounded-lg border border-[#F5A623]/30">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">Workflow Mode</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="text-lg font-semibold text-slate-50">Workflow Mode</h3>
+            <p className="text-sm text-slate-400">
               {useHookHouse
                 ? 'HookHouse v2.6.1: Production-ready lyrics with Suno compliance & physiological resonance'
                 : 'Original: Classic song generation workflow'}
@@ -110,7 +110,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
             type="button"
             onClick={() => setUseHookHouse(!useHookHouse)}
             className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors ${
-              useHookHouse ? 'bg-purple-600' : 'bg-gray-300'
+              useHookHouse ? 'bg-[#F5A623]' : 'bg-dark-600'
             }`}
           >
             <span
@@ -124,7 +124,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
 
       {/* Song Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-slate-300 mb-2">
           Song Description *
         </label>
         <textarea
@@ -132,7 +132,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
           onChange={(e) => setUserInput(e.target.value)}
           required
           rows={6}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
           placeholder="Describe the song you want to create... (e.g., 'A powerful Southern gospel rock song about redemption and gravel roads')"
         />
       </div>
@@ -140,26 +140,26 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
       {/* Basic Settings */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Song Name (Optional)
           </label>
           <input
             type="text"
             value={songName}
             onChange={(e) => setSongName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             placeholder="My Amazing Song"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Persona (Optional)
           </label>
           <select
             value={persona}
             onChange={(e) => setPersona(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
           >
             <option value="">None</option>
             <option value="antidote">Antidote</option>
@@ -171,14 +171,14 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
 
       {/* HookHouse-Specific Fields */}
       {useHookHouse && (
-        <div className="space-y-6 border-t border-gray-200 pt-6">
-          <h3 className="text-lg font-semibold text-gray-800">HookHouse Configuration</h3>
+        <div className="space-y-6 border-t border-dark-700 pt-6">
+          <h3 className="text-lg font-semibold text-slate-50">HookHouse Configuration</h3>
 
           {/* Blend Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Musical Blend * (Select 2-3 styles)
-              <span className="ml-2 text-xs text-purple-600">
+              <span className="ml-2 text-xs text-[#F5A623]">
                 {blend.length}/3 selected
               </span>
             </label>
@@ -190,8 +190,8 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                   onClick={() => handleBlendToggle(style)}
                   className={`px-3 py-2 text-sm rounded-lg border-2 transition-all ${
                     blend.includes(style)
-                      ? 'bg-purple-600 text-white border-purple-600'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-purple-400'
+                      ? 'bg-[#F5A623] text-slate-950 border-[#F5A623]'
+                      : 'bg-white text-slate-300 border-dark-700 hover:border-[#F5A623]'
                   }`}
                 >
                   {style}
@@ -203,7 +203,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
           {/* Mood & Explicitness */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Mood Style
               </label>
               <div className="flex gap-2">
@@ -212,8 +212,8 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                   onClick={() => setMoodStyle('dark')}
                   className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
                     moodStyle === 'dark'
-                      ? 'bg-gray-800 text-white border-gray-800'
-                      : 'bg-white text-gray-700 border-gray-300'
+                      ? 'bg-slate-800 text-white border-slate-600'
+                      : 'bg-white text-slate-300 border-dark-700'
                   }`}
                 >
                   Dark
@@ -223,8 +223,8 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                   onClick={() => setMoodStyle('clean')}
                   className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
                     moodStyle === 'clean'
-                      ? 'bg-blue-500 text-white border-blue-500'
-                      : 'bg-white text-gray-700 border-gray-300'
+                      ? 'bg-[#F5A623] text-slate-950 border-[#F5A623]'
+                      : 'bg-white text-slate-300 border-dark-700'
                   }`}
                 >
                   Clean
@@ -233,7 +233,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Explicitness
               </label>
               <div className="flex gap-2">
@@ -243,7 +243,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                   className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
                     explicitness === 'mature'
                       ? 'bg-orange-500 text-white border-orange-500'
-                      : 'bg-white text-gray-700 border-gray-300'
+                      : 'bg-white text-slate-300 border-dark-700'
                   }`}
                 >
                   Mature
@@ -254,7 +254,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                   className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
                     explicitness === 'explicit'
                       ? 'bg-red-600 text-white border-red-600'
-                      : 'bg-white text-gray-700 border-gray-300'
+                      : 'bg-white text-slate-300 border-dark-700'
                   }`}
                 >
                   Explicit
@@ -266,13 +266,13 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
           {/* POV & Setting */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Point of View (Optional)
               </label>
               <select
                 value={pov}
                 onChange={(e) => setPov(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               >
                 <option value="">Auto-detect</option>
                 {POV_OPTIONS.map(option => (
@@ -282,7 +282,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Setting (Optional)
               </label>
               <input
@@ -290,7 +290,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 value={setting}
                 onChange={(e) => setSetting(e.target.value)}
                 placeholder="e.g., '1970s rural South', 'Modern urban'"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
           </div>
@@ -298,7 +298,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
           {/* Themes */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Themes to Include (Optional)
               </label>
               <input
@@ -306,12 +306,12 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 value={themesInclude}
                 onChange={(e) => setThemesInclude(e.target.value)}
                 placeholder="redemption, faith, struggle (comma-separated)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Themes to Avoid (Optional)
               </label>
               <input
@@ -319,7 +319,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 value={themesAvoid}
                 onChange={(e) => setThemesAvoid(e.target.value)}
                 placeholder="violence, politics (comma-separated)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
           </div>
@@ -327,7 +327,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
           {/* Musical Parameters */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 BPM (Optional)
               </label>
               <input
@@ -337,12 +337,12 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 placeholder="120"
                 min="40"
                 max="200"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Time Signature (Optional)
               </label>
               <input
@@ -350,12 +350,12 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 value={timeSignature}
                 onChange={(e) => setTimeSignature(e.target.value)}
                 placeholder="4/4"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Key (Optional)
               </label>
               <input
@@ -363,14 +363,14 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
                 value={musicalKey}
                 onChange={(e) => setMusicalKey(e.target.value)}
                 placeholder="C, Am, Eb"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Groove Texture */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Groove/Texture Description (Optional)
             </label>
             <input
@@ -378,7 +378,7 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
               value={grooveTexture}
               onChange={(e) => setGrooveTexture(e.target.value)}
               placeholder="e.g., 'Pocket-oriented, loose feel with Hammond organ swells'"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-dark-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-transparent"
             />
           </div>
 
@@ -389,9 +389,9 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
               id="choirCallResponse"
               checked={choirCallResponse}
               onChange={(e) => setChoirCallResponse(e.target.checked)}
-              className="mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+              className="mr-2 h-4 w-4 text-[#F5A623] focus:ring-primary border-dark-700 rounded"
             />
-            <label htmlFor="choirCallResponse" className="text-sm text-gray-700">
+            <label htmlFor="choirCallResponse" className="text-sm text-slate-300">
               Include choir/call-response elements
             </label>
           </div>
@@ -399,22 +399,22 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
       )}
 
       {/* Use Local */}
-      <div className="flex items-center border-t border-gray-200 pt-4">
+      <div className="flex items-center border-t border-dark-700 pt-4">
         <input
           type="checkbox"
           id="useLocal"
           checked={useLocal}
           onChange={(e) => setUseLocal(e.target.checked)}
-          className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="mr-2 h-4 w-4 text-[#F5A623] focus:ring-primary border-dark-700 rounded"
         />
-        <label htmlFor="useLocal" className="text-sm text-gray-700">
+        <label htmlFor="useLocal" className="text-sm text-slate-300">
           Use local LM Studio model (disables album art)
         </label>
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
@@ -425,9 +425,9 @@ export const GenerationForm: React.FC<GenerationFormProps> = ({ onSubmit }) => {
         disabled={isGenerating}
         className={`w-full py-3 px-6 rounded-lg transition-colors font-medium ${
           useHookHouse
-            ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
-            : 'bg-blue-600 hover:bg-blue-700 text-white'
-        } disabled:bg-gray-400 disabled:cursor-not-allowed`}
+            ? 'bg-gradient-to-r from-[#F5A623] to-[#FFB84D] hover:from-[#FFB84D] hover:to-[#F5A623] text-white'
+            : 'bg-[#F5A623] hover:bg-[#FFB84D] text-white'
+        } disabled:bg-dark-600 disabled:cursor-not-allowed`}
       >
         {isGenerating ? 'Starting Generation...' : useHookHouse ? '🎤 Generate with HookHouse' : 'Generate Song'}
       </button>

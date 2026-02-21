@@ -22,9 +22,9 @@ const PROVIDER_INFO = {
   google: {
     name: 'Gemini',
     icon: Zap,
-    color: 'text-cyan-400',
-    bgColor: 'bg-cyan-500/10',
-    borderColor: 'border-cyan-500/30',
+    color: 'text-[#F5A623]',
+    bgColor: 'bg-amber-500/10',
+    borderColor: 'border-amber-500/30',
   },
 };
 
@@ -75,7 +75,7 @@ export const Navbar: React.FC = () => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-dark-950" />
           </div>
-          <span className="text-lg font-bold gradient-text">Song Master</span>
+          <span className="text-lg font-bold gradient-text">Song Forge</span>
         </div>
 
         {/* Navigation */}

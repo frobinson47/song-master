@@ -208,14 +208,14 @@ export const NewSong: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-purple-500/30 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-[#FFB84D]/30 mb-4">
             <Wand2 className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-2">Create New Song</h1>
           <p className="text-slate-400 text-lg">Transform your ideas into music with AI</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-12">
           {/* Song Description */}
           <div className="card p-6 gradient-border-primary">
             <div className="flex items-center space-x-3 mb-4">
@@ -241,7 +241,7 @@ export const NewSong: React.FC = () => {
           </div>
 
           {/* Workflow Mode Toggle */}
-          <div className="card p-6 bg-gradient-to-br from-purple-500/10 to-blue-500/10 border-2 border-purple-500/30">
+          <div className="card p-6 bg-gradient-to-br from-[#F5A623]/10 to-[#FFB84D]/10 border-2 border-[#F5A623]/30">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-slate-50 mb-1">🎤 Workflow Mode</h3>
@@ -255,7 +255,7 @@ export const NewSong: React.FC = () => {
                 type="button"
                 onClick={() => setUseHookHouse(!useHookHouse)}
                 className={`relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-300 ${
-                  useHookHouse ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-dark-600'
+                  useHookHouse ? 'bg-gradient-to-r from-[#F5A623] to-[#FFB84D]' : 'bg-dark-600'
                 }`}
               >
                 <span
@@ -270,8 +270,8 @@ export const NewSong: React.FC = () => {
           {/* Persona Selection */}
           <div className="card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/30 to-pink-500/10 flex items-center justify-center">
-                <Users className="w-5 h-5 text-pink-400" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#F5A623]" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-50">Persona (Optional)</h2>
@@ -387,10 +387,10 @@ export const NewSong: React.FC = () => {
 
           {/* HookHouse Configuration */}
           {useHookHouse && (
-            <div className="card p-6 border-2 border-purple-500/30">
+            <div className="card p-6 border-2 border-[#F5A623]/30">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-[#F5A623]" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-50">HookHouse Configuration</h2>
@@ -402,7 +402,7 @@ export const NewSong: React.FC = () => {
               <div className="mb-6">
                 <label className="block text-sm font-medium text-slate-300 mb-3">
                   Musical Blend * (Select 2-3 styles)
-                  <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full">
+                  <span className="ml-2 px-2 py-0.5 bg-amber-500/20 text-[#F5A623] text-xs rounded-full">
                     {blend.length}/3 selected
                   </span>
                 </label>
@@ -414,7 +414,7 @@ export const NewSong: React.FC = () => {
                       onClick={() => handleBlendToggle(style)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                         blend.includes(style)
-                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105'
+                          ? 'bg-[#F5A623] text-slate-950 shadow-lg scale-105'
                           : 'bg-dark-700 text-slate-300 hover:bg-dark-600 hover:scale-105'
                       }`}
                     >
@@ -445,7 +445,7 @@ export const NewSong: React.FC = () => {
                       onClick={() => setMoodStyle('clean')}
                       className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
                         moodStyle === 'clean'
-                          ? 'bg-blue-600 text-white border-2 border-blue-500'
+                          ? 'bg-[#F5A623] text-slate-950 border-2 border-[#FFB84D]'
                           : 'bg-dark-700 text-slate-400 border-2 border-dark-600'
                       }`}
                     >
@@ -571,7 +571,7 @@ export const NewSong: React.FC = () => {
                       onChange={(e) => setChoirCallResponse(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-dark-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                    <div className="w-11 h-6 bg-dark-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5A623]"></div>
                   </div>
                   <span className="text-slate-300 text-sm font-medium">Include choir/call-response elements</span>
                 </label>
@@ -582,8 +582,8 @@ export const NewSong: React.FC = () => {
           {/* AI Configuration */}
           <div className="card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center">
-                <Server className="w-5 h-5 text-cyan-400" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                <Server className="w-5 h-5 text-[#F5A623]" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-50">AI Configuration</h2>
@@ -600,7 +600,7 @@ export const NewSong: React.FC = () => {
                   onClick={() => setLlmLocation('remote')}
                   className={`px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center space-x-2 ${
                     llmLocation === 'remote'
-                      ? 'bg-cyan-500 text-dark-950 shadow-lg'
+                      ? 'bg-[#F5A623] text-dark-950 shadow-lg'
                       : 'text-slate-400 hover:text-slate-50'
                   }`}
                 >
@@ -612,7 +612,7 @@ export const NewSong: React.FC = () => {
                   onClick={() => setLlmLocation('local')}
                   className={`px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center space-x-2 ${
                     llmLocation === 'local'
-                      ? 'bg-cyan-500 text-dark-950 shadow-lg'
+                      ? 'bg-[#F5A623] text-dark-950 shadow-lg'
                       : 'text-slate-400 hover:text-slate-50'
                   }`}
                 >
@@ -650,8 +650,8 @@ export const NewSong: React.FC = () => {
           {/* Song Details */}
           <div className="card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
-                <Sliders className="w-5 h-5 text-purple-400" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                <Sliders className="w-5 h-5 text-[#F5A623]" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-50">Song Details</h2>

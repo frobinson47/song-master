@@ -164,7 +164,7 @@ export const SongDetailPage: React.FC = () => {
     return (
       <div className="min-h-full bg-dark-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-purple-500/30 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-[#FFB84D]/30 flex items-center justify-center mx-auto mb-4">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
           </div>
           <p className="text-slate-400">Loading song...</p>
@@ -256,7 +256,7 @@ export const SongDetailPage: React.FC = () => {
 
           {/* User Prompt */}
           {song.metadata.user_prompt && (
-            <div className="mb-6 card p-4 bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/30">
+            <div className="mb-6 card p-4 bg-gradient-to-r from-primary/10 to-[#FFB84D]/10 border-primary/30">
               <div className="flex items-center space-x-2 mb-2">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <p className="text-xs text-primary uppercase font-semibold">Original Prompt</p>
@@ -283,8 +283,8 @@ export const SongDetailPage: React.FC = () => {
             <div className="card p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center">
-                    <Image className="w-5 h-5 text-cyan-400" />
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                    <Image className="w-5 h-5 text-[#F5A623]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-slate-50">Album Art Image Blueprint</h2>
@@ -382,21 +382,21 @@ export const SongDetailPage: React.FC = () => {
 
             {/* Mode and Persona */}
             <div className="flex items-center space-x-2 mb-4 flex-wrap gap-2">
-              <span className="px-3 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold rounded-full">
+              <span className="px-3 py-1 bg-amber-500/20 text-[#F5A623] border border-amber-500/30 text-xs font-semibold rounded-full">
                 MODE: REMOTE
               </span>
               <div className="relative">
                 <select
                   value={selectedPersona}
                   onChange={(e) => setSelectedPersona(e.target.value)}
-                  className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 text-xs font-semibold rounded-full appearance-none pr-6 cursor-pointer"
+                  className="px-3 py-1 bg-amber-500/20 text-[#F5A623] border border-amber-500/30 text-xs font-semibold rounded-full appearance-none pr-6 cursor-pointer"
                 >
                   <option value="">PERSONA: None</option>
                   <option value="bleached_to_perfection">Bleached To Perfection</option>
                   <option value="antidote">Antidote</option>
                   <option value="anagram">Anagram</option>
                 </select>
-                <ChevronDown className="w-3 h-3 absolute right-1.5 top-1/2 -translate-y-1/2 text-purple-400 pointer-events-none" />
+                <ChevronDown className="w-3 h-3 absolute right-1.5 top-1/2 -translate-y-1/2 text-[#F5A623] pointer-events-none" />
               </div>
             </div>
 
@@ -414,7 +414,7 @@ export const SongDetailPage: React.FC = () => {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {song.metadata.suno_styles?.map((style, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs rounded-md font-medium">
+                  <span key={idx} className="px-2 py-1 bg-amber-500/20 text-[#F5A623] border border-amber-500/30 text-xs rounded-md font-medium">
                     {style}
                   </span>
                 ))}

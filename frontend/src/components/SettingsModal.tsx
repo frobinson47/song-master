@@ -28,10 +28,10 @@ const PROVIDER_INFO = {
   google: {
     name: 'Gemini',
     icon: Zap,
-    color: 'from-blue-500 to-cyan-500',
-    bgColor: 'from-blue-500/10 to-cyan-500/10',
-    borderColor: 'border-blue-500/30',
-    textColor: 'text-cyan-400',
+    color: 'from-[#F5A623] to-[#FFB84D]',
+    bgColor: 'from-[#F5A623]/10 to-[#FFB84D]/10',
+    borderColor: 'border-[#F5A623]/30',
+    textColor: 'text-[#F5A623]',
   },
 };
 
@@ -288,7 +288,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-1">Model</p>
-                  <p className="text-sm font-medium text-cyan-400 truncate" title={config.current_model}>
+                  <p className="text-sm font-medium text-[#F5A623] truncate" title={config.current_model}>
                     {config.current_model}
                   </p>
                 </div>

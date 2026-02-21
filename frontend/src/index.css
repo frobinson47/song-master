@@ -8,7 +8,7 @@
 :root {
   --color-primary: #F5A623;
   --color-primary-hover: #D48A0A;
-  --color-secondary: #06b6d4;
+  --color-secondary: #FFB84D;
   --color-bg-primary: #020617;
   --color-bg-secondary: #1e293b;
   --color-border: #334155;
@@ -18,16 +18,15 @@
   --color-danger: #dc2626;
 
   /* Extended color palette */
-  --color-accent-purple: #a855f7;
-  --color-accent-cyan: #06b6d4;
-  --color-accent-pink: #ec4899;
-  --color-accent-green: #10b981;
+  --color-accent-amber: #F5A623;
+  --color-accent-amber-light: #FFB84D;
+  --color-accent-amber-dark: #D48A0A;
 
   /* Gradient presets */
-  --gradient-primary: linear-gradient(135deg, #F5A623 0%, #ec4899 100%);
-  --gradient-cool: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+  --gradient-primary: linear-gradient(135deg, #F5A623 0%, #FFB84D 100%);
+  --gradient-cool: linear-gradient(135deg, #F5A623 0%, #D48A0A 100%);
   --gradient-warm: linear-gradient(135deg, #f97316 0%, #F5A623 100%);
-  --gradient-purple: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --gradient-purple: linear-gradient(135deg, #F5A623 0%, #FFB84D 100%);
 }
 
 body {
@@ -251,7 +250,7 @@ code {
     top: 40%;
     left: 20%;
     animation: float 10s infinite ease-in-out 1s;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.3) 0%, transparent 70%);
   }
 
   .particle-3 {
@@ -268,7 +267,7 @@ code {
     top: 30%;
     right: 20%;
     animation: float 9s infinite ease-in-out 0.5s;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(212, 138, 10, 0.4) 0%, transparent 70%);
   }
 
   .particle-5 {
@@ -285,7 +284,7 @@ code {
     top: 50%;
     right: 10%;
     animation: float 13s infinite ease-in-out 2.5s;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 184, 77, 0.3) 0%, transparent 70%);
   }
 
   .particle-7 {
@@ -302,7 +301,7 @@ code {
     top: 25%;
     left: 60%;
     animation: float 14s infinite ease-in-out 1s;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.3) 0%, transparent 70%);
   }
 
   .particle-9 {
@@ -319,7 +318,7 @@ code {
     top: 35%;
     right: 40%;
     animation: float 11s infinite ease-in-out 0.5s;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(212, 138, 10, 0.4) 0%, transparent 70%);
   }
 
   @keyframes float {
@@ -377,7 +376,7 @@ code {
   }
 
   .tag-cyan {
-    @apply px-2 py-1 text-xs font-medium rounded-md bg-cyan-500/20 text-cyan-400 border border-cyan-500/30;
+    @apply px-2 py-1 text-xs font-medium rounded-md bg-amber-500/20 text-[#F5A623] border border-amber-500/30;
   }
 
   /* Status indicators */

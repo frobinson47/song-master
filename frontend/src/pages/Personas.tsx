@@ -1,48 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Music2, Sparkles, X } from 'lucide-react';
-
-interface Persona {
-  id: string;
-  name: string;
-  description: string;
-  songCount: number;
-}
-
-const DEFAULT_PERSONAS: Persona[] = [
-  {
-    id: 'anagram',
-    name: 'Anagram',
-    description: 'alt pop rock, modern rock, stadium anthem, male lead, energetic, half-spoken verses, soaring chorus, group chants, stomps, claps, bass synth, electric guitar bursts, big drums, Spatial Audio, Dolby ATMOS',
-    songCount: 3,
-  },
-  {
-    id: 'antidote',
-    name: 'Antidote',
-    description: '80s hair metal, glam rock, arena rock, party anthem, high-energy, explosive guitar riffs, pounding drums, melodic hooks, gang vocals, power ballad dynamics, rock and roll lifestyle, catchy chorus, guitar solo, anthemic, festive, passionate, raw energy, stadium rock, glam metal swagger, Spatial Audio, Dolby Atmos mix, high-fidelity',
-    songCount: 5,
-  },
-  {
-    id: 'bleached_to_perfection',
-    name: 'Bleached To Perfection',
-    description: 'Modern Soulful Electronic, Powerful Cynth-Rock, Hard Rock String Bending Guitar Riffs, Mezzo-soprano-heavy, female rock singer, power vocals, expressive vibrato, emotional delivery, dynamic range, rock attitude, smoky timbre, soulful grit, intense presence, Spatial Audio, Dolby Atmos mix, high-fidelity',
-    songCount: 12,
-  },
-];
+import { Persona, getPersonas, createPersona, updatePersona, deletePersona } from '../api/personas';
 
 export const Personas: React.FC = () => {
-  const [personas, setPersonas] = useState<Persona[]>(() => {
-    const stored = localStorage.getItem('personas');
-    return stored ? JSON.parse(stored) : DEFAULT_PERSONAS;
-  });
-
+  const [personas, setPersonas] = useState<Persona[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editingPersona, setEditingPersona] = useState<Persona | null>(null);
   const [formData, setFormData] = useState({ name: '', description: '' });
 
-  const savePersonas = (newPersonas: Persona[]) => {
-    setPersonas(newPersonas);
-    localStorage.setItem('personas', JSON.stringify(newPersonas));
-  };
+  // Fetch personas on mount
+  useEffect(() => {
+    const fetchPersonas = async () => {
+      try {
+        setLoading(true);
+        const data = await getPersonas();
+        setPersonas(data);
+      } catch (err) {
+        console.error('Failed to fetch personas:', err);
+        setError('Failed to load personas. Please try refreshing the page.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPersonas();
+  }, []);
 
   const handleNewPersona = () => {
     setEditingPersona(null);
@@ -56,48 +40,59 @@ export const Personas: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleDeletePersona = (personaId: string) => {
-    if (confirm('Are you sure you want to delete this persona?')) {
-      const updated = personas.filter(p => p.id !== personaId);
-      savePersonas(updated);
+  const handleDeletePersona = async (personaId: string) => {
+    if (!confirm('Are you sure you want to delete this persona?')) {
+      return;
+    }
+
+    try {
+      await deletePersona(personaId);
+      // Remove from local state
+      setPersonas(personas.filter(p => p.id !== personaId));
+    } catch (err) {
+      console.error('Failed to delete persona:', err);
+      alert('Failed to delete persona. Please try again.');
     }
   };
 
-  const handleSavePersona = () => {
+  const handleSavePersona = async () => {
     if (!formData.name.trim() || !formData.description.trim()) {
       alert('Please fill in all fields');
       return;
     }
 
-    if (editingPersona) {
-      // Update existing
-      const updated = personas.map(p =>
-        p.id === editingPersona.id
-          ? { ...p, name: formData.name, description: formData.description }
-          : p
-      );
-      savePersonas(updated);
-    } else {
-      // Create new
-      const newPersona: Persona = {
-        id: formData.name.toLowerCase().replace(/\s+/g, '_'),
-        name: formData.name,
-        description: formData.description,
-        songCount: 0,
-      };
-      savePersonas([...personas, newPersona]);
-    }
+    try {
+      if (editingPersona) {
+        // Update existing
+        const updated = await updatePersona(editingPersona.id, {
+          name: formData.name,
+          description: formData.description,
+        });
+        setPersonas(personas.map(p => (p.id === editingPersona.id ? updated : p)));
+      } else {
+        // Create new
+        const newPersona = await createPersona({
+          name: formData.name,
+          description: formData.description,
+        });
+        setPersonas([...personas, newPersona]);
+      }
 
-    setShowModal(false);
+      setShowModal(false);
+    } catch (err: any) {
+      console.error('Failed to save persona:', err);
+      const errorMessage = err.response?.data?.detail || 'Failed to save persona. Please try again.';
+      alert(errorMessage);
+    }
   };
 
   const getPersonaColor = (index: number) => {
     const colors = [
-      'from-purple-500/20 to-pink-500/20 border-purple-500/30',
-      'from-blue-500/20 to-cyan-500/20 border-blue-500/30',
-      'from-green-500/20 to-emerald-500/20 border-green-500/30',
-      'from-orange-500/20 to-red-500/20 border-orange-500/30',
-      'from-indigo-500/20 to-purple-500/20 border-indigo-500/30',
+      'from-[#F5A623]/20 to-[#FFB84D]/20 border-[#F5A623]/30',
+      'from-[#F5A623]/15 to-[#D48A0A]/20 border-[#F5A623]/25',
+      'from-[#FFB84D]/20 to-[#F5A623]/20 border-[#FFB84D]/30',
+      'from-[#D48A0A]/20 to-[#F5A623]/20 border-[#D48A0A]/30',
+      'from-[#F5A623]/20 to-[#FFB84D]/15 border-[#F5A623]/30',
     ];
     return colors[index % colors.length];
   };
@@ -121,56 +116,76 @@ export const Personas: React.FC = () => {
         </div>
 
         {/* Description */}
-        <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/30 rounded-lg p-4 mb-6">
+        <div className="bg-gradient-to-r from-primary/10 to-[#FFB84D]/10 border border-primary/30 rounded-lg p-4 mb-6">
           <p className="text-slate-300 leading-relaxed">
             <strong className="text-primary">Personas</strong> define the style, voice, and characteristics of your generated songs.
             Each persona has a unique set of attributes that influence the lyrics, mood, and musical direction.
           </p>
         </div>
 
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+            <p className="text-red-400">{error}</p>
+          </div>
+        )}
+
         {/* Personas list */}
-        <div className="space-y-4">
-          {personas.map((persona, index) => (
-            <div
-              key={persona.id}
-              className={`card p-6 bg-gradient-to-br ${getPersonaColor(index)} border-2 hover:scale-[1.02] transition-transform`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <Music2 className="w-5 h-5 text-primary" />
-                    <h3 className="text-xl font-bold text-slate-50">{persona.name}</h3>
-                    <span className="px-3 py-1 bg-primary/20 text-primary text-xs font-semibold rounded-full">
-                      {persona.songCount} {persona.songCount === 1 ? 'song' : 'songs'}
-                    </span>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed pl-8">
-                    {persona.description}
-                  </p>
-                </div>
-                <div className="flex items-center space-x-2 ml-4">
-                  <button
-                    onClick={() => handleEditPersona(persona)}
-                    className="p-2 text-slate-400 hover:text-primary transition-colors rounded-md hover:bg-dark-700/50"
-                    title="Edit persona"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDeletePersona(persona.id)}
-                    className="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-md hover:bg-dark-700/50"
-                    title="Delete persona"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+        {!loading && !error && (
+          <div className="space-y-4">
+            {personas.length === 0 ? (
+              <div className="card p-8 text-center">
+                <Music2 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                <p className="text-slate-400">No personas yet. Create your first one!</p>
               </div>
-            </div>
-          ))}
-        </div>
+            ) : (
+              personas.map((persona, index) => (
+                <div
+                  key={persona.id}
+                  className={`card p-6 bg-gradient-to-br ${getPersonaColor(index)} border-2 hover:scale-[1.02] transition-transform`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Music2 className="w-5 h-5 text-primary" />
+                        <h3 className="text-xl font-bold text-slate-50">{persona.name}</h3>
+                      </div>
+                      <p className="text-slate-300 text-sm leading-relaxed pl-8">
+                        {persona.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-4">
+                      <button
+                        onClick={() => handleEditPersona(persona)}
+                        className="p-2 text-slate-400 hover:text-primary transition-colors rounded-md hover:bg-dark-700/50"
+                        title="Edit persona"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeletePersona(persona.id)}
+                        className="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-md hover:bg-dark-700/50"
+                        title="Delete persona"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
 
         {/* Help text */}
-        <div className="mt-8 card p-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5">
+        <div className="mt-8 card p-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-[#FFB84D]/5">
           <div className="flex items-center space-x-2 mb-3">
             <Sparkles className="w-5 h-5 text-primary" />
             <h4 className="text-primary font-semibold text-lg">Persona Tips</h4>

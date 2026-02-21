@@ -178,11 +178,11 @@ const parseMarkdown = (markdown: string): ParsedSection[] => {
 // Get border color class for section type
 const getSectionBorderColor = (sectionType: string): string => {
   const type = sectionType.toLowerCase();
-  if (type.includes('intro')) return 'border-l-blue-500';
-  if (type.includes('verse')) return 'border-l-cyan-500';
-  if (type.includes('pre-chorus') || type.includes('prechorus')) return 'border-l-purple-500';
+  if (type.includes('intro')) return 'border-l-[#F5A623]';
+  if (type.includes('verse')) return 'border-l-[#FFB84D]';
+  if (type.includes('pre-chorus') || type.includes('prechorus')) return 'border-l-[#D48A0A]';
   if (type.includes('chorus')) return 'border-l-primary';
-  if (type.includes('bridge')) return 'border-l-pink-500';
+  if (type.includes('bridge')) return 'border-l-[#F5A623]';
   if (type.includes('outro') || type.includes('end')) return 'border-l-red-500';
   return 'border-l-slate-500';
 };
@@ -190,11 +190,11 @@ const getSectionBorderColor = (sectionType: string): string => {
 // Get title color for section type
 const getSectionTitleColor = (sectionType: string): string => {
   const type = sectionType.toLowerCase();
-  if (type.includes('intro')) return 'text-blue-400';
-  if (type.includes('verse')) return 'text-cyan-400';
-  if (type.includes('pre-chorus') || type.includes('prechorus')) return 'text-purple-400';
+  if (type.includes('intro')) return 'text-[#F5A623]';
+  if (type.includes('verse')) return 'text-[#FFB84D]';
+  if (type.includes('pre-chorus') || type.includes('prechorus')) return 'text-[#D48A0A]';
   if (type.includes('chorus')) return 'text-primary';
-  if (type.includes('bridge')) return 'text-pink-400';
+  if (type.includes('bridge')) return 'text-[#F5A623]';
   if (type.includes('outro') || type.includes('end')) return 'text-red-400';
   return 'text-slate-400';
 };
@@ -204,12 +204,12 @@ const getTagBgClass = (color: StyleTag['color']): string => {
   const colors: Record<StyleTag['color'], string> = {
     red: 'bg-red-500/20 text-red-400 border-red-500/30',
     yellow: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    cyan: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+    cyan: 'bg-amber-500/20 text-[#FFB84D] border-amber-500/30',
     green: 'bg-green-500/20 text-green-400 border-green-500/30',
-    purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    purple: 'bg-[#D48A0A]/20 text-[#D48A0A] border-[#D48A0A]/30',
+    blue: 'bg-[#F5A623]/20 text-[#F5A623] border-[#F5A623]/30',
     orange: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    pink: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+    pink: 'bg-[#FFB84D]/20 text-[#FFB84D] border-[#FFB84D]/30',
     gray: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
   };
   return colors[color];
@@ -238,7 +238,7 @@ export const LyricsViewer: React.FC<LyricsViewerProps> = ({ markdown }) => {
           onClick={() => setShowStyleTags(!showStyleTags)}
           className={`flex items-center space-x-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
             showStyleTags
-              ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+              ? 'bg-amber-500/20 text-[#F5A623] border border-amber-500/30'
               : 'bg-dark-700 text-slate-400'
           }`}
         >
@@ -249,7 +249,7 @@ export const LyricsViewer: React.FC<LyricsViewerProps> = ({ markdown }) => {
           onClick={() => setShowEffectTags(!showEffectTags)}
           className={`flex items-center space-x-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
             showEffectTags
-              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+              ? 'bg-[#F5A623]/20 text-[#F5A623] border border-[#F5A623]/30'
               : 'bg-dark-700 text-slate-400'
           }`}
         >

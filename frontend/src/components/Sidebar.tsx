@@ -22,7 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemStatus }) => {
           </div>
           <div>
             <span className="text-lg font-bold text-primary">SONG</span>
-            <span className="text-lg font-bold text-slate-50">MASTER</span>
+            <span className="text-lg font-bold text-slate-50">FORGE</span>
           </div>
         </Link>
       </div>
@@ -36,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemStatus }) => {
             className={`flex items-center justify-center space-x-2 w-full py-2 px-4 rounded-md font-medium transition-colors ${
               location.pathname === '/new'
                 ? 'bg-primary text-dark-950'
-                : 'bg-cyan-500 hover:bg-cyan-400 text-dark-950'
+                : 'bg-[#F5A623] hover:bg-[#FFB84D] text-dark-950'
             }`}
           >
             <Plus className="w-4 h-4" />
@@ -47,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ systemStatus }) => {
             className={`flex items-center justify-center space-x-2 w-full py-2 px-4 rounded-md font-medium transition-colors ${
               location.pathname === '/library'
                 ? 'bg-primary text-dark-950'
-                : 'bg-cyan-500 hover:bg-cyan-400 text-dark-950'
+                : 'bg-[#F5A623] hover:bg-[#FFB84D] text-dark-950'
             }`}
           >
             <Library className="w-4 h-4" />

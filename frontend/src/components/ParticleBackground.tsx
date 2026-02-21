@@ -17,8 +17,8 @@ export const ParticleBackground: React.FC = () => {
 
       {/* Animated gradient orbs */}
       <div className="absolute top-20 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute top-40 -right-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-float-delayed"></div>
-      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
+      <div className="absolute top-40 -right-20 w-80 h-80 bg-[#F5A623]/10 rounded-full blur-3xl animate-float-delayed"></div>
+      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-[#F5A623]/8 rounded-full blur-3xl animate-float-slow"></div>
     </div>
   );
 };

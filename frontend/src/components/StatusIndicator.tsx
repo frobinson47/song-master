@@ -70,7 +70,7 @@ export const StatusIndicator: React.FC = () => {
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className="group flex items-center space-x-2 bg-white rounded-full shadow-lg px-4 py-2 hover:shadow-xl transition-all duration-200 border border-gray-200"
+          className="group flex items-center space-x-2 bg-dark-800 border border-dark-700 rounded-full shadow-lg px-4 py-2 hover:shadow-xl transition-all duration-200"
         >
           <div className="relative flex items-center">
             <div
@@ -83,7 +83,7 @@ export const StatusIndicator: React.FC = () => {
               )}
             </div>
           </div>
-          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+          <span className="text-sm font-medium text-slate-300 group-hover:text-slate-50">
             {status.healthy ? 'Online' : 'Offline'}
           </span>
         </button>
@@ -91,12 +91,12 @@ export const StatusIndicator: React.FC = () => {
 
       {/* Expanded view - detailed status */}
       {isExpanded && (
-        <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 min-w-[280px]">
+        <div className="bg-dark-800 rounded-lg shadow-xl border border-dark-700 p-4 min-w-[280px]">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-900">Backend Status</h3>
+            <h3 className="text-sm font-semibold text-slate-50">Backend Status</h3>
             <button
               onClick={() => setIsExpanded(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-slate-400 hover:text-slate-200"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -107,7 +107,7 @@ export const StatusIndicator: React.FC = () => {
           {/* Connection Status */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-600">Connection</span>
+              <span className="text-xs text-slate-400">Connection</span>
               <div className="flex items-center space-x-2">
                 <div
                   className={`h-2 w-2 rounded-full ${
@@ -115,7 +115,7 @@ export const StatusIndicator: React.FC = () => {
                   }`}
                 ></div>
                 <span className={`text-xs font-medium ${
-                  status.healthy ? 'text-green-700' : 'text-red-700'
+                  status.healthy ? 'text-green-400' : 'text-red-400'
                 }`}>
                   {status.healthy ? 'Healthy' : 'Disconnected'}
                 </span>
@@ -126,24 +126,24 @@ export const StatusIndicator: React.FC = () => {
             {status.healthy && (
               <>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">Provider</span>
-                  <span className="text-xs font-medium text-blue-700">
+                  <span className="text-xs text-slate-400">Provider</span>
+                  <span className="text-xs font-medium text-[#F5A623]">
                     {getProviderDisplay(status.provider)}
                   </span>
                 </div>
 
                 {/* Model */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">Model</span>
-                  <span className="text-xs font-mono text-gray-700">
+                  <span className="text-xs text-slate-400">Model</span>
+                  <span className="text-xs font-mono text-slate-300">
                     {getModelShortName(status.model)}
                   </span>
                 </div>
 
                 {/* Port info */}
-                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                  <span className="text-xs text-gray-500">Backend</span>
-                  <span className="text-xs font-mono text-gray-500">
+                <div className="flex items-center justify-between pt-2 border-t border-dark-700">
+                  <span className="text-xs text-slate-500">Backend</span>
+                  <span className="text-xs font-mono text-slate-500">
                     :8000
                   </span>
                 </div>
@@ -152,8 +152,8 @@ export const StatusIndicator: React.FC = () => {
 
             {/* Error message */}
             {status.error && (
-              <div className="pt-2 border-t border-red-100">
-                <p className="text-xs text-red-600">{status.error}</p>
+              <div className="pt-2 border-t border-red-500/30">
+                <p className="text-xs text-red-400">{status.error}</p>
               </div>
             )}
           </div>

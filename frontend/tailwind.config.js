@@ -21,10 +21,10 @@ export default {
           800: '#6E4805',
           900: '#3B2703',
         },
-        // Secondary accent (cyan) for settings/secondary actions
+        // Secondary accent (amber hover) for settings/secondary actions
         secondary: {
-          DEFAULT: '#06b6d4',
-          500: '#06b6d4',
+          DEFAULT: '#FFB84D',
+          500: '#FFB84D',
         },
         // Dark theme backgrounds
         dark: {

@@ -111,12 +111,12 @@ export const Library: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <LibraryIcon className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#F5A623]/30 to-[#FFB84D]/30 flex items-center justify-center shadow-lg shadow-[#F5A623]/20">
+                <LibraryIcon className="w-8 h-8 text-[#F5A623]" />
               </div>
               <div>
                 <p className="text-slate-500 text-sm uppercase tracking-wide">Workspace</p>
-                <h1 className="text-4xl md:text-5xl font-bold gradient-text-purple">Your Library</h1>
+                <h1 className="text-4xl md:text-5xl font-bold gradient-text">Your Library</h1>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -147,25 +147,25 @@ export const Library: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="card p-4 bg-gradient-to-br from-purple-500/5 to-pink-500/10 border-purple-500/20">
+            <div className="card p-4 bg-gradient-to-br from-[#F5A623]/5 to-[#FFB84D]/10 border-[#F5A623]/20">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
-                  <Folder className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                  <Folder className="w-5 h-5 text-[#F5A623]" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 uppercase font-semibold">Albums</p>
-                  <p className="text-2xl font-bold gradient-text-purple">{albums.length}</p>
+                  <p className="text-2xl font-bold gradient-text">{albums.length}</p>
                 </div>
               </div>
             </div>
-            <div className="card p-4 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10 border-cyan-500/20">
+            <div className="card p-4 bg-gradient-to-br from-[#F5A623]/5 to-[#FFB84D]/10 border-[#F5A623]/20">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-500/10 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-cyan-400" />
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-[#F5A623]" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 uppercase font-semibold">This Week</p>
-                  <p className="text-2xl font-bold gradient-text-cool">
+                  <p className="text-2xl font-bold gradient-text">
                     {songs.filter(s => {
                       const created = new Date(s.created_at);
                       const weekAgo = new Date();
@@ -183,10 +183,10 @@ export const Library: React.FC = () => {
         <div className="card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-500/10 flex items-center justify-center">
-                <Folder className="w-5 h-5 text-purple-400" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center">
+                <Folder className="w-5 h-5 text-[#F5A623]" />
               </div>
-              <h2 className="text-2xl font-bold gradient-text-purple">Albums</h2>
+              <h2 className="text-2xl font-bold gradient-text">Albums</h2>
             </div>
             <button className="btn-secondary flex items-center space-x-2 text-sm">
               <Plus className="w-4 h-4" />
@@ -198,20 +198,20 @@ export const Library: React.FC = () => {
             {albums.map((album) => (
               <div key={album.id}>
                 <div
-                  className="flex items-center justify-between p-4 rounded-lg bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/50 hover:border-purple-500/30 cursor-pointer transition-all group"
+                  className="flex items-center justify-between p-4 rounded-lg bg-dark-800/50 hover:bg-dark-700/50 border border-dark-700/50 hover:border-[#F5A623]/30 cursor-pointer transition-all group"
                   onClick={() => setExpandedAlbum(expandedAlbum === album.id ? null : album.id)}
                 >
                   <div className="flex items-center space-x-3 flex-1">
                     <ChevronRight
-                      className={`w-5 h-5 text-slate-500 group-hover:text-purple-400 transition-all ${
+                      className={`w-5 h-5 text-slate-500 group-hover:text-[#F5A623] transition-all ${
                         expandedAlbum === album.id ? 'rotate-90' : ''
                       }`}
                     />
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
-                      <Folder className="w-6 h-6 text-purple-400" />
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#F5A623]/20 to-[#FFB84D]/20 flex items-center justify-center flex-shrink-0">
+                      <Folder className="w-6 h-6 text-[#F5A623]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-slate-50 font-semibold text-lg group-hover:text-purple-400 transition-colors">
+                      <h3 className="text-slate-50 font-semibold text-lg group-hover:text-[#F5A623] transition-colors">
                         {album.name}
                       </h3>
                       <p className="text-slate-500 text-sm">{album.description}</p>

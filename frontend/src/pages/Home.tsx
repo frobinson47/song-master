@@ -48,10 +48,10 @@ export const Home: React.FC = () => {
         <div className="text-center mb-12 relative">
           <ParticleBackground />
           <h1 className="text-5xl md:text-6xl font-bold text-slate-50 mb-4 relative z-10">
-            Welcome to <span className="gradient-text">Song Master</span>
+            Welcome to <span className="gradient-text">Song Forge</span>
           </h1>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-            AI-powered song generation with <span className="text-primary font-semibold">Claude</span>, <span className="text-cyan-400 font-semibold">GPT</span>, and <span className="text-purple-400 font-semibold">Gemini</span>.
+            AI-powered song generation with <span className="text-primary font-semibold">Claude</span>, <span className="text-[#FFB84D] font-semibold">GPT</span>, and <span className="text-[#FFB84D] font-semibold">Gemini</span>.
             Create professional lyrics with style tags, metadata, and album art.
           </p>
           <div className="flex items-center justify-center space-x-4">
@@ -86,14 +86,14 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          <div className="card p-6 gradient-border-cool animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+          <div className="card p-6 gradient-border-warm animate-fadeIn" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/30 to-purple-500/10 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                <TrendingUp className="w-7 h-7 text-cyan-400" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#F5A623]/30 to-[#F5A623]/10 flex items-center justify-center shadow-lg shadow-[#F5A623]/20">
+                <TrendingUp className="w-7 h-7 text-[#F5A623]" />
               </div>
               <div>
                 <p className="text-slate-400 text-xs uppercase font-semibold tracking-wide">This Week</p>
-                <p className="text-3xl font-bold gradient-text-cool">{stats.thisWeek}</p>
+                <p className="text-3xl font-bold gradient-text">{stats.thisWeek}</p>
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export const Home: React.FC = () => {
         {/* Recent Songs */}
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold gradient-text-cool">Recent Songs</h2>
+            <h2 className="text-2xl font-bold gradient-text">Recent Songs</h2>
             <div className="flex items-center space-x-3">
               {/* View switcher */}
               <div className="flex items-center bg-dark-800 rounded-md border border-dark-700">
